@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>프리랜서메이커 - 업무 & 수입 관리</title>
+  <title>프리랜서메이커 - 클라우드 동기화 플래너</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- 구글 공식 로그인 SDK (Google Identity Services) -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
   <style>
     :root {
       --bg-main: #f8fafc;
@@ -60,7 +63,6 @@
       gap: 24px;
     }
 
-    /* 상단 헤더 */
     header {
       display: flex;
       justify-content: space-between;
@@ -108,49 +110,57 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    /* 구글 로그인 영역 */
+    /* 구글 로그인 & 클라우드 상태 UI */
     .auth-section {
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .auth-logged-out {
-      display: flex;
+    .btn-google-login {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
+      background: #fff;
+      color: var(--text-main);
+      border: 1px solid var(--border-strong);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
     }
 
-    .auth-logged-in {
+    .btn-google-login:hover {
+      background: #f8fafc;
+      border-color: var(--primary);
+    }
+
+    .user-profile-bar {
       display: none;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       background: var(--bg-main);
-      padding: 6px 12px;
+      padding: 4px 12px;
       border-radius: 30px;
       border: 1px solid var(--border-subtle);
-    }
-
-    .user-profile-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .user-avatar {
       width: 32px;
       height: 32px;
       border-radius: 50%;
+      border: 2px solid var(--primary);
       object-fit: cover;
-      border: 1.5px solid var(--primary);
     }
 
-    .user-info-text {
+    .user-meta {
       display: flex;
       flex-direction: column;
       line-height: 1.2;
@@ -159,7 +169,18 @@
     .user-name {
       font-size: 13px;
       font-weight: 700;
-      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sync-indicator {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 0 2px var(--emerald-light);
     }
 
     .user-email {
@@ -173,7 +194,7 @@
       color: var(--text-muted);
       font-size: 12px;
       font-weight: 600;
-      padding: 5px 10px;
+      padding: 4px 10px;
       border-radius: 20px;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -185,36 +206,18 @@
       border-color: #fecaca;
     }
 
-    .btn-demo-auth {
-      background: #fff;
-      color: var(--text-main);
-      border: 1px solid var(--border-strong);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 7px 12px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s ease;
-    }
-
-    .btn-demo-auth:hover {
-      background: var(--bg-main);
-    }
-
-    .btn-settings-icon {
+    .btn-config-icon {
       background: transparent;
       border: none;
       color: var(--text-light);
-      font-size: 16px;
+      font-size: 18px;
       padding: 6px;
       cursor: pointer;
       border-radius: 6px;
+      transition: all 0.15s ease;
     }
 
-    .btn-settings-icon:hover {
+    .btn-config-icon:hover {
       color: var(--text-main);
       background: var(--bg-main);
     }
@@ -418,7 +421,7 @@
       white-space: nowrap;
     }
 
-    /* 캘린더 메인 컨테이너 */
+    /* 캘린더 */
     .calendar-card {
       background: var(--bg-card);
       border-radius: var(--radius-lg);
@@ -732,7 +735,6 @@
       gap: 20px;
     }
 
-    /* 폼 공통 스타일 */
     .form-box {
       background: var(--bg-main);
       padding: 16px;
@@ -849,7 +851,6 @@
       cursor: pointer;
     }
 
-    /* 일일 업무 리스트 */
     .task-list-title {
       font-size: 14px;
       font-weight: 700;
@@ -981,18 +982,10 @@
       border-color: #a7f3d0;
     }
 
-    .btn-payment-badge.paid:hover {
-      background: #d1fae5;
-    }
-
     .btn-payment-badge.unpaid {
       background: var(--amber-light);
       color: var(--amber-dark);
       border-color: #fde68a;
-    }
-
-    .btn-payment-badge.unpaid:hover {
-      background: #fef3c7;
     }
 
     .task-actions {
@@ -1020,7 +1013,7 @@
       background: var(--danger-light);
     }
 
-    /* 모달 공통 */
+    /* 모달 */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -1126,7 +1119,6 @@
       color: var(--text-main);
     }
 
-    /* 반응형 레이아웃 */
     @media (max-width: 960px) {
       header {
         flex-direction: column;
@@ -1150,10 +1142,6 @@
         min-height: 85px;
         padding: 6px 4px;
       }
-      .income-pill {
-        font-size: 10px;
-        padding: 1px 3px;
-      }
       .drawer {
         width: 100vw;
       }
@@ -1166,58 +1154,49 @@
 <body>
 
   <div class="container">
-    <!-- 헤더 & 구글 로그인 영역 -->
     <header>
       <div class="app-brand">
         <div class="brand-icon">₩</div>
         <div class="brand-text">
           <h1>프리랜서메이커</h1>
-          <p>월간 일정 · 입금 정산 · 반복 루틴 통합 플래너</p>
+          <p>어디서나 동기화되는 스마트 업무·수입 플래너</p>
         </div>
       </div>
 
       <div class="header-actions">
-        <!-- 구글 인증 상태 -->
         <div class="auth-section">
-          <!-- 비로그인 상태 -->
-          <div class="auth-logged-out" id="authLoggedOut">
-            <!-- 공식 구글 버튼 렌더링 컨테이너 -->
-            <div id="g_id_signin_btn"></div>
-            <!-- 간편 테스트/체험용 구글 로그인 버튼 -->
-            <button class="btn-demo-auth" id="btnDemoAuth" title="Google Cloud Console 연동 전 즉시 체험할 수 있는 테스트 모드입니다">
-              <svg width="16" height="16" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-              </svg>
-              구글 테스트 로그인
-            </button>
-            <button class="btn-settings-icon" id="openClientIdModalBtn" title="Google OAuth Client ID 설정">&#9881;</button>
-          </div>
+          <button class="btn-google-login" id="btnGoogleLogin">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            구글 계정으로 로그인
+          </button>
 
-          <!-- 로그인 완료 상태 -->
-          <div class="auth-logged-in" id="authLoggedIn">
-            <div class="user-profile-group">
-              <img src="" alt="프로필" class="user-avatar" id="userAvatar">
-              <div class="user-info-text">
-                <span class="user-name" id="userName">사용자</span>
-                <span class="user-email" id="userEmail">user@gmail.com</span>
-              </div>
+          <div class="user-profile-bar" id="userProfileBar">
+            <img src="" alt="Avatar" class="user-avatar" id="userAvatar">
+            <div class="user-meta">
+              <span class="user-name">
+                <span id="userName">사용자</span>
+                <span class="sync-indicator" title="클라우드 실시간 동기화 중"></span>
+              </span>
+              <span class="user-email" id="userEmail">user@gmail.com</span>
             </div>
             <button class="btn-logout" id="btnLogout">로그아웃</button>
           </div>
+
+          <button class="btn-config-icon" id="openConfigModalBtn" title="Firebase 연동 설정">⚙</button>
         </div>
 
         <button class="btn-routine-open" id="openRoutineModalBtn">
-          <span>&#10227;</span> 루틴 업무 일괄 등록
+          <span>⟳</span> 루틴 일괄 등록
         </button>
       </div>
     </header>
 
-    <!-- 3대 핵심 지표 대시보드 -->
     <section class="dashboard-grid">
-      <!-- 1. 일간 수입 카드 -->
       <div class="stat-card">
         <div class="stat-header">
           <span class="stat-title">일간 수입</span>
@@ -1225,18 +1204,11 @@
         </div>
         <div class="stat-value highlight" id="dailyIncomeValue">₩0</div>
         <div class="stat-payment-split">
-          <div class="split-item paid">
-            <span>입금완료:</span>
-            <span id="dailyPaidValue">₩0</span>
-          </div>
-          <div class="split-item unpaid">
-            <span>미입금:</span>
-            <span id="dailyUnpaidValue">₩0</span>
-          </div>
+          <div class="split-item paid"><span>입금완료:</span> <span id="dailyPaidValue">₩0</span></div>
+          <div class="split-item unpaid"><span>미입금:</span> <span id="dailyUnpaidValue">₩0</span></div>
         </div>
       </div>
 
-      <!-- 2. 주간 수입 카드 -->
       <div class="stat-card">
         <div class="stat-header">
           <span class="stat-title">주간 수입</span>
@@ -1244,18 +1216,11 @@
         </div>
         <div class="stat-value highlight" id="weeklyIncomeValue">₩0</div>
         <div class="stat-payment-split">
-          <div class="split-item paid">
-            <span>입금완료:</span>
-            <span id="weeklyPaidValue">₩0</span>
-          </div>
-          <div class="split-item unpaid">
-            <span>미입금:</span>
-            <span id="weeklyUnpaidValue">₩0</span>
-          </div>
+          <div class="split-item paid"><span>입금완료:</span> <span id="weeklyPaidValue">₩0</span></div>
+          <div class="split-item unpaid"><span>미입금:</span> <span id="weeklyUnpaidValue">₩0</span></div>
         </div>
       </div>
 
-      <!-- 3. 맞춤 기간 수입 분석 카드 -->
       <div class="stat-card">
         <div class="stat-header">
           <span class="stat-title">기간별 수입 분석</span>
@@ -1275,14 +1240,8 @@
         <div class="stat-value highlight" id="rangeIncomeValue">₩0</div>
 
         <div class="stat-payment-split">
-          <div class="split-item paid">
-            <span>입금완료:</span>
-            <span id="rangePaidValue">₩0</span>
-          </div>
-          <div class="split-item unpaid">
-            <span>미입금:</span>
-            <span id="rangeUnpaidValue">₩0</span>
-          </div>
+          <div class="split-item paid"><span>입금완료:</span> <span id="rangePaidValue">₩0</span></div>
+          <div class="split-item unpaid"><span>미입금:</span> <span id="rangeUnpaidValue">₩0</span></div>
           <div class="split-item" style="color: var(--text-light); margin-left: auto;">
             <span id="rangeMetaInfo">28일간</span>
           </div>
@@ -1292,14 +1251,13 @@
       </div>
     </section>
 
-    <!-- 캘린더 메인 카드 -->
     <main class="calendar-card">
       <div class="calendar-toolbar">
         <div class="calendar-nav">
           <h2 class="current-month-label" id="currentMonthLabel">2026년 9월</h2>
           <div class="btn-group">
-            <button class="btn-icon" id="prevMonthBtn" title="이전 달">&#8592;</button>
-            <button class="btn-icon" id="nextMonthBtn" title="다음 달">&#8594;</button>
+            <button class="btn-icon" id="prevMonthBtn" title="이전 달">←</button>
+            <button class="btn-icon" id="nextMonthBtn" title="다음 달">→</button>
           </div>
         </div>
         <button class="btn-today" id="todayBtn">오늘</button>
@@ -1319,7 +1277,6 @@
     </main>
   </div>
 
-  <!-- 일일 업무 및 수입 사이드 드로어 -->
   <div class="drawer-overlay" id="drawerOverlay">
     <div class="drawer">
       <div class="drawer-header">
@@ -1331,21 +1288,19 @@
             <span class="drawer-badge unpaid" id="drawerUnpaidTotal">미입금 ₩0</span>
           </div>
         </div>
-        <button class="drawer-close-btn" id="drawerCloseBtn">&times;</button>
+        <button class="drawer-close-btn" id="drawerCloseBtn">×</button>
       </div>
 
       <div class="drawer-body">
-        <!-- 업무 등록/수정 폼 -->
         <div class="form-box">
           <div class="form-box-title" id="formModeTitle">새 업무 등록</div>
           <form id="taskForm">
             <input type="hidden" id="editingTaskId" value="">
             <div class="form-group">
               <label for="taskTitle">업무명</label>
-              <input type="text" id="taskTitle" class="form-control" placeholder="예: 상세페이지 기획 및 제작" required>
+              <input type="text" id="taskTitle" class="form-control" placeholder="예: 상세페이지 제작" required>
             </div>
 
-            <!-- 단가 및 건수 자동 계산기 행 -->
             <div class="calc-row">
               <div class="form-group">
                 <label for="taskUnitPrice">단가 (₩)</label>
@@ -1361,7 +1316,6 @@
               </div>
             </div>
 
-            <!-- 입금 여부 토글 -->
             <div class="payment-toggle-wrap">
               <input type="checkbox" id="taskIsPaid">
               <label for="taskIsPaid">입금 완료 처리 (체크 해제 시 '미입금')</label>
@@ -1369,7 +1323,7 @@
 
             <div class="form-group">
               <label for="taskMemo">메모 / 클라이언트 정보</label>
-              <input type="text" id="taskMemo" class="form-control" placeholder="특이사항, 연락처 등">
+              <input type="text" id="taskMemo" class="form-control" placeholder="특이사항 입력">
             </div>
 
             <div class="form-actions">
@@ -1379,7 +1333,6 @@
           </form>
         </div>
 
-        <!-- 일일 업무 리스트 -->
         <div>
           <div class="task-list-title">일일 업무 목록</div>
           <div class="task-list" id="taskList"></div>
@@ -1388,17 +1341,16 @@
     </div>
   </div>
 
-  <!-- 루틴 일괄 등록 모달 -->
   <div class="modal-overlay" id="routineModalOverlay">
     <div class="modal-content">
       <div class="modal-header">
         <h3>반복 루틴 업무 일괄 등록</h3>
-        <button class="drawer-close-btn" id="closeRoutineModalBtn">&times;</button>
+        <button class="drawer-close-btn" id="closeRoutineModalBtn">×</button>
       </div>
       <form id="routineForm" class="modal-body">
         <div class="form-group">
           <label for="routineTitle">업무명</label>
-          <input type="text" id="routineTitle" class="form-control" placeholder="예: 주간 정기 포스팅" required>
+          <input type="text" id="routineTitle" class="form-control" placeholder="예: 주간 정기 블로그 포스팅" required>
         </div>
 
         <div class="calc-row">
@@ -1417,7 +1369,7 @@
         </div>
 
         <div class="form-group">
-          <label>반복 요일 (다중 선택 가능)</label>
+          <label>반복 요일 (다중 선택)</label>
           <div class="weekday-selector">
             <div class="weekday-chip active" data-day="1">월</div>
             <div class="weekday-chip" data-day="2">화</div>
@@ -1445,47 +1397,60 @@
 
         <div class="payment-toggle-wrap">
           <input type="checkbox" id="routineIsPaid">
-          <label for="routineIsPaid">생성될 루틴 업무를 '입금 완료' 상태로 등록</label>
+          <label for="routineIsPaid">생성될 업무를 '입금 완료'로 등록</label>
         </div>
 
         <div class="form-group">
-          <label for="routineMemo">메모</label>
-          <input type="text" id="routineMemo" class="form-control" placeholder="루틴 반복 업무 공통 메모">
+          <label for="routineMemo">공통 메모</label>
+          <input type="text" id="routineMemo" class="form-control" placeholder="루틴 업무 메모">
         </div>
 
         <button type="submit" class="btn-submit" style="padding: 12px; margin-top: 8px;">
-          지정한 요일에 루틴 일괄 등록하기
+          지정한 기간에 일괄 생성
         </button>
       </form>
     </div>
   </div>
 
-  <!-- Google Cloud OAuth Client ID 설정 모달 -->
-  <div class="modal-overlay" id="clientIdModalOverlay">
+  <div class="modal-overlay" id="configModalOverlay">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Google OAuth Client ID 설정</h3>
-        <button class="drawer-close-btn" id="closeClientIdModalBtn">&times;</button>
+        <h3>Firebase 클라우드 연동 설정</h3>
+        <button class="drawer-close-btn" id="closeConfigModalBtn">×</button>
       </div>
       <div class="modal-body">
         <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
-          Google Cloud Console에서 발급받은 <strong>OAuth 2.0 클라이언트 ID</strong>를 입력하시면 실제 구글 로그인 팝업 연동이 활성화됩니다. 미입력 상태에서는 [구글 테스트 로그인] 버튼으로 즉시 체험이 가능합니다.
+          Firebase 콘솔의 <strong>[프로젝트 설정] > [내 앱]</strong>에 표시되는 <code>firebaseConfig</code> 코드를 그대로 붙여넣거나 JSON 형태로 입력하세요. 입력 후 저장하면 모든 기기에서 구글 로그인 시 실시간 동기화됩니다.
         </p>
         <div class="form-group">
-          <label for="inputGoogleClientId">Google Client ID</label>
-          <input type="text" id="inputGoogleClientId" class="form-control" placeholder="예: 123456789-xxxx.apps.googleusercontent.com">
+          <label for="firebaseConfigInput">Firebase Config 내용</label>
+          <textarea id="firebaseConfigInput" class="form-control" rows="8" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "your-project.firebaseapp.com",
+  "projectId": "your-project",
+  "storageBucket": "your-project.appspot.com",
+  "messagingSenderId": "...",
+  "appId": "..."
+}' style="font-family: monospace; font-size: 12px;"></textarea>
         </div>
-        <button type="button" class="btn-submit" id="btnSaveClientId" style="padding: 11px;">설정 저장하기</button>
+        <button type="button" class="btn-submit" id="btnSaveFirebaseConfig" style="padding: 11px;">설정 저장 및 연동하기</button>
       </div>
     </div>
   </div>
 
   <script>
-    // 계정별 데이터 스토리지 키 관리
-    const AUTH_USER_KEY = 'freelancemaker_current_user_v1';
-    const GOOGLE_CLIENT_ID_KEY = 'freelancemaker_google_client_id_v1';
+    // Firebase 기본 설정 (콘솔에서 복사한 값을 여기에 직접 채워도 작동합니다)
+    const DEFAULT_FIREBASE_CONFIG = null;
 
-    let currentUser = null; // { email, name, picture, sub }
+    const FIREBASE_CONFIG_KEY = 'freelancemaker_firebase_config_v1';
+    const LOCAL_CACHE_KEY = 'freelancemaker_tasks_cache_v1';
+
+    let fbApp = null;
+    let fbAuth = null;
+    let fbDb = null;
+    let firestoreUnsubscribe = null;
+
+    let currentUser = null; // Firebase User 객체
     let currentDate = new Date();
     let selectedDate = new Date();
     let tasksData = {};
@@ -1494,99 +1459,153 @@
     let customEndDate = new Date();
     let currentPreset = '4weeks';
 
-    // 현재 사용자에 따른 고유 로컬 스토리지 키 반환
-    function getStorageKey() {
-      if (currentUser && currentUser.email) {
-        return `freelancemaker_tasks_${currentUser.email}`;
+    // Firebase 초기화 로직
+    function initFirebase() {
+      let config = null;
+      const storedConfig = localStorage.getItem(FIREBASE_CONFIG_KEY);
+      
+      if (storedConfig) {
+        try {
+          config = JSON.parse(storedConfig);
+        } catch (e) {
+          console.warn('저장된 Firebase 설정 파싱 오류:', e);
+        }
+      } else if (DEFAULT_FIREBASE_CONFIG) {
+        config = DEFAULT_FIREBASE_CONFIG;
       }
-      return 'freelancemaker_tasks_guest';
-    }
 
-    // Google JWT 토큰 디코딩
-    function decodeJwtResponse(token) {
-      try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-      } catch (e) {
-        console.error('JWT 파싱 오류:', e);
-        return null;
-      }
-    }
+      if (config && config.apiKey && !firebase.apps.length) {
+        try {
+          fbApp = firebase.initializeApp(config);
+          fbAuth = firebase.auth();
+          fbDb = firebase.firestore();
 
-    // 구글 로그인 콜백
-    function handleGoogleCredentialResponse(response) {
-      const payload = decodeJwtResponse(response.credential);
-      if (payload) {
-        loginUser({
-          email: payload.email,
-          name: payload.name || payload.email.split('@')[0],
-          picture: payload.picture || 'https://lh3.googleusercontent.com/a/default-user=s96-c',
-          sub: payload.sub
-        });
-      }
-    }
-
-    // 사용자 로그인 상태 처리
-    function loginUser(userObj) {
-      currentUser = userObj;
-      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(currentUser));
-      updateAuthUI();
-      loadData(); // 사용자별 데이터 로드
-      updateDashboardStats();
-      renderCalendar();
-    }
-
-    // 로그아웃 처리
-    function logoutUser() {
-      currentUser = null;
-      localStorage.removeItem(AUTH_USER_KEY);
-      updateAuthUI();
-      loadData(); // 게스트 데이터로 전환
-      updateDashboardStats();
-      renderCalendar();
-      if (window.google && google.accounts && google.accounts.id) {
-        google.accounts.id.disableAutoSelect();
-      }
-    }
-
-    // 인증 UI 업데이트
-    function updateAuthUI() {
-      const loggedOutDiv = document.getElementById('authLoggedOut');
-      const loggedInDiv = document.getElementById('authLoggedIn');
-
-      if (currentUser) {
-        loggedOutDiv.style.display = 'none';
-        loggedInDiv.style.display = 'flex';
-        document.getElementById('userAvatar').src = currentUser.picture;
-        document.getElementById('userName').textContent = currentUser.name;
-        document.getElementById('userEmail').textContent = currentUser.email;
+          // 인증 상태 감지
+          fbAuth.onAuthStateChanged(user => {
+            if (user) {
+              currentUser = user;
+              updateAuthUI(true);
+              bindFirestoreSync(user.uid);
+            } else {
+              currentUser = null;
+              updateAuthUI(false);
+              if (firestoreUnsubscribe) firestoreUnsubscribe();
+              loadLocalData();
+            }
+          });
+        } catch (err) {
+          console.error('Firebase 초기화 실패:', err);
+        }
       } else {
-        loggedOutDiv.style.display = 'flex';
-        loggedInDiv.style.display = 'none';
+        // Firebase 미설정 시 로컬 모드로 작동
+        loadLocalData();
       }
     }
 
-    // Google Identity Services 초기화
-    function initGoogleGIS() {
-      const savedClientId = localStorage.getItem(GOOGLE_CLIENT_ID_KEY);
-      if (window.google && google.accounts && google.accounts.id && savedClientId) {
-        google.accounts.id.initialize({
-          client_id: savedClientId,
-          callback: handleGoogleCredentialResponse,
-          auto_select: false
-        });
-        google.accounts.id.renderButton(
-          document.getElementById('g_id_signin_btn'),
-          { theme: 'outline', size: 'medium', text: 'signin_with', shape: 'rectangular', locale: 'ko' }
-        );
+    // Firestore 실시간 양방향 동기화
+    function bindFirestoreSync(uid) {
+      if (!fbDb) return;
+      if (firestoreUnsubscribe) firestoreUnsubscribe();
+
+      const userDocRef = fbDb.collection('freelancers').doc(uid);
+
+      firestoreUnsubscribe = userDocRef.onSnapshot(doc => {
+        if (doc.exists) {
+          tasksData = doc.data().tasks || {};
+        } else {
+          // 신규 사용자의 경우 기존 로컬 작업 내역이 있다면 클라우드로 업로드 마이그레이션
+          const localCache = localStorage.getItem(LOCAL_CACHE_KEY);
+          if (localCache) {
+            try {
+              tasksData = JSON.parse(localCache);
+              saveDataToCloud();
+            } catch (e) {
+              tasksData = {};
+            }
+          } else {
+            tasksData = {};
+          }
+        }
+        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
+        updateDashboardStats();
+        renderCalendar();
+        if (isDrawerOpen()) renderDrawerTasks();
+      }, err => {
+        console.error('Firestore 동기화 오류:', err);
+      });
+    }
+
+    // 데이터 저장 (클라우드 로그인 시 Firestore, 비로그인 시 로컬)
+    function saveData() {
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
+      if (currentUser && fbDb) {
+        saveDataToCloud();
+      } else {
+        updateDashboardStats();
+        renderCalendar();
+        if (isDrawerOpen()) renderDrawerTasks();
       }
     }
 
-    // 날짜 및 포맷 유틸리티
+    function saveDataToCloud() {
+      if (!currentUser || !fbDb) return;
+      fbDb.collection('freelancers').doc(currentUser.uid).set({
+        tasks: tasksData,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).catch(err => {
+        console.error('클라우드 저장 실패:', err);
+      });
+    }
+
+    function loadLocalData() {
+      const stored = localStorage.getItem(LOCAL_CACHE_KEY);
+      tasksData = stored ? JSON.parse(stored) : {};
+      updateDashboardStats();
+      renderCalendar();
+      if (isDrawerOpen()) renderDrawerTasks();
+    }
+
+    // 구글 팝업 로그인
+    async function handleGoogleLogin() {
+      if (!fbAuth) {
+        document.getElementById('configModalOverlay').classList.add('active');
+        alert('다른 기기와 실시간 연동을 위해 우측 상단 ⚙ 설정에서 Firebase Config를 먼저 등록해주세요.');
+        return;
+      }
+
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        await fbAuth.signInWithPopup(provider);
+      } catch (error) {
+        if (error.code !== 'auth/popup-closed-by-user') {
+          alert('구글 로그인 실패: ' + error.message);
+        }
+      }
+    }
+
+    async function handleLogout() {
+      if (fbAuth) {
+        await fbAuth.signOut();
+      }
+    }
+
+    function updateAuthUI(isLoggedIn) {
+      const btnLogin = document.getElementById('btnGoogleLogin');
+      const profileBar = document.getElementById('userProfileBar');
+
+      if (isLoggedIn && currentUser) {
+        btnLogin.style.display = 'none';
+        profileBar.style.display = 'flex';
+        document.getElementById('userAvatar').src = currentUser.photoURL || 'https://lh3.googleusercontent.com/a/default-user';
+        document.getElementById('userName').textContent = currentUser.displayName || '프리랜서';
+        document.getElementById('userEmail').textContent = currentUser.email || '';
+      } else {
+        btnLogin.style.display = 'inline-flex';
+        profileBar.style.display = 'none';
+      }
+    }
+
+    // 날짜 및 포맷 유틸
     function formatDateKey(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -1613,33 +1632,6 @@
       return new Date(d.getTime());
     }
 
-    // 데이터베이스 로드 및 저장 (계정별 독립 키 사용)
-    function loadData() {
-      const storageKey = getStorageKey();
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
-        try {
-          tasksData = JSON.parse(stored);
-        } catch (e) {
-          tasksData = {};
-          saveData();
-        }
-      } else {
-        tasksData = {};
-        saveData();
-      }
-    }
-
-    function saveData() {
-      const storageKey = getStorageKey();
-      localStorage.setItem(storageKey, JSON.stringify(tasksData));
-      updateDashboardStats();
-      renderCalendar();
-      if (isDrawerOpen()) {
-        renderDrawerTasks();
-      }
-    }
-
     // 수입 집계 유틸
     function calculateIncomeMetrics(tasks) {
       let total = 0;
@@ -1649,11 +1641,8 @@
       tasks.forEach(t => {
         const amt = Number(t.amount) || 0;
         total += amt;
-        if (t.isPaid) {
-          paid += amt;
-        } else {
-          unpaid += amt;
-        }
+        if (t.isPaid) paid += amt;
+        else unpaid += amt;
       });
 
       return { total, paid, unpaid, count: tasks.length };
@@ -1661,15 +1650,13 @@
 
     function getDailyMetrics(date) {
       const key = formatDateKey(date);
-      const list = tasksData[key] || [];
-      return calculateIncomeMetrics(list);
+      return calculateIncomeMetrics(tasksData[key] || []);
     }
 
     function getWeekRange(targetDate) {
       const date = new Date(targetDate);
       const day = date.getDay();
       const diffToMon = day === 0 ? -6 : 1 - day;
-      
       const mon = new Date(date);
       mon.setDate(date.getDate() + diffToMon);
       mon.setHours(0, 0, 0, 0);
@@ -1677,7 +1664,6 @@
       const sun = new Date(mon);
       sun.setDate(mon.getDate() + 6);
       sun.setHours(23, 59, 59, 999);
-
       return { mon, sun };
     }
 
@@ -1688,40 +1674,34 @@
 
       while (cur <= sun) {
         const key = formatDateKey(cur);
-        if (tasksData[key]) {
-          allTasks = allTasks.concat(tasksData[key]);
-        }
+        if (tasksData[key]) allTasks = allTasks.concat(tasksData[key]);
         cur.setDate(cur.getDate() + 1);
       }
-
       return { ...calculateIncomeMetrics(allTasks), mon, sun };
     }
 
     function getCustomRangeMetrics(start, end) {
-      const s = new Date(start);
-      s.setHours(0, 0, 0, 0);
-      const e = new Date(end);
-      e.setHours(23, 59, 59, 999);
+      const s = new Date(start); s.setHours(0, 0, 0, 0);
+      const e = new Date(end); e.setHours(23, 59, 59, 999);
 
       const diffTime = Math.abs(e - s);
       const dayCount = Math.max(1, Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1);
 
       let allTasks = [];
       const dailyMap = {};
-
       let cur = new Date(s);
+
       while (cur <= e) {
         const key = formatDateKey(cur);
         const tasks = tasksData[key] || [];
         allTasks = allTasks.concat(tasks);
-        dailyMap[key] = tasks.reduce((acc, curItem) => acc + (Number(curItem.amount) || 0), 0);
+        dailyMap[key] = tasks.reduce((acc, item) => acc + (Number(item.amount) || 0), 0);
         cur.setDate(cur.getDate() + 1);
       }
 
       const summary = calculateIncomeMetrics(allTasks);
 
-      let bucketCount = 5;
-      if (dayCount <= 7) bucketCount = dayCount;
+      let bucketCount = dayCount <= 7 ? dayCount : 5;
       const buckets = [];
       const bucketSizeDays = Math.ceil(dayCount / bucketCount);
 
@@ -1755,7 +1735,7 @@
       return { ...summary, dayCount, buckets };
     }
 
-    // 대시보드 통계 갱신
+    // 대시보드 갱신
     function updateDashboardStats() {
       const daily = getDailyMetrics(selectedDate);
       document.getElementById('dailyIncomeValue').textContent = formatKRW(daily.total);
@@ -1832,7 +1812,6 @@
 
       document.getElementById('rangeStartDate').value = formatDateKey(customStartDate);
       document.getElementById('rangeEndDate').value = formatDateKey(customEndDate);
-
       updateCustomRangeDisplay();
     }
 
@@ -1855,20 +1834,17 @@
       const prevMonthLastDate = new Date(year, month, 0).getDate();
       for (let i = startDayOfWeek - 1; i >= 0; i--) {
         const dayNum = prevMonthLastDate - i;
-        const cellDate = new Date(year, month - 1, dayNum);
-        calendarDays.appendChild(createDayCell(cellDate, true));
+        calendarDays.appendChild(createDayCell(new Date(year, month - 1, dayNum), true));
       }
 
       for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-        const cellDate = new Date(year, month, day);
-        calendarDays.appendChild(createDayCell(cellDate, false));
+        calendarDays.appendChild(createDayCell(new Date(year, month, day), false));
       }
 
       const totalRendered = startDayOfWeek + lastDayOfMonth.getDate();
       const nextDaysCount = (7 - (totalRendered % 7)) % 7;
       for (let i = 1; i <= nextDaysCount; i++) {
-        const cellDate = new Date(year, month + 1, i);
-        calendarDays.appendChild(createDayCell(cellDate, true));
+        calendarDays.appendChild(createDayCell(new Date(year, month + 1, i), true));
       }
     }
 
@@ -1926,7 +1902,7 @@
       return cell;
     }
 
-    // 단가 및 건수 자동 계산기
+    // 단가 & 건수 자동 계산기 바인딩
     function setupCalculator(unitPriceInputId, countInputId, totalAmountInputId) {
       const unitInput = document.getElementById(unitPriceInputId);
       const countInput = document.getElementById(countInputId);
@@ -1939,17 +1915,15 @@
         totalInput.value = total > 0 ? total.toLocaleString('ko-KR') : '';
       }
 
-      unitInput.addEventListener('input', (e) => {
+      unitInput.addEventListener('input', e => {
         const raw = parseNumber(e.target.value);
         e.target.value = raw ? raw.toLocaleString('ko-KR') : '';
         recalc();
       });
 
-      countInput.addEventListener('input', () => {
-        recalc();
-      });
+      countInput.addEventListener('input', recalc);
 
-      totalInput.addEventListener('input', (e) => {
+      totalInput.addEventListener('input', e => {
         const raw = parseNumber(e.target.value);
         e.target.value = raw ? raw.toLocaleString('ko-KR') : '';
       });
@@ -2009,7 +1983,6 @@
         checkbox.type = 'checkbox';
         checkbox.className = 'task-checkbox';
         checkbox.checked = task.done;
-        checkbox.title = task.done ? '진행중으로 변경' : '완료로 변경';
         checkbox.addEventListener('change', () => toggleTaskDone(task.id));
         checkWrap.appendChild(checkbox);
 
@@ -2057,9 +2030,9 @@
         const paidBtn = document.createElement('button');
         paidBtn.type = 'button';
         paidBtn.className = `btn-payment-badge ${task.isPaid ? 'paid' : 'unpaid'}`;
-        paidBtn.innerHTML = task.isPaid ? '&#10003; 입금완료' : '&#9888; 미입금';
-        paidBtn.title = '클릭하여 입금/미입금 상태 즉시 전환';
-        paidBtn.addEventListener('click', (e) => {
+        paidBtn.innerHTML = task.isPaid ? '✓ 입금완료' : '⚠ 미입금';
+        paidBtn.title = '클릭하여 입금 상태 전환';
+        paidBtn.addEventListener('click', e => {
           e.stopPropagation();
           togglePaymentStatus(task.id);
         });
@@ -2073,13 +2046,13 @@
         const editBtn = document.createElement('button');
         editBtn.className = 'btn-action-icon';
         editBtn.title = '수정';
-        editBtn.innerHTML = '&#9998;';
+        editBtn.innerHTML = '✎';
         editBtn.addEventListener('click', () => startEditTask(task));
 
         const delBtn = document.createElement('button');
         delBtn.className = 'btn-action-icon delete';
         delBtn.title = '삭제';
-        delBtn.innerHTML = '&#128465;';
+        delBtn.innerHTML = '🗑';
         delBtn.addEventListener('click', () => deleteTask(task.id));
 
         actions.appendChild(editBtn);
@@ -2118,9 +2091,7 @@
       const key = formatDateKey(selectedDate);
       if (!tasksData[key]) return;
       tasksData[key] = tasksData[key].filter(t => t.id !== taskId);
-      if (tasksData[key].length === 0) {
-        delete tasksData[key];
-      }
+      if (tasksData[key].length === 0) delete tasksData[key];
       saveData();
     }
 
@@ -2155,7 +2126,7 @@
     }
 
     // 일일 폼 제출
-    document.getElementById('taskForm').addEventListener('submit', (e) => {
+    document.getElementById('taskForm').addEventListener('submit', e => {
       e.preventDefault();
       const title = document.getElementById('taskTitle').value.trim();
       const unitPrice = parseNumber(document.getElementById('taskUnitPrice').value);
@@ -2224,14 +2195,12 @@
 
     document.getElementById('openRoutineModalBtn').addEventListener('click', openRoutineModal);
     document.getElementById('closeRoutineModalBtn').addEventListener('click', closeRoutineModal);
-    routineModal.addEventListener('click', (e) => {
+    routineModal.addEventListener('click', e => {
       if (e.target.id === 'routineModalOverlay') closeRoutineModal();
     });
 
     document.querySelectorAll('.weekday-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        chip.classList.toggle('active');
-      });
+      chip.addEventListener('click', () => chip.classList.toggle('active'));
     });
 
     document.querySelectorAll('.btn-period-preset').forEach(btn => {
@@ -2245,7 +2214,7 @@
       });
     });
 
-    document.getElementById('routineForm').addEventListener('submit', (e) => {
+    document.getElementById('routineForm').addEventListener('submit', e => {
       e.preventDefault();
       const title = document.getElementById('routineTitle').value.trim();
       const unitPrice = parseNumber(document.getElementById('routineUnitPrice').value);
@@ -2303,50 +2272,54 @@
       alert(`지정한 기간 동안 총 ${createdCount}건의 루틴 업무가 등록되었습니다.`);
     });
 
-    // Client ID 모달 제어
-    const clientIdModal = document.getElementById('clientIdModalOverlay');
-    document.getElementById('openClientIdModalBtn').addEventListener('click', () => {
-      document.getElementById('inputGoogleClientId').value = localStorage.getItem(GOOGLE_CLIENT_ID_KEY) || '';
-      clientIdModal.classList.add('active');
+    // Firebase Config 설정 모달 제어
+    const configModal = document.getElementById('configModalOverlay');
+    document.getElementById('openConfigModalBtn').addEventListener('click', () => {
+      const stored = localStorage.getItem(FIREBASE_CONFIG_KEY);
+      document.getElementById('firebaseConfigInput').value = stored ? JSON.stringify(JSON.parse(stored), null, 2) : '';
+      configModal.classList.add('active');
     });
 
-    document.getElementById('closeClientIdModalBtn').addEventListener('click', () => {
-      clientIdModal.classList.remove('active');
+    document.getElementById('closeConfigModalBtn').addEventListener('click', () => configModal.classList.remove('active'));
+    configModal.addEventListener('click', e => {
+      if (e.target.id === 'configModalOverlay') configModal.classList.remove('active');
     });
 
-    clientIdModal.addEventListener('click', (e) => {
-      if (e.target.id === 'clientIdModalOverlay') clientIdModal.classList.remove('active');
-    });
-
-    document.getElementById('btnSaveClientId').addEventListener('click', () => {
-      const val = document.getElementById('inputGoogleClientId').value.trim();
-      if (val) {
-        localStorage.setItem(GOOGLE_CLIENT_ID_KEY, val);
-        alert('Google Client ID가 저장되었습니다. 페이지가 새로고침되어 구글 로그인이 초기화됩니다.');
-      } else {
-        localStorage.removeItem(GOOGLE_CLIENT_ID_KEY);
-        alert('Google Client ID가 초기화되었습니다.');
+    document.getElementById('btnSaveFirebaseConfig').addEventListener('click', () => {
+      const raw = document.getElementById('firebaseConfigInput').value.trim();
+      if (!raw) {
+        localStorage.removeItem(FIREBASE_CONFIG_KEY);
+        alert('설정이 초기화되었습니다.');
+        location.reload();
+        return;
       }
-      clientIdModal.classList.remove('active');
-      location.reload();
+
+      try {
+        let parsed = null;
+        if (raw.includes('{')) {
+          const jsonStr = raw.substring(raw.indexOf('{'), raw.lastIndexOf('}') + 1)
+            .replace(/([a-zA-Z0-9_]+)\s*:/g, '"$1":')
+            .replace(/'/g, '"');
+          parsed = JSON.parse(jsonStr);
+        } else {
+          parsed = JSON.parse(raw);
+        }
+
+        if (parsed.apiKey && parsed.projectId) {
+          localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify(parsed));
+          alert('Firebase 연동 정보가 저장되었습니다. 페이지를 새로고침하여 클라우드 연결을 시작합니다.');
+          location.reload();
+        } else {
+          alert('올바른 apiKey와 projectId가 포함된 Firebase Config 객체를 입력해주세요.');
+        }
+      } catch (err) {
+        alert('입력된 형식이 올바르지 않습니다. Firebase 콘솔의 코드를 그대로 복사해 붙여넣어주세요.');
+      }
     });
 
-    // 간편 테스트 구글 로그인 이벤트
-    document.getElementById('btnDemoAuth').addEventListener('click', () => {
-      const demoAccounts = [
-        { name: '김프리 (디자이너)', email: 'freelancer.kim@gmail.com', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80' },
-        { name: '이코드 (개발자)', email: 'coder.lee@gmail.com', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80' }
-      ];
-      const selected = demoAccounts[Math.floor(Math.random() * demoAccounts.length)];
-      loginUser({
-        email: selected.email,
-        name: selected.name,
-        picture: selected.avatar,
-        sub: 'demo_' + btoa(selected.email)
-      });
-    });
-
-    document.getElementById('btnLogout').addEventListener('click', logoutUser);
+    // 인증 이벤트 연결
+    document.getElementById('btnGoogleLogin').addEventListener('click', handleGoogleLogin);
+    document.getElementById('btnLogout').addEventListener('click', handleLogout);
 
     // 캘린더 네비게이션
     document.getElementById('prevMonthBtn').addEventListener('click', () => {
@@ -2366,11 +2339,8 @@
       renderCalendar();
     });
 
-    // 프리셋 및 날짜 범위 인풋 이벤트
     document.querySelectorAll('.btn-preset').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        applyPreset(e.target.dataset.preset);
-      });
+      btn.addEventListener('click', e => applyPreset(e.target.dataset.preset));
     });
 
     const startInput = document.getElementById('rangeStartDate');
@@ -2398,45 +2368,24 @@
     startInput.addEventListener('change', handleDateRangeChange);
     endInput.addEventListener('change', handleDateRangeChange);
 
-    // 드로어 닫기
     document.getElementById('drawerCloseBtn').addEventListener('click', closeDrawer);
-    document.getElementById('drawerOverlay').addEventListener('click', (e) => {
+    document.getElementById('drawerOverlay').addEventListener('click', e => {
       if (e.target.id === 'drawerOverlay') closeDrawer();
     });
 
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        if (routineModal.classList.contains('active')) {
-          closeRoutineModal();
-        } else if (clientIdModal.classList.contains('active')) {
-          clientIdModal.classList.remove('active');
-        } else if (isDrawerOpen()) {
-          closeDrawer();
-        }
+        if (routineModal.classList.contains('active')) closeRoutineModal();
+        else if (configModal.classList.contains('active')) configModal.classList.remove('active');
+        else if (isDrawerOpen()) closeDrawer();
       }
     });
 
-    // 초기 실행
+    // 초기화
     window.addEventListener('DOMContentLoaded', () => {
-      // 저장된 로그인 세션 확인
-      const savedUser = localStorage.getItem(AUTH_USER_KEY);
-      if (savedUser) {
-        try {
-          currentUser = JSON.parse(savedUser);
-        } catch (e) {
-          currentUser = null;
-        }
-      }
-      updateAuthUI();
-      loadData();
       applyPreset('4weeks');
-      updateDashboardStats();
+      initFirebase();
       renderCalendar();
-    });
-
-    // Google SDK 로드 완료 대기 후 초기화
-    window.addEventListener('load', () => {
-      initGoogleGIS();
     });
   </script>
 </body>
