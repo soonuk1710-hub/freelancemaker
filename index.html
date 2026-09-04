@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>프리랜서메이커 - 클라우드 동기화 플래너</title>
+  <title>프리랜서메이커 - 스마트 업무·수입 플래너</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,8 +22,8 @@
       --text-muted: #64748b;
       --text-light: #94a3b8;
       --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-light: #eff6ff;
+      --primary-hover: color-mix(in srgb, var(--primary) 82%, black);
+      --primary-light: color-mix(in srgb, var(--primary) 12%, white);
       --emerald: #059669;
       --emerald-light: #ecfdf5;
       --emerald-dark: #065f46;
@@ -40,6 +40,25 @@
       --shadow-lg: 0 14px 30px -4px rgba(0, 0, 0, 0.15);
     }
 
+    [data-theme="dark"] {
+      --bg-main: #090d16;
+      --bg-card: #151d2e;
+      --border-subtle: #243048;
+      --border-strong: #384869;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+      --primary-light: color-mix(in srgb, var(--primary) 25%, transparent);
+      --emerald-light: rgba(5, 150, 105, 0.2);
+      --emerald-dark: #34d399;
+      --amber-light: rgba(217, 119, 6, 0.2);
+      --amber-dark: #fbbf24;
+      --danger-light: rgba(239, 68, 68, 0.2);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 14px 30px rgba(0, 0, 0, 0.55);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -53,6 +72,7 @@
       line-height: 1.5;
       padding: 24px;
       min-height: 100vh;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     .container {
@@ -85,7 +105,7 @@
     .brand-icon {
       width: 42px;
       height: 42px;
-      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
@@ -93,7 +113,8 @@
       color: #fff;
       font-weight: 800;
       font-size: 22px;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s ease;
     }
 
     .brand-text h1 {
@@ -114,6 +135,70 @@
       flex-wrap: wrap;
     }
 
+    .theme-controller {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-main);
+      padding: 5px 10px;
+      border-radius: 30px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .color-picker-btn {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #f43f5e, #f59e0b, #10b981, #06b6d4, #6366f1, #d946ef, #f43f5e);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      transition: transform 0.15s ease;
+      overflow: hidden;
+      border: 2px solid #fff;
+    }
+
+    [data-theme="dark"] .color-picker-btn {
+      border-color: #384869;
+    }
+
+    .color-picker-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .color-picker-btn input[type="color"] {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 45px;
+      height: 45px;
+      opacity: 0;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+    }
+
+    .btn-dark-toggle {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      border-radius: 50%;
+      color: var(--text-main);
+      transition: transform 0.15s ease;
+    }
+
+    .btn-dark-toggle:hover {
+      transform: scale(1.18);
+    }
+
     .auth-section {
       display: flex;
       align-items: center;
@@ -124,7 +209,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: #fff;
+      background: var(--bg-card);
       color: var(--text-main);
       border: 1px solid var(--border-strong);
       padding: 8px 14px;
@@ -137,7 +222,6 @@
     }
 
     .btn-google-login:hover {
-      background: #f8fafc;
       border-color: var(--primary);
     }
 
@@ -188,7 +272,7 @@
     }
 
     .btn-logout {
-      background: #fff;
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
       font-size: 12px;
@@ -205,22 +289,40 @@
       border-color: #fecaca;
     }
 
-    .btn-routine-open {
+    .btn-action-tool {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #fff;
-      color: var(--primary);
-      border: 1.5px solid var(--primary);
+      background: var(--bg-card);
       font-size: 13px;
       font-weight: 700;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all 0.15s ease;
+      border: 1.5px solid var(--border-strong);
+      color: var(--text-main);
     }
 
-    .btn-routine-open:hover {
+    .btn-action-tool:hover {
+      background: var(--bg-main);
+    }
+
+    .btn-action-tool.amber {
+      border-color: var(--amber);
+      color: var(--amber-dark);
+      background: var(--amber-light);
+    }
+
+    .btn-action-tool.emerald {
+      border-color: var(--emerald);
+      color: var(--emerald-dark);
+      background: var(--emerald-light);
+    }
+
+    .btn-action-tool.primary {
+      border-color: var(--primary);
+      color: var(--primary);
       background: var(--primary-light);
     }
 
@@ -282,7 +384,7 @@
       font-weight: 600;
       margin-top: 4px;
       padding-top: 6px;
-      border-top: 1px solid #f1f5f9;
+      border-top: 1px solid var(--border-subtle);
     }
 
     .split-item {
@@ -312,7 +414,7 @@
     }
 
     .btn-preset:hover {
-      background: #fff;
+      background: var(--bg-card);
       color: var(--text-main);
     }
 
@@ -336,10 +438,11 @@
       padding: 4px 8px;
       font-size: 12px;
       color: var(--text-main);
-      background: #fff;
+      background: var(--bg-card);
       outline: none;
       transition: border-color 0.15s ease;
       cursor: pointer;
+      color-scheme: light dark;
     }
 
     .date-range-input:focus {
@@ -375,7 +478,7 @@
     .chart-bar-bg {
       width: 100%;
       height: 38px;
-      background: #f1f5f9;
+      background: var(--bg-main);
       border-radius: 4px;
       display: flex;
       align-items: flex-end;
@@ -385,14 +488,15 @@
 
     .chart-bar-fill {
       width: 100%;
-      background: #93c5fd;
+      background: var(--primary);
+      opacity: 0.65;
       border-radius: 4px 4px 0 0;
-      transition: height 0.35s ease, background-color 0.2s;
+      transition: height 0.35s ease, opacity 0.2s;
       min-height: 4px;
     }
 
     .chart-bar-wrap:hover .chart-bar-fill {
-      background: var(--primary);
+      opacity: 1;
     }
 
     .chart-label {
@@ -416,7 +520,7 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--border-subtle);
-      background: #fff;
+      background: var(--bg-card);
     }
 
     .calendar-nav {
@@ -455,14 +559,14 @@
     }
 
     .btn-icon:hover {
-      background: #fff;
+      background: var(--bg-card);
       color: var(--text-main);
       box-shadow: var(--shadow-sm);
     }
 
     .btn-today {
       border: 1px solid var(--border-subtle);
-      background: #fff;
+      background: var(--bg-card);
       color: var(--text-main);
       font-size: 13px;
       font-weight: 600;
@@ -480,7 +584,7 @@
     .calendar-weekdays {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      background: #fafbfc;
+      background: var(--bg-main);
       border-bottom: 1px solid var(--border-subtle);
       text-align: center;
     }
@@ -503,7 +607,7 @@
     }
 
     .day-cell {
-      background: #fff;
+      background: var(--bg-card);
       min-height: 114px;
       padding: 10px 8px;
       display: flex;
@@ -515,16 +619,16 @@
     }
 
     .day-cell:hover {
-      background: #f8fafc;
+      background: var(--bg-main);
     }
 
     .day-cell.other-month {
-      background: #fafafa;
-      opacity: 0.45;
+      opacity: 0.38;
+      background: var(--bg-main);
     }
 
     .day-cell.selected {
-      background: #f0f7ff !important;
+      background: var(--primary-light) !important;
       outline: 2px solid var(--primary);
       outline-offset: -2px;
       z-index: 2;
@@ -614,7 +718,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(15, 23, 42, 0.4);
+      background: rgba(15, 23, 42, 0.45);
       backdrop-filter: blur(2px);
       z-index: 100;
       opacity: 0;
@@ -634,7 +738,7 @@
       width: 480px;
       max-width: 100vw;
       height: 100vh;
-      background: #fff;
+      background: var(--bg-card);
       z-index: 101;
       box-shadow: var(--shadow-lg);
       transform: translateX(100%);
@@ -653,7 +757,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      background: #fafbfc;
+      background: var(--bg-main);
     }
 
     .drawer-title-group h2 {
@@ -746,7 +850,7 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
       font-size: 14px;
-      background: #fff;
+      background: var(--bg-card);
       color: var(--text-main);
       outline: none;
       transition: border 0.15s ease;
@@ -764,18 +868,47 @@
     }
 
     .calc-result-input {
-      background: #f8fafc;
+      background: var(--bg-main);
       font-weight: 700;
       color: var(--emerald-dark);
+    }
+
+    .tax-deduction-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 0 6px 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .tax-deduction-wrap label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .tax-deduction-wrap input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .net-income-preview {
+      font-weight: 700;
+      color: var(--primary);
     }
 
     .payment-toggle-wrap {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 12px 0 6px 0;
+      margin: 6px 0 6px 0;
       padding: 8px 12px;
-      background: #fff;
+      background: var(--bg-card);
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
     }
@@ -820,7 +953,7 @@
 
     .btn-cancel {
       display: none;
-      background: #fff;
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
       padding: 10px 14px;
@@ -851,7 +984,7 @@
     }
 
     .task-item {
-      background: #fff;
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 14px;
@@ -867,8 +1000,8 @@
     }
 
     .task-item.completed {
-      background: #fbfcfd;
-      opacity: 0.65;
+      background: var(--bg-main);
+      opacity: 0.6;
     }
 
     .task-checkbox-wrap {
@@ -915,6 +1048,15 @@
       border-radius: 4px;
     }
 
+    .tax-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
     .task-item-calc {
       font-size: 12px;
       color: var(--text-light);
@@ -936,10 +1078,22 @@
       gap: 8px;
     }
 
+    .income-display-box {
+      display: flex;
+      flex-direction: column;
+    }
+
     .task-item-income {
       font-size: 14px;
       font-weight: 800;
       color: var(--emerald-dark);
+      line-height: 1.2;
+    }
+
+    .task-item-net {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary);
     }
 
     .btn-payment-badge {
@@ -984,7 +1138,7 @@
 
     .btn-action-icon:hover {
       color: var(--text-main);
-      background: var(--bg-main);
+      background: var(--border-subtle);
     }
 
     .btn-action-icon.delete:hover {
@@ -1016,9 +1170,9 @@
     }
 
     .modal-content {
-      background: #fff;
+      background: var(--bg-card);
       width: 100%;
-      max-width: 520px;
+      max-width: 580px;
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
       overflow: hidden;
@@ -1032,12 +1186,124 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #fafbfc;
+      background: var(--bg-main);
     }
 
     .modal-header h3 {
       font-size: 18px;
       font-weight: 700;
+    }
+
+    .routine-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-main);
+    }
+
+    .routine-tab-btn {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .routine-tab-btn.active {
+      color: var(--primary);
+      background: var(--bg-card);
+      border-bottom-color: var(--primary);
+    }
+
+    .routine-tab-pane {
+      display: none;
+      padding: 24px;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .routine-tab-pane.active {
+      display: flex;
+    }
+
+    .routine-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .routine-card-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .routine-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .routine-card-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .routine-card-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-edit-routine-group {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-edit-routine-group:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-del-routine-group {
+      background: var(--bg-card);
+      border: 1px solid #fecaca;
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-del-routine-group:hover {
+      background: var(--danger-light);
     }
 
     .modal-body {
@@ -1063,7 +1329,7 @@
       font-weight: 600;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
-      background: #fff;
+      background: var(--bg-card);
       cursor: pointer;
       user-select: none;
       transition: all 0.15s ease;
@@ -1083,7 +1349,7 @@
 
     .btn-period-preset {
       border: 1px solid var(--border-subtle);
-      background: #fff;
+      background: var(--bg-card);
       font-size: 12px;
       font-weight: 600;
       padding: 4px 10px;
@@ -1097,13 +1363,26 @@
       color: var(--text-main);
     }
 
+    .unpaid-summary-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--amber-light);
+      border: 1px solid var(--amber);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: var(--amber-dark);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
     @media (max-width: 960px) {
       header {
         flex-direction: column;
         align-items: stretch;
       }
       .header-actions {
-        justify-content: space-between;
+        justify-content: flex-start;
       }
       .dashboard-grid {
         grid-template-columns: 1fr;
@@ -1142,6 +1421,13 @@
       </div>
 
       <div class="header-actions">
+        <div class="theme-controller">
+          <label class="color-picker-btn" title="테마 색상 변경">
+            <input type="color" id="customColorPicker" value="#2563eb" aria-label="테마 색상 선택">
+          </label>
+          <button type="button" class="btn-dark-toggle" id="btnDarkModeToggle" title="다크 모드 토글">🌙</button>
+        </div>
+
         <div class="auth-section">
           <button class="btn-google-login" id="btnGoogleLogin">
             <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1166,8 +1452,16 @@
           </div>
         </div>
 
-        <button class="btn-routine-open" id="openRoutineModalBtn">
-          <span>⟳</span> 루틴 일괄 등록
+        <button class="btn-action-tool amber" id="openUnpaidModalBtn">
+          <span>⚠</span> 미입금 모아보기
+        </button>
+
+        <button class="btn-action-tool emerald" id="btnExportCSV">
+          <span>📥</span> 엑셀(CSV) 다운로드
+        </button>
+
+        <button class="btn-action-tool primary" id="openRoutineModalBtn">
+          <span>⟳</span> 루틴 관리
         </button>
       </div>
     </header>
@@ -1292,6 +1586,14 @@
               </div>
             </div>
 
+            <div class="tax-deduction-wrap">
+              <label>
+                <input type="checkbox" id="taskTaxDeduction">
+                <span>3.3% 사업소득세(원천징수) 공제 적용</span>
+              </label>
+              <span class="net-income-preview" id="taskNetIncomeDisplay"></span>
+            </div>
+
             <div class="payment-toggle-wrap">
               <input type="checkbox" id="taskIsPaid">
               <label for="taskIsPaid">입금 완료 처리 (체크 해제 시 '미입금')</label>
@@ -1320,10 +1622,21 @@
   <div class="modal-overlay" id="routineModalOverlay">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>반복 루틴 업무 일괄 등록</h3>
+        <h3>루틴 업무 관리</h3>
         <button class="drawer-close-btn" id="closeRoutineModalBtn">×</button>
       </div>
-      <form id="routineForm" class="modal-body">
+
+      <div class="routine-tabs">
+        <button type="button" class="routine-tab-btn active" id="tabBtnRoutineList">등록된 루틴 목록</button>
+        <button type="button" class="routine-tab-btn" id="tabBtnRoutineCreate">+ 새 루틴 등록</button>
+      </div>
+
+      <div class="routine-tab-pane active" id="paneRoutineList">
+        <div class="task-list" id="routineGroupList"></div>
+      </div>
+
+      <form id="routineForm" class="routine-tab-pane">
+        <input type="hidden" id="editingRoutineGroupId" value="">
         <div class="form-group">
           <label for="routineTitle">업무명</label>
           <input type="text" id="routineTitle" class="form-control" placeholder="예: 주간 정기 블로그 포스팅" required>
@@ -1344,36 +1657,45 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label>반복 요일 (다중 선택)</label>
-          <div class="weekday-selector">
-            <div class="weekday-chip active" data-day="1">월</div>
-            <div class="weekday-chip" data-day="2">화</div>
-            <div class="weekday-chip" data-day="3">수</div>
-            <div class="weekday-chip" data-day="4">목</div>
-            <div class="weekday-chip" data-day="5">금</div>
-            <div class="weekday-chip" data-day="6">토</div>
-            <div class="weekday-chip" data-day="0">일</div>
-          </div>
+        <div class="tax-deduction-wrap">
+          <label>
+            <input type="checkbox" id="routineTaxDeduction">
+            <span>3.3% 원천징수 적용</span>
+          </label>
         </div>
 
-        <div class="form-group">
-          <label>반복 기간</label>
-          <div class="period-preset-group">
-            <button type="button" class="btn-period-preset" data-months="1">1개월</button>
-            <button type="button" class="btn-period-preset" data-months="3">3개월 (기본)</button>
-            <button type="button" class="btn-period-preset" data-months="6">6개월</button>
+        <div id="routineRepeatConfigSection">
+          <div class="form-group">
+            <label>반복 요일 (다중 선택)</label>
+            <div class="weekday-selector">
+              <div class="weekday-chip active" data-day="1">월</div>
+              <div class="weekday-chip" data-day="2">화</div>
+              <div class="weekday-chip" data-day="3">수</div>
+              <div class="weekday-chip" data-day="4">목</div>
+              <div class="weekday-chip" data-day="5">금</div>
+              <div class="weekday-chip" data-day="6">토</div>
+              <div class="weekday-chip" data-day="0">일</div>
+            </div>
           </div>
-          <div class="range-inputs-row">
-            <input type="date" id="routineStartDate" class="date-range-input" style="flex:1" required>
-            <span class="range-sep">~</span>
-            <input type="date" id="routineEndDate" class="date-range-input" style="flex:1" required>
-          </div>
-        </div>
 
-        <div class="payment-toggle-wrap">
-          <input type="checkbox" id="routineIsPaid">
-          <label for="routineIsPaid">생성될 업무를 '입금 완료'로 등록</label>
+          <div class="form-group">
+            <label>반복 기간</label>
+            <div class="period-preset-group">
+              <button type="button" class="btn-period-preset" data-months="1">1개월</button>
+              <button type="button" class="btn-period-preset" data-months="3">3개월 (기본)</button>
+              <button type="button" class="btn-period-preset" data-months="6">6개월</button>
+            </div>
+            <div class="range-inputs-row">
+              <input type="date" id="routineStartDate" class="date-range-input" style="flex:1">
+              <span class="range-sep">~</span>
+              <input type="date" id="routineEndDate" class="date-range-input" style="flex:1">
+            </div>
+          </div>
+
+          <div class="payment-toggle-wrap">
+            <input type="checkbox" id="routineIsPaid">
+            <label for="routineIsPaid">생성될 업무를 '입금 완료'로 등록</label>
+          </div>
         </div>
 
         <div class="form-group">
@@ -1381,10 +1703,31 @@
           <input type="text" id="routineMemo" class="form-control" placeholder="루틴 업무 메모">
         </div>
 
-        <button type="submit" class="btn-submit" style="padding: 12px; margin-top: 8px;">
-          지정한 기간에 일괄 생성
-        </button>
+        <div class="form-actions" style="margin-top: 8px;">
+          <button type="submit" class="btn-submit" id="btnSubmitRoutine" style="padding: 12px;">
+            지정한 기간에 일괄 생성
+          </button>
+          <button type="button" class="btn-cancel" id="btnCancelEditRoutine" style="padding: 12px 16px;">
+            수정 취소
+          </button>
+        </div>
       </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="unpaidModalOverlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>미입금 대금 모아보기</h3>
+        <button class="drawer-close-btn" id="closeUnpaidModalBtn">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="unpaid-summary-banner">
+          <span>총 미수금</span>
+          <span id="unpaidModalTotalSum">₩0 (0건)</span>
+        </div>
+        <div class="task-list" id="unpaidTaskList"></div>
+      </div>
     </div>
   </div>
 
@@ -1414,6 +1757,57 @@
     let customStartDate = new Date();
     let customEndDate = new Date();
     let currentPreset = '4weeks';
+
+    function initTheme() {
+      const savedHex = localStorage.getItem('freelancemaker_color_theme') || '#2563eb';
+      const isDarkMode = localStorage.getItem('freelancemaker_dark_mode') === 'dark';
+      
+      applyDarkMode(isDarkMode);
+      applyThemeColor(savedHex);
+    }
+
+    function applyThemeColor(hex) {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      
+      document.documentElement.style.setProperty('--primary', hex);
+      document.documentElement.style.setProperty('--primary-hover', `color-mix(in srgb, ${hex} 82%, black)`);
+      document.documentElement.style.setProperty('--primary-light', isDark 
+        ? `color-mix(in srgb, ${hex} 25%, transparent)` 
+        : `color-mix(in srgb, ${hex} 12%, white)`);
+
+      const picker = document.getElementById('customColorPicker');
+      if (picker) picker.value = hex;
+
+      localStorage.setItem('freelancemaker_color_theme', hex);
+    }
+
+    function applyDarkMode(isDark) {
+      const root = document.documentElement;
+      const toggleBtn = document.getElementById('btnDarkModeToggle');
+
+      if (isDark) {
+        root.setAttribute('data-theme', 'dark');
+        toggleBtn.textContent = '☀️';
+        toggleBtn.title = '라이트 모드로 전환';
+      } else {
+        root.removeAttribute('data-theme');
+        toggleBtn.textContent = '🌙';
+        toggleBtn.title = '다크 모드로 전환';
+      }
+
+      const currentHex = localStorage.getItem('freelancemaker_color_theme') || '#2563eb';
+      applyThemeColor(currentHex);
+      localStorage.setItem('freelancemaker_dark_mode', isDark ? 'dark' : 'light');
+    }
+
+    const customPicker = document.getElementById('customColorPicker');
+    customPicker.addEventListener('input', e => applyThemeColor(e.target.value));
+    customPicker.addEventListener('change', e => applyThemeColor(e.target.value));
+
+    document.getElementById('btnDarkModeToggle').addEventListener('click', () => {
+      const isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      applyDarkMode(!isCurrentlyDark);
+    });
 
     function initFirebase() {
       if (DEFAULT_FIREBASE_CONFIG && !firebase.apps.length) {
@@ -1469,6 +1863,8 @@
         updateDashboardStats();
         renderCalendar();
         if (isDrawerOpen()) renderDrawerTasks();
+        if (isUnpaidModalOpen()) renderUnpaidModalList();
+        if (isRoutineModalOpen()) renderRoutineList();
       }, err => {
         console.error('Firestore 동기화 오류:', err);
       });
@@ -1479,6 +1875,8 @@
       updateDashboardStats();
       renderCalendar();
       if (isDrawerOpen()) renderDrawerTasks();
+      if (isUnpaidModalOpen()) renderUnpaidModalList();
+      if (isRoutineModalOpen()) renderRoutineList();
 
       if (currentUser && fbDb) {
         saveDataToCloud();
@@ -1834,7 +2232,7 @@
       return cell;
     }
 
-    function setupCalculator(unitPriceInputId, countInputId, totalAmountInputId) {
+    function setupCalculator(unitPriceInputId, countInputId, totalAmountInputId, isRoutine) {
       const unitInput = document.getElementById(unitPriceInputId);
       const countInput = document.getElementById(countInputId);
       const totalInput = document.getElementById(totalAmountInputId);
@@ -1844,6 +2242,10 @@
         const count = Math.max(1, parseInt(countInput.value, 10) || 1);
         const total = unit * count;
         totalInput.value = total > 0 ? total.toLocaleString('ko-KR') : '';
+
+        if (!isRoutine) {
+          updateNetIncomeDisplay();
+        }
       }
 
       unitInput.addEventListener('input', e => {
@@ -1857,11 +2259,27 @@
       totalInput.addEventListener('input', e => {
         const raw = parseNumber(e.target.value);
         e.target.value = raw ? raw.toLocaleString('ko-KR') : '';
+        if (!isRoutine) updateNetIncomeDisplay();
       });
     }
 
-    setupCalculator('taskUnitPrice', 'taskCount', 'taskAmount');
-    setupCalculator('routineUnitPrice', 'routineCount', 'routineAmount');
+    function updateNetIncomeDisplay() {
+      const total = parseNumber(document.getElementById('taskAmount').value);
+      const isTax = document.getElementById('taskTaxDeduction').checked;
+      const display = document.getElementById('taskNetIncomeDisplay');
+
+      if (isTax && total > 0) {
+        const net = Math.round(total * 0.967);
+        display.textContent = `실수령 ₩${net.toLocaleString('ko-KR')} (공제 ₩${Math.round(total * 0.033).toLocaleString('ko-KR')})`;
+      } else {
+        display.textContent = '';
+      }
+    }
+
+    document.getElementById('taskTaxDeduction').addEventListener('change', updateNetIncomeDisplay);
+
+    setupCalculator('taskUnitPrice', 'taskCount', 'taskAmount', false);
+    setupCalculator('routineUnitPrice', 'routineCount', 'routineAmount', true);
 
     function isDrawerOpen() {
       return document.getElementById('drawerOverlay').classList.contains('active');
@@ -1933,6 +2351,14 @@
           rBadge.textContent = '루틴';
           headerRow.appendChild(rBadge);
         }
+
+        if (task.taxDeduction) {
+          const tBadge = document.createElement('span');
+          tBadge.className = 'tax-badge';
+          tBadge.textContent = '3.3%적용';
+          headerRow.appendChild(tBadge);
+        }
+
         info.appendChild(headerRow);
 
         if (task.unitPrice > 0 || task.count > 1) {
@@ -1952,10 +2378,22 @@
         const bottomRow = document.createElement('div');
         bottomRow.className = 'task-bottom-row';
 
+        const incomeBox = document.createElement('div');
+        incomeBox.className = 'income-display-box';
+
         const amount = document.createElement('div');
         amount.className = 'task-item-income';
         amount.textContent = `+${formatKRW(task.amount)}`;
-        bottomRow.appendChild(amount);
+        incomeBox.appendChild(amount);
+
+        if (task.taxDeduction) {
+          const net = document.createElement('div');
+          net.className = 'task-item-net';
+          net.textContent = `(세후 실수령 ₩${Math.round(task.amount * 0.967).toLocaleString('ko-KR')})`;
+          incomeBox.appendChild(net);
+        }
+
+        bottomRow.appendChild(incomeBox);
 
         const paidBtn = document.createElement('button');
         paidBtn.type = 'button';
@@ -1964,7 +2402,7 @@
         paidBtn.title = '클릭하여 입금 상태 전환';
         paidBtn.addEventListener('click', e => {
           e.stopPropagation();
-          togglePaymentStatus(task.id);
+          togglePaymentStatus(task.id, selectedDate);
         });
         bottomRow.appendChild(paidBtn);
 
@@ -2006,8 +2444,8 @@
       }
     }
 
-    function togglePaymentStatus(taskId) {
-      const key = formatDateKey(selectedDate);
+    function togglePaymentStatus(taskId, targetDate) {
+      const key = formatDateKey(targetDate || selectedDate);
       if (!tasksData[key]) return;
       const task = tasksData[key].find(t => t.id === taskId);
       if (task) {
@@ -2035,9 +2473,11 @@
       document.getElementById('taskUnitPrice').value = unit ? Number(unit).toLocaleString('ko-KR') : '';
       document.getElementById('taskCount').value = count;
       document.getElementById('taskAmount').value = task.amount ? Number(task.amount).toLocaleString('ko-KR') : '';
+      document.getElementById('taskTaxDeduction').checked = Boolean(task.taxDeduction);
       document.getElementById('taskIsPaid').checked = Boolean(task.isPaid);
       document.getElementById('taskMemo').value = task.memo || '';
       
+      updateNetIncomeDisplay();
       document.getElementById('btnSubmit').textContent = '수정 완료';
       document.getElementById('btnCancelEdit').style.display = 'block';
     }
@@ -2049,6 +2489,8 @@
       document.getElementById('taskUnitPrice').value = '';
       document.getElementById('taskCount').value = '1';
       document.getElementById('taskAmount').value = '';
+      document.getElementById('taskTaxDeduction').checked = false;
+      document.getElementById('taskNetIncomeDisplay').textContent = '';
       document.getElementById('taskIsPaid').checked = false;
       document.getElementById('taskMemo').value = '';
       document.getElementById('btnSubmit').textContent = '업무 추가';
@@ -2063,6 +2505,7 @@
       let amount = parseNumber(document.getElementById('taskAmount').value);
       if (!amount && unitPrice) amount = unitPrice * count;
 
+      const taxDeduction = document.getElementById('taskTaxDeduction').checked;
       const isPaid = document.getElementById('taskIsPaid').checked;
       const memo = document.getElementById('taskMemo').value.trim();
       const editingId = document.getElementById('editingTaskId').value;
@@ -2078,6 +2521,7 @@
           target.unitPrice = unitPrice;
           target.count = count;
           target.amount = amount;
+          target.taxDeduction = taxDeduction;
           target.isPaid = isPaid;
           target.memo = memo;
         }
@@ -2088,6 +2532,7 @@
           unitPrice,
           count,
           amount,
+          taxDeduction,
           isPaid,
           memo,
           done: false,
@@ -2103,22 +2548,191 @@
 
     const routineModal = document.getElementById('routineModalOverlay');
 
+    function isRoutineModalOpen() {
+      return routineModal.classList.contains('active');
+    }
+
     function openRoutineModal() {
       const today = new Date();
       document.getElementById('routineStartDate').value = formatDateKey(today);
       const threeMonthsLater = new Date(today);
       threeMonthsLater.setMonth(today.getMonth() + 3);
       document.getElementById('routineEndDate').value = formatDateKey(threeMonthsLater);
+
+      switchRoutineTab('list');
+      renderRoutineList();
       routineModal.classList.add('active');
     }
 
     function closeRoutineModal() {
       routineModal.classList.remove('active');
+      resetRoutineForm();
+    }
+
+    function switchRoutineTab(tab) {
+      const isList = tab === 'list';
+      document.getElementById('tabBtnRoutineList').classList.toggle('active', isList);
+      document.getElementById('tabBtnRoutineCreate').classList.toggle('active', !isList);
+      document.getElementById('paneRoutineList').classList.toggle('active', isList);
+      document.getElementById('routineForm').classList.toggle('active', !isList);
+
+      if (isList) {
+        resetRoutineForm();
+        renderRoutineList();
+      }
+    }
+
+    document.getElementById('tabBtnRoutineList').addEventListener('click', () => switchRoutineTab('list'));
+    document.getElementById('tabBtnRoutineCreate').addEventListener('click', () => {
+      resetRoutineForm();
+      switchRoutineTab('create');
+    });
+
+    function resetRoutineForm() {
+      document.getElementById('editingRoutineGroupId').value = '';
       document.getElementById('routineForm').reset();
       document.getElementById('routineCount').value = '1';
+      document.getElementById('tabBtnRoutineCreate').textContent = '+ 새 루틴 등록';
+      document.getElementById('routineRepeatConfigSection').style.display = 'block';
+      document.getElementById('btnSubmitRoutine').textContent = '지정한 기간에 일괄 생성';
+      document.getElementById('btnCancelEditRoutine').style.display = 'none';
+
       document.querySelectorAll('.weekday-chip').forEach((chip, idx) => {
         chip.classList.toggle('active', idx === 0);
       });
+    }
+
+    function renderRoutineList() {
+      const container = document.getElementById('routineGroupList');
+      container.innerHTML = '';
+
+      const routineGroups = {};
+
+      Object.keys(tasksData).forEach(dateKey => {
+        (tasksData[dateKey] || []).forEach(task => {
+          if (task.isRoutine) {
+            const groupKey = task.routineGroupId || `legacy_${task.title}_${task.amount}`;
+            if (!routineGroups[groupKey]) {
+              routineGroups[groupKey] = {
+                groupKey,
+                title: task.title,
+                amount: task.amount,
+                unitPrice: task.unitPrice,
+                count: task.count,
+                taxDeduction: task.taxDeduction,
+                memo: task.memo || '',
+                itemsCount: 0,
+                firstDate: dateKey,
+                lastDate: dateKey
+              };
+            }
+            routineGroups[groupKey].itemsCount++;
+            if (dateKey < routineGroups[groupKey].firstDate) routineGroups[groupKey].firstDate = dateKey;
+            if (dateKey > routineGroups[groupKey].lastDate) routineGroups[groupKey].lastDate = dateKey;
+          }
+        });
+      });
+
+      const groupArray = Object.values(routineGroups);
+
+      if (groupArray.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            등록된 루틴 업무가 없습니다.<br>
+            상단의 <strong>'+ 새 루틴 등록'</strong> 탭에서 반복 업무를 일괄 등록해보세요!
+          </div>
+        `;
+        return;
+      }
+
+      groupArray.forEach(group => {
+        const card = document.createElement('div');
+        card.className = 'routine-card';
+
+        const info = document.createElement('div');
+        info.className = 'routine-card-info';
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'routine-card-title';
+        titleDiv.innerHTML = `
+          <span>${group.title}</span>
+          <span class="routine-badge">총 ${group.itemsCount}건</span>
+          ${group.taxDeduction ? '<span class="tax-badge">3.3%적용</span>' : ''}
+        `;
+
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'routine-card-meta';
+        metaDiv.textContent = `1회: ${formatKRW(group.amount)} · 등록 기간: ${group.firstDate} ~ ${group.lastDate}`;
+
+        info.appendChild(titleDiv);
+        info.appendChild(metaDiv);
+
+        const actions = document.createElement('div');
+        actions.className = 'routine-card-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'btn-edit-routine-group';
+        editBtn.textContent = '수정';
+        editBtn.addEventListener('click', () => startEditRoutineGroup(group));
+
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'btn-del-routine-group';
+        delBtn.textContent = '전체 삭제';
+        delBtn.addEventListener('click', () => deleteRoutineGroup(group.groupKey, group.title, group.itemsCount));
+
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+
+        card.appendChild(info);
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
+    }
+
+    function startEditRoutineGroup(group) {
+      switchRoutineTab('create');
+      document.getElementById('tabBtnRoutineCreate').textContent = '✏️ 루틴 일괄 수정';
+      document.getElementById('editingRoutineGroupId').value = group.groupKey;
+      document.getElementById('routineTitle').value = group.title;
+
+      const unit = group.unitPrice !== undefined ? group.unitPrice : group.amount;
+      const count = group.count || 1;
+      document.getElementById('routineUnitPrice').value = unit ? Number(unit).toLocaleString('ko-KR') : '';
+      document.getElementById('routineCount').value = count;
+      document.getElementById('routineAmount').value = group.amount ? Number(group.amount).toLocaleString('ko-KR') : '';
+      document.getElementById('routineTaxDeduction').checked = Boolean(group.taxDeduction);
+      document.getElementById('routineMemo').value = group.memo || '';
+
+      document.getElementById('routineRepeatConfigSection').style.display = 'none';
+      document.getElementById('btnSubmitRoutine').textContent = `생성된 ${group.itemsCount}건 일괄 수정 완료`;
+      document.getElementById('btnCancelEditRoutine').style.display = 'block';
+    }
+
+    document.getElementById('btnCancelEditRoutine').addEventListener('click', () => {
+      switchRoutineTab('list');
+    });
+
+    function deleteRoutineGroup(groupKey, title, count) {
+      if (!confirm(`'${title}' 루틴으로 생성된 모든 일정(총 ${count}건)을 캘린더에서 전부 삭제하시겠습니까?`)) {
+        return;
+      }
+
+      Object.keys(tasksData).forEach(dateKey => {
+        tasksData[dateKey] = (tasksData[dateKey] || []).filter(task => {
+          if (!task.isRoutine) return true;
+          const currentGroupKey = task.routineGroupId || `legacy_${task.title}_${task.amount}`;
+          return currentGroupKey !== groupKey;
+        });
+
+        if (tasksData[dateKey].length === 0) {
+          delete tasksData[dateKey];
+        }
+      });
+
+      saveData();
+      renderRoutineList();
     }
 
     document.getElementById('openRoutineModalBtn').addEventListener('click', openRoutineModal);
@@ -2144,15 +2758,42 @@
 
     document.getElementById('routineForm').addEventListener('submit', e => {
       e.preventDefault();
+      const editingGroupId = document.getElementById('editingRoutineGroupId').value;
       const title = document.getElementById('routineTitle').value.trim();
       const unitPrice = parseNumber(document.getElementById('routineUnitPrice').value);
       const count = Math.max(1, parseInt(document.getElementById('routineCount').value, 10) || 1);
       let amount = parseNumber(document.getElementById('routineAmount').value);
       if (!amount && unitPrice) amount = unitPrice * count;
 
-      const isPaid = document.getElementById('routineIsPaid').checked;
+      const taxDeduction = document.getElementById('routineTaxDeduction').checked;
       const memo = document.getElementById('routineMemo').value.trim();
 
+      if (!title) return;
+
+      if (editingGroupId) {
+        let updatedCount = 0;
+        Object.keys(tasksData).forEach(dateKey => {
+          (tasksData[dateKey] || []).forEach(task => {
+            const currentGroupKey = task.routineGroupId || `legacy_${task.title}_${task.amount}`;
+            if (task.isRoutine && currentGroupKey === editingGroupId) {
+              task.title = title;
+              task.unitPrice = unitPrice;
+              task.count = count;
+              task.amount = amount;
+              task.taxDeduction = taxDeduction;
+              task.memo = memo;
+              updatedCount++;
+            }
+          });
+        });
+
+        saveData();
+        switchRoutineTab('list');
+        alert(`루틴 업무 총 ${updatedCount}건의 내용이 일괄 수정되었습니다.`);
+        return;
+      }
+
+      const isPaid = document.getElementById('routineIsPaid').checked;
       const startStr = document.getElementById('routineStartDate').value;
       const endStr = document.getElementById('routineEndDate').value;
       if (!startStr || !endStr) return;
@@ -2173,18 +2814,22 @@
         return;
       }
 
+      const routineGroupId = 'rg_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
       let createdCount = 0;
       let walk = new Date(startDate);
+
       while (walk <= endDate) {
         if (activeDays.includes(walk.getDay())) {
           const key = formatDateKey(walk);
           if (!tasksData[key]) tasksData[key] = [];
           tasksData[key].push({
             id: 'routine_' + Math.random().toString(36).substring(2, 9),
+            routineGroupId: routineGroupId,
             title,
             unitPrice,
             count,
             amount,
+            taxDeduction,
             isPaid,
             memo,
             done: false,
@@ -2196,9 +2841,160 @@
       }
 
       saveData();
-      closeRoutineModal();
+      switchRoutineTab('list');
       alert(`지정한 기간 동안 총 ${createdCount}건의 루틴 업무가 등록되었습니다.`);
     });
+
+    const unpaidModal = document.getElementById('unpaidModalOverlay');
+
+    function isUnpaidModalOpen() {
+      return unpaidModal.classList.contains('active');
+    }
+
+    function openUnpaidModal() {
+      unpaidModal.classList.add('active');
+      renderUnpaidModalList();
+    }
+
+    function closeUnpaidModal() {
+      unpaidModal.classList.remove('active');
+    }
+
+    function renderUnpaidModalList() {
+      const container = document.getElementById('unpaidTaskList');
+      container.innerHTML = '';
+
+      let unpaidList = [];
+      let totalUnpaid = 0;
+
+      Object.keys(tasksData).sort().forEach(dateKey => {
+        (tasksData[dateKey] || []).forEach(task => {
+          if (!task.isPaid) {
+            unpaidList.push({ ...task, dateKey });
+            totalUnpaid += Number(task.amount) || 0;
+          }
+        });
+      });
+
+      document.getElementById('unpaidModalTotalSum').textContent = `${formatKRW(totalUnpaid)} (${unpaidList.length}건)`;
+
+      if (unpaidList.length === 0) {
+        container.innerHTML = '<div class="empty-state">미입금된 외주 정산 건이 없습니다! 🎉</div>';
+        return;
+      }
+
+      unpaidList.forEach(task => {
+        const item = document.createElement('div');
+        item.className = 'task-item';
+
+        const info = document.createElement('div');
+        info.className = 'task-info';
+
+        const headerRow = document.createElement('div');
+        headerRow.className = 'task-header-row';
+
+        const dateBadge = document.createElement('span');
+        dateBadge.style.cssText = 'font-size:11px; font-weight:700; background:var(--bg-main); padding:2px 6px; border-radius:4px; border:1px solid var(--border-subtle);';
+        dateBadge.textContent = task.dateKey;
+        headerRow.appendChild(dateBadge);
+
+        const title = document.createElement('div');
+        title.className = 'task-item-title';
+        title.textContent = task.title;
+        headerRow.appendChild(title);
+
+        info.appendChild(headerRow);
+
+        if (task.memo) {
+          const memo = document.createElement('div');
+          memo.className = 'task-item-memo';
+          memo.textContent = task.memo;
+          info.appendChild(memo);
+        }
+
+        const bottomRow = document.createElement('div');
+        bottomRow.className = 'task-bottom-row';
+
+        const amt = document.createElement('div');
+        amt.className = 'task-item-income';
+        amt.textContent = formatKRW(task.amount);
+        bottomRow.appendChild(amt);
+
+        const payBtn = document.createElement('button');
+        payBtn.type = 'button';
+        payBtn.className = 'btn-payment-badge unpaid';
+        payBtn.innerHTML = '입금 완료로 변경';
+        payBtn.addEventListener('click', () => {
+          togglePaymentStatus(task.id, parseDateKey(task.dateKey));
+        });
+        bottomRow.appendChild(payBtn);
+
+        info.appendChild(bottomRow);
+        item.appendChild(info);
+        container.appendChild(item);
+      });
+    }
+
+    document.getElementById('openUnpaidModalBtn').addEventListener('click', openUnpaidModal);
+    document.getElementById('closeUnpaidModalBtn').addEventListener('click', closeUnpaidModal);
+    unpaidModal.addEventListener('click', e => {
+      if (e.target.id === 'unpaidModalOverlay') closeUnpaidModal();
+    });
+
+    function exportToCSV() {
+      const rows = [
+        ['날짜', '업무명', '단가(원)', '건수', '총수입(원)', '3.3%적용여부', '세후실수령액(원)', '입금상태', '루틴업무여부', '메모']
+      ];
+
+      const sortedKeys = Object.keys(tasksData).sort();
+      let hasData = false;
+
+      sortedKeys.forEach(dateKey => {
+        (tasksData[dateKey] || []).forEach(task => {
+          hasData = true;
+          const unit = task.unitPrice || task.amount || 0;
+          const count = task.count || 1;
+          const amount = task.amount || 0;
+          const isTax = task.taxDeduction ? '적용' : '미적용';
+          const net = task.taxDeduction ? Math.round(amount * 0.967) : amount;
+          const paidStatus = task.isPaid ? '입금완료' : '미입금';
+          const routine = task.isRoutine ? '루틴' : '일반';
+          const cleanTitle = `"${String(task.title || '').replace(/"/g, '""')}"`;
+          const cleanMemo = `"${String(task.memo || '').replace(/"/g, '""')}"`;
+
+          rows.push([
+            dateKey,
+            cleanTitle,
+            unit,
+            count,
+            amount,
+            isTax,
+            net,
+            paidStatus,
+            routine,
+            cleanMemo
+          ]);
+        });
+      });
+
+      if (!hasData) {
+        alert('내보낼 업무 데이터가 없습니다.');
+        return;
+      }
+
+      const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.href = url;
+      downloadAnchor.download = `프리랜서메이커_업무정산_${formatDateKey(new Date())}.csv`;
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      document.body.removeChild(downloadAnchor);
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('btnExportCSV').addEventListener('click', exportToCSV);
 
     document.getElementById('btnGoogleLogin').addEventListener('click', handleGoogleLogin);
     document.getElementById('btnLogout').addEventListener('click', handleLogout);
@@ -2256,12 +3052,14 @@
 
     window.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        if (routineModal.classList.contains('active')) closeRoutineModal();
+        if (unpaidModal.classList.contains('active')) closeUnpaidModal();
+        else if (routineModal.classList.contains('active')) closeRoutineModal();
         else if (isDrawerOpen()) closeDrawer();
       }
     });
 
     window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
       applyPreset('4weeks');
       initFirebase();
       renderCalendar();
