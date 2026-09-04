@@ -1390,7 +1390,7 @@
 
   <script>
     const DEFAULT_FIREBASE_CONFIG = {
-      apiKey: "AIzaSyBtdMrIlpv2Yy6vBYHGGbd2UsU1mprDgkw",
+      apiKey: "AIzaSyCQSRxfRI3i1wZd03CWE6vHeFp7_ak0zuU",
       authDomain: "freelance-maker.firebaseapp.com",
       projectId: "freelance-maker",
       storageBucket: "freelance-maker.firebasestorage.app",
@@ -1476,12 +1476,12 @@
 
     function saveData() {
       localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
+      updateDashboardStats();
+      renderCalendar();
+      if (isDrawerOpen()) renderDrawerTasks();
+
       if (currentUser && fbDb) {
         saveDataToCloud();
-      } else {
-        updateDashboardStats();
-        renderCalendar();
-        if (isDrawerOpen()) renderDrawerTasks();
       }
     }
 
@@ -1490,7 +1490,7 @@
       fbDb.collection('freelancers').doc(currentUser.uid).set({
         tasks: tasksData,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true }).catch(err => {
+      }).catch(err => {
         console.error('클라우드 저장 실패:', err);
       });
     }
