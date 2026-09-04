@@ -691,25 +691,41 @@
 
     .task-badge {
       font-size: 11px;
-      font-weight: 500;
-      color: var(--text-muted);
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 2px 4px;
+      gap: 5px;
+      padding: 2px 6px;
       border-radius: 4px;
-      background: var(--bg-main);
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .task-badge.in-progress {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-left: 2.5px solid var(--primary);
+    }
+
+    .task-badge.completed {
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      border-left: 2.5px solid var(--emerald);
     }
 
     .task-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .task-dot.in-progress {
       background: var(--primary);
     }
 
-    .task-dot.routine {
-      background: #8b5cf6;
+    .task-dot.completed {
+      background: var(--emerald);
     }
 
     .drawer-overlay {
@@ -1093,7 +1109,7 @@
     .task-item-net {
       font-size: 11px;
       font-weight: 600;
-      color: var(--primary);
+      color: var(--text-muted);
     }
 
     .btn-payment-badge {
@@ -1469,7 +1485,7 @@
     <section class="dashboard-grid">
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">일간 수입</span>
+          <span class="stat-title">일간 수입 (세후)</span>
           <span class="stat-sub" id="dailyDateLabel">선택일 기준</span>
         </div>
         <div class="stat-value highlight" id="dailyIncomeValue">₩0</div>
@@ -1481,7 +1497,7 @@
 
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">주간 수입</span>
+          <span class="stat-title">주간 수입 (세후)</span>
           <span class="stat-sub" id="weeklyRangeLabel">이번 주 (월~일)</span>
         </div>
         <div class="stat-value highlight" id="weeklyIncomeValue">₩0</div>
@@ -1493,7 +1509,7 @@
 
       <div class="stat-card">
         <div class="stat-header">
-          <span class="stat-title">기간별 수입 분석</span>
+          <span class="stat-title">기간별 수입 분석 (세후)</span>
           <div class="range-presets">
             <button type="button" class="btn-preset active" data-preset="4weeks">최근 4주</button>
             <button type="button" class="btn-preset" data-preset="thisMonth">이번 달</button>
@@ -1723,7 +1739,7 @@
       </div>
       <div class="modal-body">
         <div class="unpaid-summary-banner">
-          <span>총 미수금</span>
+          <span>총 미수금 (공제 반영)</span>
           <span id="unpaidModalTotalSum">₩0 (0건)</span>
         </div>
         <div class="task-list" id="unpaidTaskList"></div>
@@ -1965,13 +1981,18 @@
       return new Date(d.getTime());
     }
 
+    function getTaskEffectiveAmount(task) {
+      const raw = Number(task.amount) || 0;
+      return task.taxDeduction ? Math.round(raw * 0.967) : raw;
+    }
+
     function calculateIncomeMetrics(tasks) {
       let total = 0;
       let paid = 0;
       let unpaid = 0;
 
       tasks.forEach(t => {
-        const amt = Number(t.amount) || 0;
+        const amt = getTaskEffectiveAmount(t);
         total += amt;
         if (t.isPaid) paid += amt;
         else unpaid += amt;
@@ -2027,7 +2048,7 @@
         const key = formatDateKey(cur);
         const tasks = tasksData[key] || [];
         allTasks = allTasks.concat(tasks);
-        dailyMap[key] = tasks.reduce((acc, item) => acc + (Number(item.amount) || 0), 0);
+        dailyMap[key] = tasks.reduce((acc, item) => acc + getTaskEffectiveAmount(item), 0);
         cur.setDate(cur.getDate() + 1);
       }
 
@@ -2192,7 +2213,7 @@
       const items = tasksData[dateKey] || [];
       const metrics = calculateIncomeMetrics(items);
       const completedCount = items.filter(t => t.done).length;
-      const hasRoutine = items.some(t => t.isRoutine);
+      const inProgressCount = items.length - completedCount;
 
       const topDiv = document.createElement('div');
       topDiv.className = 'day-cell-top';
@@ -2208,16 +2229,24 @@
       if (metrics.total > 0) {
         const incPill = document.createElement('div');
         incPill.className = `income-pill ${metrics.unpaid > 0 ? 'has-unpaid' : 'all-paid'}`;
-        incPill.title = `총액: ${formatKRW(metrics.total)} (미입금: ${formatKRW(metrics.unpaid)})`;
+        incPill.title = `총 실수령액: ${formatKRW(metrics.total)} (미입금: ${formatKRW(metrics.unpaid)})`;
         incPill.innerHTML = `<span>+${formatKRW(metrics.total)}</span>${metrics.unpaid > 0 ? '<span style="font-size:9px;opacity:0.85">미입금</span>' : ''}`;
         badgeContainer.appendChild(incPill);
       }
 
       if (items.length > 0) {
-        const taskBadge = document.createElement('div');
-        taskBadge.className = 'task-badge';
-        taskBadge.innerHTML = `<span class="task-dot ${hasRoutine ? 'routine' : ''}"></span> ${completedCount}/${items.length}건`;
-        badgeContainer.appendChild(taskBadge);
+        if (inProgressCount > 0) {
+          const progBadge = document.createElement('div');
+          progBadge.className = 'task-badge in-progress';
+          progBadge.innerHTML = `<span class="task-dot in-progress"></span> 진행중 ${inProgressCount}건`;
+          badgeContainer.appendChild(progBadge);
+        }
+        if (completedCount > 0) {
+          const doneBadge = document.createElement('div');
+          doneBadge.className = 'task-badge completed';
+          doneBadge.innerHTML = `<span class="task-dot completed"></span> 완료 ${completedCount}건`;
+          badgeContainer.appendChild(doneBadge);
+        }
       }
 
       cell.appendChild(badgeContainer);
@@ -2355,7 +2384,7 @@
         if (task.taxDeduction) {
           const tBadge = document.createElement('span');
           tBadge.className = 'tax-badge';
-          tBadge.textContent = '3.3%적용';
+          tBadge.textContent = '3.3%공제';
           headerRow.appendChild(tBadge);
         }
 
@@ -2381,15 +2410,16 @@
         const incomeBox = document.createElement('div');
         incomeBox.className = 'income-display-box';
 
+        const effectiveAmt = getTaskEffectiveAmount(task);
         const amount = document.createElement('div');
         amount.className = 'task-item-income';
-        amount.textContent = `+${formatKRW(task.amount)}`;
+        amount.textContent = `+${formatKRW(effectiveAmt)}`;
         incomeBox.appendChild(amount);
 
         if (task.taxDeduction) {
           const net = document.createElement('div');
           net.className = 'task-item-net';
-          net.textContent = `(세후 실수령 ₩${Math.round(task.amount * 0.967).toLocaleString('ko-KR')})`;
+          net.textContent = `(원금 ${formatKRW(task.amount)} · 세후)`;
           incomeBox.appendChild(net);
         }
 
@@ -2657,12 +2687,13 @@
         titleDiv.innerHTML = `
           <span>${group.title}</span>
           <span class="routine-badge">총 ${group.itemsCount}건</span>
-          ${group.taxDeduction ? '<span class="tax-badge">3.3%적용</span>' : ''}
+          ${group.taxDeduction ? '<span class="tax-badge">3.3%공제</span>' : ''}
         `;
 
         const metaDiv = document.createElement('div');
         metaDiv.className = 'routine-card-meta';
-        metaDiv.textContent = `1회: ${formatKRW(group.amount)} · 등록 기간: ${group.firstDate} ~ ${group.lastDate}`;
+        const displayAmt = group.taxDeduction ? Math.round(group.amount * 0.967) : group.amount;
+        metaDiv.textContent = `1회: ${formatKRW(displayAmt)}${group.taxDeduction ? ' (세후)' : ''} · 등록 기간: ${group.firstDate} ~ ${group.lastDate}`;
 
         info.appendChild(titleDiv);
         info.appendChild(metaDiv);
@@ -2871,7 +2902,7 @@
         (tasksData[dateKey] || []).forEach(task => {
           if (!task.isPaid) {
             unpaidList.push({ ...task, dateKey });
-            totalUnpaid += Number(task.amount) || 0;
+            totalUnpaid += getTaskEffectiveAmount(task);
           }
         });
       });
@@ -2917,7 +2948,14 @@
 
         const amt = document.createElement('div');
         amt.className = 'task-item-income';
-        amt.textContent = formatKRW(task.amount);
+        const effectiveAmt = getTaskEffectiveAmount(task);
+        amt.textContent = formatKRW(effectiveAmt);
+        if (task.taxDeduction) {
+          const taxSub = document.createElement('span');
+          taxSub.style.cssText = 'font-size:11px; opacity:0.8; margin-left:4px; font-weight:500;';
+          taxSub.textContent = '(3.3% 세후)';
+          amt.appendChild(taxSub);
+        }
         bottomRow.appendChild(amt);
 
         const payBtn = document.createElement('button');
@@ -2956,7 +2994,7 @@
           const count = task.count || 1;
           const amount = task.amount || 0;
           const isTax = task.taxDeduction ? '적용' : '미적용';
-          const net = task.taxDeduction ? Math.round(amount * 0.967) : amount;
+          const net = getTaskEffectiveAmount(task);
           const paidStatus = task.isPaid ? '입금완료' : '미입금';
           const routine = task.isRoutine ? '루틴' : '일반';
           const cleanTitle = `"${String(task.title || '').replace(/"/g, '""')}"`;
