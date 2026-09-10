@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>프리랜서메이커 - 스마트 업무·수입 플래너</title>
+  <title>프리랜서메이커 — Liquid Glass Edition</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -14,118 +15,243 @@
 
   <style>
     :root {
-      --bg-main: #f8fafc;
-      --bg-card: #ffffff;
-      --border-subtle: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --text-light: #94a3b8;
-      --primary: #2563eb;
-      --primary-hover: color-mix(in srgb, var(--primary) 82%, black);
-      --primary-light: color-mix(in srgb, var(--primary) 12%, white);
-      --emerald: #059669;
-      --emerald-light: #ecfdf5;
-      --emerald-dark: #065f46;
-      --amber: #d97706;
-      --amber-light: #fffbeb;
-      --amber-dark: #b45309;
-      --danger: #ef4444;
-      --danger-light: #fef2f2;
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
-      --shadow-lg: 0 14px 30px -4px rgba(0, 0, 0, 0.15);
+      --bg-base: #f1f4fb;
+      --text-main: #0c121e;
+      --text-muted: #3e4d66;
+      --text-light: #5a6b85;
+      
+      --glass-bg: rgba(255, 255, 255, 0.22);
+      --glass-bg-hover: rgba(255, 255, 255, 0.42);
+      --glass-card: rgba(255, 255, 255, 0.32);
+      --glass-card-deep: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --glass-border-subtle: rgba(255, 255, 255, 0.3);
+      --glass-inner-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.85), inset 0 -1px 1.5px rgba(0, 0, 0, 0.03);
+      --glass-outer-shadow: 0 16px 40px -10px rgba(16, 24, 40, 0.07), 0 4px 16px -2px rgba(16, 24, 40, 0.03);
+
+      --accent-blue: #0071e3;
+      --accent-blue-rgb: 0, 113, 227;
+      --accent-emerald: #107c41;
+      --accent-emerald-dark: #09592e;
+      --accent-amber: #b45309;
+      --accent-amber-dark: #78350f;
+      --accent-rose: #e11d48;
+      
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Pretendard', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --radius-pill: 9999px;
+      --radius-panel: 32px;
+      --radius-card: 24px;
+      --radius-control: 16px;
     }
 
     [data-theme="dark"] {
-      --bg-main: #090d16;
-      --bg-card: #151d2e;
-      --border-subtle: #243048;
-      --border-strong: #384869;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --text-light: #64748b;
-      --primary-light: color-mix(in srgb, var(--primary) 25%, transparent);
-      --emerald-light: rgba(5, 150, 105, 0.2);
-      --emerald-dark: #34d399;
-      --amber-light: rgba(217, 119, 6, 0.2);
-      --amber-dark: #fbbf24;
-      --danger-light: rgba(239, 68, 68, 0.2);
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
-      --shadow-lg: 0 14px 30px rgba(0, 0, 0, 0.55);
+      --bg-base: #050810;
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --text-light: #94a3b8;
+      
+      --glass-bg: rgba(18, 24, 38, 0.28);
+      --glass-bg-hover: rgba(28, 36, 56, 0.48);
+      --glass-card: rgba(15, 22, 36, 0.42);
+      --glass-card-deep: rgba(18, 26, 44, 0.58);
+      --glass-border: rgba(255, 255, 255, 0.22);
+      --glass-border-subtle: rgba(255, 255, 255, 0.12);
+      --glass-inner-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.25), inset 0 -1px 2px rgba(0, 0, 0, 0.4);
+      --glass-outer-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.65), 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+
+      --accent-blue: #38bdf8;
+      --accent-blue-rgb: 56, 189, 248;
+      --accent-emerald: #34d399;
+      --accent-emerald-dark: #10b981;
+      --accent-amber: #fbbf24;
+      --accent-amber-dark: #f59e0b;
+      --accent-rose: #fb7185;
     }
 
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
     }
 
     body {
-      background-color: var(--bg-main);
+      background-color: var(--bg-base);
       color: var(--text-main);
-      line-height: 1.5;
-      padding: 24px;
       min-height: 100vh;
-      transition: background-color 0.2s ease, color 0.2s ease;
+      padding: 36px 24px 80px 24px;
+      position: relative;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
 
-    .container {
-      max-width: 1280px;
+    input[type="date"] {
+      color-scheme: light;
+      cursor: pointer;
+    }
+
+    [data-theme="dark"] input[type="date"] {
+      color-scheme: dark;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.85;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    [data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1) brightness(1.2);
+    }
+
+    .aurora-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .aurora-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(95px);
+      opacity: 0.65;
+      animation: floatFluid 22s infinite alternate ease-in-out;
+    }
+
+    [data-theme="dark"] .aurora-blob {
+      opacity: 0.45;
+      filter: blur(110px);
+    }
+
+    .blob-1 {
+      width: 620px;
+      height: 620px;
+      background: radial-gradient(circle, #ff6b8b, #7000ff);
+      top: -100px;
+      left: -120px;
+      animation-duration: 24s;
+    }
+
+    .blob-2 {
+      width: 680px;
+      height: 680px;
+      background: radial-gradient(circle, #00d2ff, #0047ff);
+      top: 20%;
+      right: -160px;
+      animation-duration: 28s;
+      animation-delay: -5s;
+    }
+
+    .blob-3 {
+      width: 540px;
+      height: 540px;
+      background: radial-gradient(circle, #00f2fe, #4facfe);
+      bottom: -100px;
+      left: 25%;
+      animation-duration: 20s;
+      animation-delay: -10s;
+    }
+
+    .blob-4 {
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, #f355da, #7000ff);
+      bottom: 20%;
+      left: -80px;
+      animation-duration: 26s;
+      animation-delay: -7s;
+    }
+
+    @keyframes floatFluid {
+      0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+      50% { transform: translate3d(60px, 40px, 0) scale(1.08) rotate(18deg); }
+      100% { transform: translate3d(-40px, 80px, 0) scale(0.94) rotate(-15deg); }
+    }
+
+    .app-viewport {
+      max-width: 1260px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 28px;
+      position: relative;
+      z-index: 1;
     }
 
-    header {
+    .glass-island {
+      background: var(--glass-card);
+      backdrop-filter: blur(36px) saturate(200%) contrast(100%);
+      -webkit-backdrop-filter: blur(36px) saturate(200%) contrast(100%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-panel);
+      box-shadow: var(--glass-outer-shadow), var(--glass-inner-shadow);
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .floating-header {
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      background: var(--bg-card);
-      padding: 16px 24px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius-pill);
     }
 
-    .app-brand {
+    .header-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
-    .brand-icon {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-      border-radius: var(--radius-md);
+    .brand-orb {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #00c7be, #0071e3 70%, #5e5ce6);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      color: #ffffff;
+      font-size: 20px;
       font-weight: 800;
-      font-size: 22px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: background 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0, 113, 227, 0.35), inset 0 2px 2px rgba(255, 255, 255, 0.6);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
-    .brand-text h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    .brand-orb::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 100%);
+      border-radius: var(--radius-pill);
     }
 
-    .brand-text p {
-      font-size: 13px;
-      color: var(--text-muted);
+    .brand-title h1 {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      line-height: 1.2;
     }
 
     .header-actions {
@@ -135,1316 +261,1090 @@
       flex-wrap: wrap;
     }
 
-    .theme-controller {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-main);
-      padding: 5px 10px;
-      border-radius: 30px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .color-picker-btn {
-      position: relative;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, #f43f5e, #f59e0b, #10b981, #06b6d4, #6366f1, #d946ef, #f43f5e);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-      transition: transform 0.15s ease;
-      overflow: hidden;
-      border: 2px solid #fff;
-    }
-
-    [data-theme="dark"] .color-picker-btn {
-      border-color: #384869;
-    }
-
-    .color-picker-btn:hover {
-      transform: scale(1.15);
-    }
-
-    .color-picker-btn input[type="color"] {
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      width: 45px;
-      height: 45px;
-      opacity: 0;
-      cursor: pointer;
-      border: none;
-      padding: 0;
-    }
-
-    .btn-dark-toggle {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2px;
-      border-radius: 50%;
+    .glass-expand-btn {
+      appearance: none;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
       color: var(--text-main);
-      transition: transform 0.15s ease;
-    }
-
-    .btn-dark-toggle:hover {
-      transform: scale(1.18);
-    }
-
-    .auth-section {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .keep-login-wrap {
+      padding: 9px 13px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      color: var(--text-muted);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03), var(--glass-inner-shadow);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       user-select: none;
+      text-decoration: none;
+      overflow: hidden;
       white-space: nowrap;
     }
 
-    .keep-login-wrap input[type="checkbox"] {
-      width: 15px;
-      height: 15px;
-      accent-color: var(--primary);
-      cursor: pointer;
-    }
-
-    .btn-google-login {
+    .glass-expand-btn .btn-icon {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: var(--bg-card);
-      color: var(--text-main);
-      border: 1px solid var(--border-strong);
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-weight: 600;
+      justify-content: center;
+      font-size: 15px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .glass-expand-btn .btn-label {
+      max-width: 0;
+      opacity: 0;
+      margin-left: 0;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, margin-left 0.25s ease;
+    }
+
+    .glass-expand-btn:hover {
+      background: var(--glass-bg-hover);
+      padding: 9px 16px;
+      transform: translateY(-1.5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), var(--glass-inner-shadow);
+    }
+
+    .glass-expand-btn:hover .btn-label {
+      max-width: 140px;
+      opacity: 1;
+      margin-left: 7px;
+    }
+
+    .glass-expand-btn:active {
+      transform: translateY(0.5px) scale(0.97);
+    }
+
+    .glass-expand-btn.amber {
+      color: var(--accent-amber);
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.12);
+    }
+
+    .glass-expand-btn.amber:hover {
+      background: rgba(245, 158, 11, 0.22);
+    }
+
+    .glass-expand-btn.emerald {
+      color: var(--accent-emerald);
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.12);
+    }
+
+    .glass-expand-btn.emerald:hover {
+      background: rgba(16, 185, 129, 0.22);
+    }
+
+    .glass-expand-btn.primary {
+      color: var(--accent-blue);
+      border-color: rgba(var(--accent-blue-rgb), 0.4);
+      background: rgba(var(--accent-blue-rgb), 0.12);
+    }
+
+    .glass-expand-btn.primary:hover {
+      background: rgba(var(--accent-blue-rgb), 0.22);
+    }
+
+    .auth-glass-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 6px 4px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--glass-inner-shadow);
+    }
+
+    .persist-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.15s ease;
-      box-shadow: var(--shadow-sm);
     }
 
-    .btn-google-login:hover {
-      border-color: var(--primary);
+    input[type="checkbox"].glass-check {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 1.5px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      display: inline-grid;
+      place-content: center;
+      margin: 0;
+      box-shadow: var(--glass-inner-shadow);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
     }
 
-    .user-profile-bar {
+    [data-theme="dark"] input[type="checkbox"].glass-check {
+      background: rgba(0, 0, 0, 0.35);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    input[type="checkbox"].glass-check:checked {
+      background: var(--accent-blue);
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 4px 12px rgba(var(--accent-blue-rgb), 0.4);
+    }
+
+    input[type="checkbox"].glass-check:checked::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: #ffffff;
+    }
+
+    .btn-login-pill {
+      background: linear-gradient(135deg, rgba(var(--accent-blue-rgb), 0.95), rgba(0, 199, 190, 0.95));
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 7px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(var(--accent-blue-rgb), 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-login-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(var(--accent-blue-rgb), 0.45);
+    }
+
+    .user-profile-widget {
       display: none;
       align-items: center;
       gap: 10px;
-      background: var(--bg-main);
-      padding: 4px 12px;
-      border-radius: 30px;
-      border: 1px solid var(--border-subtle);
+      padding: 3px 6px 3px 12px;
+      border-radius: var(--radius-pill);
     }
 
-    .user-avatar {
+    .user-avatar-glass {
       width: 32px;
       height: 32px;
-      border-radius: 50%;
-      border: 2px solid var(--primary);
+      border-radius: var(--radius-pill);
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
       object-fit: cover;
     }
 
-    .user-meta {
+    .user-info-text {
       display: flex;
       flex-direction: column;
       line-height: 1.2;
     }
 
-    .user-name {
+    .user-info-name {
       font-size: 13px;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
     }
 
-    .sync-indicator {
-      display: inline-block;
-      width: 7px;
-      height: 7px;
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 0 2px var(--emerald-light);
+      background: var(--accent-emerald);
+      box-shadow: 0 0 10px var(--accent-emerald);
+      animation: pulseAnim 2s infinite;
     }
 
-    .user-email {
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+
+    .user-info-email {
       font-size: 11px;
       color: var(--text-muted);
     }
 
-    .btn-logout {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-logout:hover {
-      background: var(--danger-light);
-      color: var(--danger);
-      border-color: #fecaca;
-    }
-
-    .btn-action-tool {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--bg-card);
-      font-size: 13px;
-      font-weight: 700;
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      border: 1.5px solid var(--border-strong);
-      color: var(--text-main);
-    }
-
-    .btn-action-tool:hover {
-      background: var(--bg-main);
-    }
-
-    .btn-action-tool.amber {
-      border-color: var(--amber);
-      color: var(--amber-dark);
-      background: var(--amber-light);
-    }
-
-    .btn-action-tool.emerald {
-      border-color: var(--emerald);
-      color: var(--emerald-dark);
-      background: var(--emerald-light);
-    }
-
-    .btn-action-tool.primary {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    .dashboard-grid {
+    .metrics-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1.35fr;
-      gap: 18px;
+      gap: 20px;
     }
 
-    .stat-card {
-      background: var(--bg-card);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-sm);
+    .stat-glass-slab {
+      padding: 26px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      position: relative;
+      gap: 18px;
+      border-radius: var(--radius-card);
     }
 
-    .stat-header {
+    .slab-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      flex-wrap: wrap;
-      gap: 8px;
+      align-items: flex-start;
+      gap: 12px;
     }
 
-    .stat-title {
-      font-size: 14px;
-      font-weight: 700;
+    .slab-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .slab-category {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
       color: var(--text-muted);
     }
 
-    .stat-sub {
-      font-size: 12px;
-      color: var(--text-light);
-      font-weight: 500;
-    }
-
-    .stat-value {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--text-main);
-      margin: 4px 0;
-    }
-
-    .stat-value.highlight {
-      color: var(--emerald);
-    }
-
-    .stat-payment-split {
-      display: flex;
-      gap: 12px;
+    .slab-sublabel {
       font-size: 12px;
       font-weight: 600;
-      margin-top: 4px;
-      padding-top: 6px;
-      border-top: 1px solid var(--border-subtle);
+      color: var(--text-light);
     }
 
-    .split-item {
+    .slab-value {
+      font-family: var(--font-mono);
+      font-size: clamp(28px, 2.6vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      color: var(--text-main);
+    }
+
+    .slab-breakdown {
       display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      border-top: 1px solid var(--glass-border-subtle);
+    }
+
+    .pill-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--glass-inner-shadow);
     }
 
-    .split-item.paid { color: var(--emerald); }
-    .split-item.unpaid { color: var(--amber); }
+    .pill-badge.paid {
+      color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.16);
+      border-color: rgba(16, 185, 129, 0.35);
+    }
 
-    .range-presets {
+    .pill-badge.unpaid {
+      color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.16);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .pill-badge.total {
+      color: var(--accent-blue);
+      background: rgba(var(--accent-blue-rgb), 0.15);
+      border-color: rgba(var(--accent-blue-rgb), 0.35);
+    }
+
+    .pill-badge.neutral {
+      color: var(--text-muted);
+      background: var(--glass-bg);
+      margin-left: auto;
+    }
+
+    .range-selector {
       display: flex;
       gap: 4px;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 3px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--glass-border-subtle);
+    }
+
+    [data-theme="dark"] .range-selector {
+      background: rgba(255, 255, 255, 0.06);
     }
 
     .btn-preset {
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-main);
+      border: none;
+      background: transparent;
       color: var(--text-muted);
       font-size: 11px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 6px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
       cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-preset:hover {
-      background: var(--bg-card);
-      color: var(--text-main);
+      transition: all 0.2s ease;
     }
 
     .btn-preset.active {
-      background: var(--primary-light);
-      border-color: var(--primary);
-      color: var(--primary);
-      font-weight: 700;
+      background: #ffffff;
+      color: var(--accent-blue);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .range-inputs-row {
+    [data-theme="dark"] .btn-preset.active {
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+    }
+
+    .range-date-inputs {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin: 4px 0 6px 0;
+      gap: 8px;
+      margin-top: 6px;
     }
 
-    .date-range-input {
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 4px 8px;
+    .glass-input-compact {
+      border: 1.5px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(12px);
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
       font-size: 12px;
+      font-weight: 700;
       color: var(--text-main);
-      background: var(--bg-card);
       outline: none;
-      transition: border-color 0.15s ease;
       cursor: pointer;
-      color-scheme: light dark;
+      box-shadow: var(--glass-inner-shadow);
+      transition: border-color 0.2s, background 0.2s;
     }
 
-    .date-range-input:focus {
-      border-color: var(--primary);
+    [data-theme="dark"] .glass-input-compact {
+      background: rgba(15, 23, 42, 0.55);
     }
 
-    .range-sep {
-      color: var(--text-light);
-      font-size: 12px;
-      font-weight: 600;
+    .glass-input-compact:focus {
+      border-color: var(--accent-blue);
     }
 
-    .chart-container {
-      margin-top: 10px;
+    .liquid-chart-rack {
       display: flex;
       align-items: flex-end;
       gap: 8px;
-      height: 55px;
-      padding-top: 6px;
-      border-top: 1px dashed var(--border-subtle);
+      height: 72px;
+      padding-top: 10px;
+      border-top: 1px solid var(--glass-border-subtle);
+      margin-top: 6px;
     }
 
-    .chart-bar-wrap {
+    .chart-pipe-wrap {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       height: 100%;
       justify-content: flex-end;
     }
 
-    .chart-bar-bg {
+    .chart-pipe-tube {
       width: 100%;
-      height: 38px;
-      background: var(--bg-main);
-      border-radius: 4px;
+      height: 46px;
+      border-radius: var(--radius-pill);
+      background: rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--glass-border-subtle);
       display: flex;
       align-items: flex-end;
       overflow: hidden;
       cursor: pointer;
+      position: relative;
     }
 
-    .chart-bar-fill {
+    [data-theme="dark"] .chart-pipe-tube {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .chart-pipe-fluid {
       width: 100%;
-      background: var(--primary);
-      opacity: 0.65;
-      border-radius: 4px 4px 0 0;
-      transition: height 0.35s ease, opacity 0.2s;
+      background: linear-gradient(180deg, rgba(0, 199, 190, 0.95), rgba(0, 113, 227, 0.95));
+      border-radius: var(--radius-pill);
+      transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 14px rgba(0, 113, 227, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.7);
       min-height: 4px;
     }
 
-    .chart-bar-wrap:hover .chart-bar-fill {
-      opacity: 1;
+    .chart-pipe-wrap:hover .chart-pipe-fluid {
+      background: linear-gradient(180deg, #ff6b8b, #7000ff);
+      box-shadow: 0 0 20px rgba(112, 0, 255, 0.6);
     }
 
-    .chart-label {
+    .chart-pipe-label {
+      font-family: var(--font-mono);
       font-size: 10px;
+      font-weight: 700;
       color: var(--text-muted);
-      font-weight: 500;
-      white-space: nowrap;
     }
 
-    .calendar-card {
-      background: var(--bg-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-sm);
+    .calendar-island {
       overflow: hidden;
+      padding: 0;
     }
 
-    .calendar-toolbar {
-      padding: 18px 24px;
+    .calendar-navbar {
+      padding: 24px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--border-subtle);
-      background: var(--bg-card);
+      border-bottom: 1px solid var(--glass-border-subtle);
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .calendar-nav {
+    .current-month-display {
+      font-size: clamp(22px, 2.5vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .nav-ctrl-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
-    .current-month-label {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .btn-group {
-      display: flex;
-      align-items: center;
-      background: var(--bg-main);
-      padding: 3px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-    }
-
-    .btn-icon {
-      border: none;
-      background: transparent;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      transition: all 0.15s ease;
-      font-weight: 700;
-    }
-
-    .btn-icon:hover {
-      background: var(--bg-card);
-      color: var(--text-main);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-today {
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-card);
-      color: var(--text-main);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 7px 16px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-today:hover {
-      background: var(--bg-main);
-      border-color: var(--border-strong);
-    }
-
-    .calendar-weekdays {
+    .calendar-weekdays-row {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      background: var(--bg-main);
-      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--glass-border-subtle);
       text-align: center;
+      background: rgba(0, 0, 0, 0.02);
     }
 
-    .weekday {
-      padding: 12px 6px;
-      font-size: 13px;
-      font-weight: 600;
+    .weekday-item {
+      font-size: 12px;
+      font-weight: 800;
       color: var(--text-muted);
+      letter-spacing: 0.05em;
     }
 
-    .weekday:nth-child(6) { color: #2563eb; }
-    .weekday:nth-child(7) { color: #dc2626; }
-
-    .calendar-days {
+    .calendar-cells-matrix {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      background: var(--border-subtle);
       gap: 1px;
+      background: var(--glass-border-subtle);
+      padding: 1px;
     }
 
-    .day-cell {
-      background: var(--bg-card);
-      min-height: 114px;
-      padding: 10px 8px;
+    .calendar-day-tile {
+      background: var(--glass-bg);
+      backdrop-filter: blur(18px);
+      min-height: 124px;
+      padding: 12px 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       cursor: pointer;
-      transition: background 0.15s ease;
       position: relative;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .day-cell:hover {
-      background: var(--bg-main);
-    }
-
-    .day-cell.other-month {
-      opacity: 0.38;
-      background: var(--bg-main);
-    }
-
-    .day-cell.selected {
-      background: var(--primary-light) !important;
-      outline: 2px solid var(--primary);
-      outline-offset: -2px;
+    .calendar-day-tile:hover {
+      background: var(--glass-bg-hover);
       z-index: 2;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
     }
 
-    .day-cell-top {
+    .calendar-day-tile.other-month {
+      opacity: 0.35;
+    }
+
+    .calendar-day-tile.selected {
+      background: rgba(var(--accent-blue-rgb), 0.16) !important;
+      outline: 2.5px solid var(--accent-blue);
+      outline-offset: -2.5px;
+      z-index: 3;
+    }
+
+    .tile-top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .day-number {
-      font-size: 14px;
-      font-weight: 600;
-      width: 26px;
-      height: 26px;
+    .tile-day-pill {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 800;
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      border-radius: var(--radius-pill);
     }
 
-    .day-cell.is-today .day-number {
-      background: var(--primary);
-      color: #fff;
+    .calendar-day-tile.is-today .tile-day-pill {
+      background: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(var(--accent-blue-rgb), 0.5);
     }
 
-    .day-cell-badges {
+    .tile-badges-stack {
       display: flex;
       flex-direction: column;
       gap: 4px;
       margin-top: 6px;
     }
 
-    .income-pill {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      text-align: left;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .tile-revenue-chip {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--glass-inner-shadow);
+      line-height: 1.2;
     }
 
-    .income-pill.all-paid {
-      background: var(--emerald-light);
-      color: var(--emerald-dark);
-      border-left: 2px solid var(--emerald);
+    .tile-revenue-chip.all-paid {
+      color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.4);
     }
 
-    .income-pill.has-unpaid {
-      background: var(--amber-light);
-      color: var(--amber-dark);
-      border-left: 2px solid var(--amber);
+    .tile-revenue-chip.has-unpaid {
+      color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.4);
     }
 
-    .task-badge {
-      font-size: 11px;
-      font-weight: 600;
+    .tile-task-chip {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
       display: flex;
       align-items: center;
       gap: 5px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      line-height: 1.35;
-      white-space: nowrap;
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--glass-border-subtle);
+      color: var(--text-main);
     }
 
-    .task-badge.in-progress {
-      background: var(--primary-light);
-      color: var(--primary);
-      border-left: 2.5px solid var(--primary);
+    [data-theme="dark"] .tile-task-chip {
+      background: rgba(255, 255, 255, 0.08);
     }
 
-    .task-badge.completed {
-      background: var(--emerald-light);
-      color: var(--emerald-dark);
-      border-left: 2.5px solid var(--emerald);
-    }
-
-    .task-dot {
+    .chip-neon-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      flex-shrink: 0;
+      background: var(--accent-blue);
+      box-shadow: 0 0 6px var(--accent-blue);
     }
 
-    .task-dot.in-progress {
-      background: var(--primary);
+    .chip-neon-dot.done {
+      background: var(--accent-emerald);
+      box-shadow: 0 0 6px var(--accent-emerald);
     }
 
-    .task-dot.completed {
-      background: var(--emerald);
-    }
-
-    .drawer-overlay {
+    .drawer-scrim {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(2px);
-      z-index: 100;
+      inset: 0;
+      background: rgba(12, 18, 30, 0.4);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 200;
       opacity: 0;
       visibility: hidden;
-      transition: all 0.25s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .drawer-overlay.active {
+    .drawer-scrim.active {
       opacity: 1;
       visibility: visible;
     }
 
-    .drawer {
+    .liquid-drawer-sheet {
       position: fixed;
-      top: 0;
-      right: 0;
-      width: 480px;
-      max-width: 100vw;
-      height: 100vh;
-      background: var(--bg-card);
-      z-index: 101;
-      box-shadow: var(--shadow-lg);
-      transform: translateX(100%);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      top: 16px;
+      bottom: 16px;
+      right: 16px;
+      width: 500px;
+      max-width: calc(100vw - 32px);
+      background: var(--glass-card-deep);
+      backdrop-filter: blur(40px) saturate(200%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%);
+      border: 1.5px solid var(--glass-border);
+      border-radius: var(--radius-panel);
+      box-shadow: var(--glass-outer-shadow), var(--glass-inner-shadow);
+      z-index: 201;
+      transform: translateX(110%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
-    .drawer-overlay.active .drawer {
+    .drawer-scrim.active .liquid-drawer-sheet {
       transform: translateX(0);
     }
 
-    .drawer-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border-subtle);
+    .drawer-banner {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--glass-border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      background: var(--bg-main);
     }
 
-    .drawer-title-group h2 {
-      font-size: 18px;
-      font-weight: 700;
+    .drawer-banner h2 {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
     }
 
-    .drawer-summary-badges {
+    .drawer-summary-pills {
       display: flex;
-      gap: 8px;
-      margin-top: 8px;
+      gap: 6px;
+      margin-top: 10px;
       flex-wrap: wrap;
     }
 
-    .drawer-badge {
-      font-size: 12px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-    }
-
-    .drawer-badge.total {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
-    .drawer-badge.paid {
-      background: var(--emerald-light);
-      color: var(--emerald-dark);
-    }
-
-    .drawer-badge.unpaid {
-      background: var(--amber-light);
-      color: var(--amber-dark);
-    }
-
-    .drawer-close-btn {
-      background: transparent;
-      border: none;
-      font-size: 22px;
-      cursor: pointer;
-      color: var(--text-light);
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-
-    .drawer-close-btn:hover {
-      color: var(--text-main);
-      background: var(--border-subtle);
-    }
-
-    .drawer-body {
+    .drawer-content-scroll {
       flex: 1;
       overflow-y: auto;
-      padding: 24px;
+      padding: 28px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 26px;
     }
 
-    .form-box {
-      background: var(--bg-main);
-      padding: 16px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-subtle);
+    .glass-form-slab {
+      background: var(--glass-bg);
+      border: 1.5px solid var(--glass-border);
+      padding: 22px;
+      border-radius: var(--radius-card);
+      box-shadow: var(--glass-inner-shadow);
     }
 
-    .form-box-title {
+    .form-slab-title {
       font-size: 13px;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-
-    .form-group {
-      margin-bottom: 10px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .form-help {
-      margin-top: 5px;
-      color: var(--text-light);
-      font-size: 11px;
-      line-height: 1.4;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      background: var(--bg-card);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       color: var(--text-main);
-      outline: none;
-      transition: border 0.15s ease;
-    }
-
-    .form-control:focus {
-      border-color: var(--primary);
-    }
-
-    .calc-row {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr 1.2fr;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .calc-result-input {
-      background: var(--bg-main);
-      font-weight: 700;
-      color: var(--emerald-dark);
-    }
-
-    .tax-deduction-wrap {
+      margin-bottom: 16px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 8px 0 6px 0;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .tax-deduction-wrap label {
-      display: inline-flex;
       align-items: center;
       gap: 6px;
-      cursor: pointer;
-      font-weight: 600;
     }
 
-    .tax-deduction-wrap input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--primary);
-      cursor: pointer;
+    .field-block {
+      margin-bottom: 14px;
     }
 
-    .net-income-preview {
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .payment-toggle-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 6px 0 6px 0;
-      padding: 8px 12px;
-      background: var(--bg-card);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-    }
-
-    .payment-toggle-wrap input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--emerald);
-      cursor: pointer;
-    }
-
-    .payment-toggle-wrap label {
-      margin-bottom: 0;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 13px;
+    .field-block label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
       color: var(--text-main);
+      margin-bottom: 6px;
     }
 
-    .form-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .btn-submit {
-      flex: 1;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
-
-    .btn-submit:hover {
-      background: var(--primary-hover);
-    }
-
-    .btn-cancel {
-      display: none;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      padding: 10px 14px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-    }
-
-    .task-list-title {
-      font-size: 14px;
+    .glass-input-well {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius-control);
+      border: 1.5px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(14px);
+      color: var(--text-main);
+      font-size: 13.5px;
       font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 8px;
+      outline: none;
+      box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
     }
 
-    .task-list {
-      display: flex;
-      flex-direction: column;
+    [data-theme="dark"] .glass-input-well {
+      background: rgba(15, 23, 42, 0.65);
+      color: #ffffff;
+    }
+
+    .glass-input-well::placeholder {
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .glass-input-well:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3.5px rgba(var(--accent-blue-rgb), 0.3);
+    }
+
+    .calc-matrix {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 1.2fr;
       gap: 10px;
     }
 
-    .empty-state {
-      text-align: center;
-      padding: 36px 12px;
-      color: var(--text-light);
-      font-size: 14px;
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0 8px 0;
+      border-top: 1px solid var(--glass-border-subtle);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
-    .task-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 14px;
+    .toggle-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .liquid-switch-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: var(--radius-control);
+      background: rgba(0, 0, 0, 0.04);
+      border: 1.5px solid var(--glass-border-subtle);
+      margin: 10px 0;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    [data-theme="dark"] .liquid-switch-banner {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .task-item-tile {
+      background: var(--glass-bg);
+      border: 1.5px solid var(--glass-border);
+      border-radius: var(--radius-card);
+      padding: 16px 18px;
       display: flex;
       align-items: flex-start;
       gap: 12px;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.15s ease;
+      box-shadow: var(--glass-inner-shadow);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .task-item:hover {
-      border-color: var(--border-strong);
+    .task-item-tile:hover {
+      background: var(--glass-bg-hover);
+      transform: translateY(-1px);
     }
 
-    .task-item.completed {
-      background: var(--bg-main);
-      opacity: 0.6;
+    .task-item-tile.completed {
+      opacity: 0.72;
     }
 
-    .task-checkbox-wrap {
-      padding-top: 2px;
-    }
-
-    .task-checkbox {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      accent-color: var(--primary);
-    }
-
-    .task-info {
+    .task-details {
       flex: 1;
       min-width: 0;
     }
 
-    .task-header-row {
+    .task-title-line {
       display: flex;
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
     }
 
-    .task-item-title {
-      font-size: 14px;
-      font-weight: 600;
+    .task-name-text {
+      font-size: 14.5px;
+      font-weight: 800;
       color: var(--text-main);
-      word-break: break-word;
     }
 
-    .task-item.completed .task-item-title {
+    .task-item-tile.completed .task-name-text {
       text-decoration: line-through;
       color: var(--text-muted);
     }
 
-    .routine-badge {
-      font-size: 10px;
+    .task-calc-info {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
       font-weight: 700;
-      background: #ede9fe;
-      color: #6d28d9;
-      padding: 1px 5px;
-      border-radius: 4px;
+      color: var(--text-muted);
+      margin-top: 4px;
     }
 
-    .tax-badge {
-      font-size: 10px;
-      font-weight: 700;
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 1px 5px;
-      border-radius: 4px;
-    }
-
-    .task-item-calc {
-      font-size: 12px;
-      color: var(--text-light);
-      margin-top: 2px;
-    }
-
-    .task-item-memo {
+    .task-memo-text {
       font-size: 12px;
       color: var(--text-muted);
-      margin-top: 3px;
-      word-break: break-word;
+      margin-top: 4px;
+      font-weight: 500;
     }
 
-    .task-bottom-row {
+    .task-bottom-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 8px;
-      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--glass-border-subtle);
     }
 
-    .income-display-box {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .task-item-income {
-      font-size: 14px;
+    .task-income-amt {
+      font-family: var(--font-mono);
+      font-size: 15.5px;
       font-weight: 800;
-      color: var(--emerald-dark);
-      line-height: 1.2;
+      color: var(--text-main);
     }
 
-    .task-item-net {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .btn-payment-badge {
-      border: 1px solid transparent;
-      padding: 3px 8px;
-      font-size: 11px;
-      font-weight: 700;
-      border-radius: 6px;
-      cursor: pointer;
+    .payment-check-toggle {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      padding: 5px 10px 5px 8px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--glass-border);
+      background: rgba(0, 0, 0, 0.03);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    [data-theme="dark"] .payment-check-toggle {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .payment-check-toggle.paid {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.45);
+    }
+
+    .payment-check-toggle.unpaid {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+
+    .payment-check-toggle .payment-check-box {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid currentColor;
+      display: inline-grid;
+      place-content: center;
+      cursor: pointer;
+      margin: 0;
+      background: transparent;
       transition: all 0.15s ease;
     }
 
-    .btn-payment-badge.paid {
-      background: var(--emerald-light);
-      color: var(--emerald-dark);
-      border-color: #a7f3d0;
+    .payment-check-toggle.paid .payment-check-box {
+      color: var(--accent-emerald);
+      background: var(--accent-emerald);
+      border-color: var(--accent-emerald);
     }
 
-    .btn-payment-badge.unpaid {
-      background: var(--amber-light);
-      color: var(--amber-dark);
-      border-color: #fde68a;
+    .payment-check-toggle.paid .payment-check-box::before {
+      content: "✓";
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
     }
 
-    .task-actions {
-      display: flex;
-      gap: 4px;
+    .payment-check-toggle.unpaid .payment-check-box {
+      color: var(--accent-amber);
     }
 
-    .btn-action-icon {
-      border: none;
-      background: transparent;
-      color: var(--text-light);
-      padding: 4px 6px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
+    .payment-check-toggle .payment-status-text {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
-    .btn-action-icon:hover {
-      color: var(--text-main);
-      background: var(--border-subtle);
+    .payment-check-toggle.paid .payment-status-text {
+      color: var(--accent-emerald);
     }
 
-    .btn-action-icon.delete:hover {
-      color: var(--danger);
-      background: var(--danger-light);
+    .payment-check-toggle.unpaid .payment-status-text {
+      color: var(--accent-amber);
     }
 
-    .modal-overlay {
+    .modal-scrim {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(3px);
-      z-index: 200;
+      inset: 0;
+      background: rgba(12, 18, 30, 0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 300;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       visibility: hidden;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       padding: 16px;
     }
 
-    .modal-overlay.active {
+    .modal-scrim.active {
       opacity: 1;
       visibility: visible;
     }
 
-    .modal-content {
-      background: var(--bg-card);
+    .liquid-dialog-window {
       width: 100%;
-      max-width: 580px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      max-width: 600px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      transform: scale(0.94);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .modal-header {
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--border-subtle);
+    .modal-scrim.active .liquid-dialog-window {
+      transform: scale(1);
+    }
+
+    .dialog-header {
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--glass-border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--bg-main);
     }
 
-    .modal-header h3 {
-      font-size: 18px;
-      font-weight: 700;
+    .dialog-header h3 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
 
-    .routine-tabs {
+    .dialog-segmented-tabs {
       display: flex;
-      border-bottom: 1px solid var(--border-subtle);
-      background: var(--bg-main);
+      padding: 6px 28px;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.02);
+      border-bottom: 1px solid var(--glass-border-subtle);
     }
 
-    .routine-tab-btn {
+    .seg-tab-btn {
       flex: 1;
-      padding: 12px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      border-radius: var(--radius-pill);
       background: transparent;
-      border: none;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
       color: var(--text-muted);
-      transition: all 0.15s ease;
-    }
-
-    .routine-tab-btn.active {
-      color: var(--primary);
-      background: var(--bg-card);
-      border-bottom-color: var(--primary);
-    }
-
-    .routine-tab-pane {
-      display: none;
-      padding: 24px;
-      flex-direction: column;
-      gap: 16px;
-      max-height: 75vh;
-      overflow-y: auto;
-    }
-
-    .routine-tab-pane.active {
-      display: flex;
-    }
-
-    .routine-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .routine-card-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .routine-card-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .routine-card-meta {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .routine-card-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-edit-routine-group {
-      background: var(--bg-card);
-      border: 1px solid var(--border-strong);
-      color: var(--text-main);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
+      transition: all 0.2s;
     }
 
-    .btn-edit-routine-group:hover {
-      border-color: var(--primary);
-      color: var(--primary);
+    .seg-tab-btn.active {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border);
+      color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    .btn-del-routine-group {
-      background: var(--bg-card);
-      border: 1px solid #fecaca;
-      color: var(--danger);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .btn-del-routine-group:hover {
-      background: var(--danger-light);
-    }
-
-    .modal-body {
-      padding: 24px;
+    .dialog-body {
+      padding: 28px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      max-height: 80vh;
-      overflow-y: auto;
+      gap: 18px;
     }
 
-    .weekday-selector {
+    .weekday-pill-selector {
       display: flex;
       gap: 6px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
-    .weekday-chip {
+    .weekday-pill {
       flex: 1;
       text-align: center;
       padding: 8px 0;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-card);
+      font-size: 12px;
+      font-weight: 800;
+      border-radius: var(--radius-pill);
+      background: var(--glass-bg);
+      border: 1.5px solid var(--glass-border);
+      color: var(--text-main);
       cursor: pointer;
       user-select: none;
-      transition: all 0.15s ease;
+      transition: all 0.2s;
     }
 
-    .weekday-chip.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
+    .weekday-pill.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 14px rgba(var(--accent-blue-rgb), 0.4);
     }
 
-    .period-preset-group {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .btn-period-preset {
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-card);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      color: var(--text-muted);
-    }
-
-    .btn-period-preset:hover {
-      background: var(--bg-main);
-      color: var(--text-main);
-    }
-
-    .unpaid-summary-banner {
+    .glow-alert-card {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--amber-light);
-      border: 1px solid var(--amber);
-      padding: 12px 16px;
-      border-radius: var(--radius-sm);
-      color: var(--amber-dark);
-      font-weight: 700;
-      font-size: 14px;
+      border-radius: var(--radius-card);
+      padding: 18px 22px;
+      font-size: 13.5px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.16);
+      border: 1.5px solid rgba(245, 158, 11, 0.45);
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15);
     }
 
     @media (max-width: 960px) {
-      header {
-        flex-direction: column;
-        align-items: stretch;
+      body {
+        padding: 18px 12px 64px 12px;
       }
-      .header-actions {
-        justify-content: flex-start;
-      }
-      .dashboard-grid {
+      .metrics-grid {
         grid-template-columns: 1fr;
       }
-      .calendar-toolbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
+      .floating-header {
+        border-radius: var(--radius-card);
       }
-      .calendar-nav {
-        justify-content: space-between;
+      .calendar-navbar {
+        padding: 18px;
       }
-      .day-cell {
-        min-height: 85px;
-        padding: 6px 4px;
+      .calendar-day-tile {
+        min-height: 84px;
+        padding: 6px;
       }
-      .drawer {
-        width: 100vw;
-      }
-      .calc-row {
+      .calc-matrix {
         grid-template-columns: 1fr;
       }
     }
@@ -1452,332 +1352,350 @@
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <div class="app-brand">
-        <div class="brand-icon">₩</div>
-        <div class="brand-text">
+  <!-- Ambient Fluid Canvas -->
+  <div class="aurora-canvas">
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
+    <div class="aurora-blob blob-4"></div>
+  </div>
+
+  <div class="app-viewport">
+    
+    <!-- Floating Header -->
+    <header class="glass-island floating-header">
+      <div class="header-brand">
+        <div class="brand-orb">₩</div>
+        <div class="brand-title">
           <h1>프리랜서메이커</h1>
-          <p>어디서나 동기화되는 스마트 업무·수입 플래너</p>
         </div>
       </div>
 
       <div class="header-actions">
-        <div class="theme-controller">
-          <label class="color-picker-btn" title="테마 색상 변경">
-            <input type="color" id="customColorPicker" value="#2563eb" aria-label="테마 색상 선택">
-          </label>
-          <button type="button" class="btn-dark-toggle" id="btnDarkModeToggle" title="다크 모드 토글">🌙</button>
-        </div>
+        <button type="button" class="glass-expand-btn" id="btnDarkModeToggle" title="화면 모드 전환">
+          <span class="btn-icon">🌓</span>
+          <span class="btn-label">화면 모드</span>
+        </button>
 
-        <div class="auth-section">
-          <label class="keep-login-wrap" title="브라우저를 닫았다 다시 열어도 로그인 상태를 유지합니다.">
-            <input type="checkbox" id="keepLoginCheckbox" checked>
-            <span>로그인 상태 유지</span>
+        <button type="button" class="glass-expand-btn amber" id="openUnpaidModalBtn" title="미입금 모아보기">
+          <span class="btn-icon">⚠</span>
+          <span class="btn-label">미입금 모아보기</span>
+        </button>
+
+        <button type="button" class="glass-expand-btn emerald" id="btnExportCSV" title="엑셀(CSV) 다운로드">
+          <span class="btn-icon">📥</span>
+          <span class="btn-label">CSV 내보내기</span>
+        </button>
+
+        <button type="button" class="glass-expand-btn primary" id="openRoutineModalBtn" title="반복 루틴 관리">
+          <span class="btn-icon">⟳</span>
+          <span class="btn-label">루틴 관리</span>
+        </button>
+
+        <div class="auth-glass-pill">
+          <label class="persist-label" title="브라우저 재실행 시 로그인 상태 유지">
+            <input type="checkbox" id="keepLoginCheckbox" class="glass-check" checked>
+            <span>유지</span>
           </label>
-          <button class="btn-google-login" id="btnGoogleLogin">
-            <svg width="18" height="18" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            구글 계정으로 로그인
+
+          <button class="btn-login-pill" id="btnGoogleLogin">
+            구글 로그인
           </button>
 
-          <div class="user-profile-bar" id="userProfileBar">
-            <img src="" alt="Avatar" class="user-avatar" id="userAvatar">
-            <div class="user-meta">
-              <span class="user-name">
-                <span id="userName">사용자</span>
-                <span class="sync-indicator" title="클라우드 실시간 동기화 중"></span>
+          <div class="user-profile-widget" id="userProfileBar">
+            <img src="" alt="Avatar" class="user-avatar-glass" id="userAvatar">
+            <div class="user-info-text">
+              <span class="user-info-name">
+                <span id="userName">프리랜서</span>
+                <span class="pulse-dot" title="클라우드 동기화 활성"></span>
               </span>
-              <span class="user-email" id="userEmail">user@gmail.com</span>
+              <span class="user-info-email" id="userEmail"></span>
             </div>
-            <button class="btn-logout" id="btnLogout">로그아웃</button>
+            <button class="btn-login-pill" style="padding: 4px 10px; font-size: 11px; background: rgba(0,0,0,0.06); color: var(--text-main);" id="btnLogout">로그아웃</button>
           </div>
         </div>
-
-        <button class="btn-action-tool amber" id="openUnpaidModalBtn">
-          <span>⚠</span> 미입금 모아보기
-        </button>
-
-        <button class="btn-action-tool emerald" id="btnExportCSV">
-          <span>📥</span> 엑셀(CSV) 다운로드
-        </button>
-
-        <button class="btn-action-tool primary" id="openRoutineModalBtn">
-          <span>⟳</span> 루틴 관리
-        </button>
       </div>
     </header>
 
-    <section class="dashboard-grid">
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-title">일간 수입 (세후)</span>
-          <span class="stat-sub" id="dailyDateLabel">선택일 기준</span>
+    <!-- Metrics Slab Grid -->
+    <section class="metrics-grid">
+      <div class="glass-island stat-glass-slab">
+        <div class="slab-header">
+          <div class="slab-title-group">
+            <span class="slab-category">일간 수입 (세후 3.3%)</span>
+            <span class="slab-sublabel" id="dailyDateLabel">선택일 기준</span>
+          </div>
         </div>
-        <div class="stat-value highlight" id="dailyIncomeValue">₩0</div>
-        <div class="stat-payment-split">
-          <div class="split-item paid"><span>입금완료:</span> <span id="dailyPaidValue">₩0</span></div>
-          <div class="split-item unpaid"><span>미입금:</span> <span id="dailyUnpaidValue">₩0</span></div>
+        <div class="slab-value" id="dailyIncomeValue">₩0</div>
+        <div class="slab-breakdown">
+          <span class="pill-badge paid">입금 <span id="dailyPaidValue">₩0</span></span>
+          <span class="pill-badge unpaid">미입금 <span id="dailyUnpaidValue">₩0</span></span>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-title">주간 수입 (세후)</span>
-          <span class="stat-sub" id="weeklyRangeLabel">이번 주 (월~일)</span>
+      <div class="glass-island stat-glass-slab">
+        <div class="slab-header">
+          <div class="slab-title-group">
+            <span class="slab-category">주간 수입 (세후 3.3%)</span>
+            <span class="slab-sublabel" id="weeklyRangeLabel">이번 주 (월~일)</span>
+          </div>
         </div>
-        <div class="stat-value highlight" id="weeklyIncomeValue">₩0</div>
-        <div class="stat-payment-split">
-          <div class="split-item paid"><span>입금완료:</span> <span id="weeklyPaidValue">₩0</span></div>
-          <div class="split-item unpaid"><span>미입금:</span> <span id="weeklyUnpaidValue">₩0</span></div>
+        <div class="slab-value" id="weeklyIncomeValue">₩0</div>
+        <div class="slab-breakdown">
+          <span class="pill-badge paid">입금 <span id="weeklyPaidValue">₩0</span></span>
+          <span class="pill-badge unpaid">미입금 <span id="weeklyUnpaidValue">₩0</span></span>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-title">기간별 수입 분석 (세후)</span>
-          <div class="range-presets">
-            <button type="button" class="btn-preset active" data-preset="4weeks">최근 4주</button>
-            <button type="button" class="btn-preset" data-preset="thisMonth">이번 달</button>
-            <button type="button" class="btn-preset" data-preset="lastMonth">지난 달</button>
+      <div class="glass-island stat-glass-slab">
+        <div class="slab-header">
+          <div class="slab-title-group">
+            <span class="slab-category">기간 분석 (세후)</span>
+            <div class="range-date-inputs">
+              <input type="date" id="rangeStartDate" class="glass-input-compact" aria-label="시작일">
+              <span style="font-size:12px; font-weight:700; opacity:0.6;">~</span>
+              <input type="date" id="rangeEndDate" class="glass-input-compact" aria-label="종료일">
+            </div>
+          </div>
+          <div class="range-selector">
+            <button type="button" class="btn-preset active" data-preset="4weeks">4주</button>
+            <button type="button" class="btn-preset" data-preset="thisMonth">당월</button>
+            <button type="button" class="btn-preset" data-preset="lastMonth">전월</button>
           </div>
         </div>
 
-        <div class="range-inputs-row">
-          <input type="date" id="rangeStartDate" class="date-range-input" aria-label="시작 날짜">
-          <span class="range-sep">~</span>
-          <input type="date" id="rangeEndDate" class="date-range-input" aria-label="종료 날짜">
-        </div>
+        <div class="slab-value" id="rangeIncomeValue">₩0</div>
 
-        <div class="stat-value highlight" id="rangeIncomeValue">₩0</div>
-
-        <div class="stat-payment-split">
-          <div class="split-item paid"><span>입금완료:</span> <span id="rangePaidValue">₩0</span></div>
-          <div class="split-item unpaid"><span>미입금:</span> <span id="rangeUnpaidValue">₩0</span></div>
-          <div class="split-item" style="color: var(--text-light); margin-left: auto;">
-            <span id="rangeMetaInfo">28일간</span>
+        <div>
+          <div class="slab-breakdown">
+            <span class="pill-badge paid">입금 <span id="rangePaidValue">₩0</span></span>
+            <span class="pill-badge unpaid">미입금 <span id="rangeUnpaidValue">₩0</span></span>
+            <span class="pill-badge neutral" id="rangeMetaInfo">28일간</span>
           </div>
+          <div class="liquid-chart-rack" id="chartContainer"></div>
         </div>
-
-        <div class="chart-container" id="chartContainer"></div>
       </div>
     </section>
 
-    <main class="calendar-card">
-      <div class="calendar-toolbar">
-        <div class="calendar-nav">
-          <h2 class="current-month-label" id="currentMonthLabel">2026년 9월</h2>
-          <div class="btn-group">
-            <button class="btn-icon" id="prevMonthBtn" title="이전 달">←</button>
-            <button class="btn-icon" id="nextMonthBtn" title="다음 달">→</button>
-          </div>
+    <!-- Calendar Canvas -->
+    <main class="glass-island calendar-island">
+      <div class="calendar-navbar">
+        <h2 class="current-month-display" id="currentMonthLabel">2026년 9월</h2>
+        <div class="nav-ctrl-group">
+          <button class="btn-login-pill" style="background:var(--glass-bg); color:var(--text-main);" id="prevMonthBtn" title="이전 달">&larr; 이전 달</button>
+          <button class="btn-login-pill" id="todayBtn">오늘</button>
+          <button class="btn-login-pill" style="background:var(--glass-bg); color:var(--text-main);" id="nextMonthBtn" title="다음 달">다음 달 &rarr;</button>
         </div>
-        <button class="btn-today" id="todayBtn">오늘</button>
       </div>
 
-      <div class="calendar-weekdays">
-        <div class="weekday">월</div>
-        <div class="weekday">화</div>
-        <div class="weekday">수</div>
-        <div class="weekday">목</div>
-        <div class="weekday">금</div>
-        <div class="weekday">토</div>
-        <div class="weekday">일</div>
+      <div class="calendar-weekdays-row">
+        <div class="weekday-item">월</div>
+        <div class="weekday-item">화</div>
+        <div class="weekday-item">수</div>
+        <div class="weekday-item">목</div>
+        <div class="weekday-item">금</div>
+        <div class="weekday-item">토</div>
+        <div class="weekday-item">일</div>
       </div>
 
-      <div class="calendar-days" id="calendarDays"></div>
+      <div class="calendar-cells-matrix" id="calendarDays"></div>
     </main>
   </div>
 
-  <div class="drawer-overlay" id="drawerOverlay">
-    <div class="drawer">
-      <div class="drawer-header">
-        <div class="drawer-title-group">
-          <h2 id="drawerDateTitle">2026년 9월 2일 (수)</h2>
-          <div class="drawer-summary-badges">
-            <span class="drawer-badge total" id="drawerDailyTotal">총 ₩0</span>
-            <span class="drawer-badge paid" id="drawerPaidTotal">입금 ₩0</span>
-            <span class="drawer-badge unpaid" id="drawerUnpaidTotal">미입금 ₩0</span>
+  <!-- Task Registration Drawer -->
+  <div class="drawer-scrim" id="drawerOverlay">
+    <div class="liquid-drawer-sheet">
+      <div class="drawer-banner">
+        <div>
+          <h2 id="drawerDateTitle">2026년 9월 10일</h2>
+          <div class="drawer-summary-pills">
+            <span class="pill-badge total" id="drawerDailyTotal">총 ₩0</span>
+            <span class="pill-badge paid" id="drawerPaidTotal">입금 ₩0</span>
+            <span class="pill-badge unpaid" id="drawerUnpaidTotal">미입금 ₩0</span>
           </div>
         </div>
-        <button class="drawer-close-btn" id="drawerCloseBtn">×</button>
+        <button class="glass-expand-btn" style="padding: 6px 12px;" id="drawerCloseBtn" aria-label="닫기">✕</button>
       </div>
 
-      <div class="drawer-body">
-        <div class="form-box">
-          <div class="form-box-title" id="formModeTitle">새 업무 등록</div>
+      <div class="drawer-content-scroll">
+        <div class="glass-form-slab">
+          <div class="form-slab-title" id="formModeTitle">✦ 새 업무 등록</div>
           <form id="taskForm">
             <input type="hidden" id="editingTaskId" value="">
-            <div class="form-group">
+            
+            <div class="field-block">
               <label for="taskDate">일정 날짜</label>
-              <input type="date" id="taskDate" class="form-control" required>
-              <div class="form-help">수정할 때 날짜를 바꾸면 해당 업무가 새 날짜로 이동합니다.</div>
+              <input type="date" id="taskDate" class="glass-input-well" required>
             </div>
-            <div class="form-group">
+
+            <div class="field-block">
               <label for="taskTitle">업무명</label>
-              <input type="text" id="taskTitle" class="form-control" placeholder="예: 상세페이지 제작" required>
+              <input type="text" id="taskTitle" class="glass-input-well" placeholder="예: 리퀴드 UI 디자인 개발" required>
             </div>
 
-            <div class="calc-row">
-              <div class="form-group">
+            <div class="calc-matrix field-block">
+              <div>
                 <label for="taskUnitPrice">단가 (₩)</label>
-                <input type="text" id="taskUnitPrice" class="form-control" placeholder="0" inputmode="numeric">
+                <input type="text" id="taskUnitPrice" class="glass-input-well" placeholder="0" inputmode="numeric">
               </div>
-              <div class="form-group">
+              <div>
                 <label for="taskCount">건수</label>
-                <input type="number" id="taskCount" class="form-control" value="1" min="1" step="1">
+                <input type="number" id="taskCount" class="glass-input-well" value="1" min="1" step="1">
               </div>
-              <div class="form-group">
-                <label for="taskAmount">총 수입 (₩)</label>
-                <input type="text" id="taskAmount" class="form-control calc-result-input" placeholder="0" inputmode="numeric">
+              <div>
+                <label for="taskAmount">총 청구액 (₩)</label>
+                <input type="text" id="taskAmount" class="glass-input-well" placeholder="0" inputmode="numeric" style="font-weight:700;">
               </div>
             </div>
 
-            <div class="tax-deduction-wrap">
+            <div class="toggle-row">
               <label>
-                <input type="checkbox" id="taskTaxDeduction">
-                <span>3.3% 사업소득세(원천징수) 공제 적용</span>
+                <input type="checkbox" id="taskTaxDeduction" class="glass-check">
+                <span>3.3% 사업소득세 원천징수 공제 적용</span>
               </label>
-              <span class="net-income-preview" id="taskNetIncomeDisplay"></span>
+              <span class="net-income-preview" id="taskNetIncomeDisplay" style="color:var(--accent-blue); font-weight:800;"></span>
             </div>
 
-            <div class="payment-toggle-wrap">
-              <input type="checkbox" id="taskIsPaid">
-              <label for="taskIsPaid">입금 완료 처리 (체크 해제 시 '미입금')</label>
+            <label class="liquid-switch-banner">
+              <input type="checkbox" id="taskIsPaid" class="glass-check">
+              <span>입금 완료 처리 (체크 해제 시 '미입금')</span>
+            </label>
+
+            <div class="field-block">
+              <label for="taskMemo">클라이언트 / 특이사항 메모</label>
+              <input type="text" id="taskMemo" class="glass-input-well" placeholder="특이사항 입력">
             </div>
 
-            <div class="form-group">
-              <label for="taskMemo">메모 / 클라이언트 정보</label>
-              <input type="text" id="taskMemo" class="form-control" placeholder="특이사항 입력">
-            </div>
-
-            <div class="form-actions">
-              <button type="submit" class="btn-submit" id="btnSubmit">업무 추가</button>
-              <button type="button" class="btn-cancel" id="btnCancelEdit">취소</button>
+            <div style="display:flex; gap:8px; margin-top:16px;">
+              <button type="submit" class="btn-login-pill" id="btnSubmit" style="flex:1; padding:12px; justify-content:center;">
+                업무 등록 확정
+              </button>
+              <button type="button" class="btn-login-pill" id="btnCancelEdit" style="display:none; padding:12px 18px; background:rgba(0,0,0,0.06); color:var(--text-main);">
+                취소
+              </button>
             </div>
           </form>
         </div>
 
         <div>
-          <div class="task-list-title">일일 업무 목록</div>
-          <div class="task-list" id="taskList"></div>
+          <div class="form-slab-title">일일 업무 목록</div>
+          <div style="display:flex; flex-direction:column; gap:10px;" id="taskList"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal-overlay" id="routineModalOverlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>루틴 업무 관리</h3>
-        <button class="drawer-close-btn" id="closeRoutineModalBtn">×</button>
+  <!-- Routine Management Modal -->
+  <div class="modal-scrim" id="routineModalOverlay">
+    <div class="glass-island liquid-dialog-window">
+      <div class="dialog-header">
+        <h3>반복 루틴 일정 관리</h3>
+        <button class="glass-expand-btn" style="padding: 6px 12px;" id="closeRoutineModalBtn" aria-label="닫기">✕</button>
       </div>
 
-      <div class="routine-tabs">
-        <button type="button" class="routine-tab-btn active" id="tabBtnRoutineList">등록된 루틴 목록</button>
-        <button type="button" class="routine-tab-btn" id="tabBtnRoutineCreate">+ 새 루틴 등록</button>
+      <div class="dialog-segmented-tabs">
+        <button type="button" class="seg-tab-btn active" id="tabBtnRoutineList">등록된 루틴 목록</button>
+        <button type="button" class="seg-tab-btn" id="tabBtnRoutineCreate">+ 새 루틴 등록</button>
       </div>
 
-      <div class="routine-tab-pane active" id="paneRoutineList">
-        <div class="task-list" id="routineGroupList"></div>
+      <div class="dialog-body" id="paneRoutineList">
+        <div style="display:flex; flex-direction:column; gap:10px;" id="routineGroupList"></div>
       </div>
 
-      <form id="routineForm" class="routine-tab-pane">
+      <form id="routineForm" class="dialog-body" style="display:none;">
         <input type="hidden" id="editingRoutineGroupId" value="">
-        <div class="form-group">
+        
+        <div class="field-block">
           <label for="routineTitle">업무명</label>
-          <input type="text" id="routineTitle" class="form-control" placeholder="예: 주간 정기 블로그 포스팅" required>
+          <input type="text" id="routineTitle" class="glass-input-well" placeholder="예: 주간 정기 리포트 발행" required>
         </div>
 
-        <div class="calc-row">
-          <div class="form-group">
+        <div class="calc-matrix field-block">
+          <div>
             <label for="routineUnitPrice">단가 (₩)</label>
-            <input type="text" id="routineUnitPrice" class="form-control" placeholder="0" inputmode="numeric">
+            <input type="text" id="routineUnitPrice" class="glass-input-well" placeholder="0" inputmode="numeric">
           </div>
-          <div class="form-group">
+          <div>
             <label for="routineCount">건수</label>
-            <input type="number" id="routineCount" class="form-control" value="1" min="1" step="1">
+            <input type="number" id="routineCount" class="glass-input-well" value="1" min="1" step="1">
           </div>
-          <div class="form-group">
+          <div>
             <label for="routineAmount">1회 총액 (₩)</label>
-            <input type="text" id="routineAmount" class="form-control calc-result-input" placeholder="0" inputmode="numeric">
+            <input type="text" id="routineAmount" class="glass-input-well" placeholder="0" inputmode="numeric" style="font-weight:700;">
           </div>
         </div>
 
-        <div class="tax-deduction-wrap">
+        <div class="toggle-row">
           <label>
-            <input type="checkbox" id="routineTaxDeduction">
-            <span>3.3% 원천징수 적용</span>
+            <input type="checkbox" id="routineTaxDeduction" class="glass-check">
+            <span>3.3% 원천징수 공제 적용</span>
           </label>
         </div>
 
         <div id="routineRepeatConfigSection">
-          <div class="form-group">
+          <div class="field-block">
             <label>반복 요일 (다중 선택)</label>
-            <div class="weekday-selector">
-              <div class="weekday-chip active" data-day="1">월</div>
-              <div class="weekday-chip" data-day="2">화</div>
-              <div class="weekday-chip" data-day="3">수</div>
-              <div class="weekday-chip" data-day="4">목</div>
-              <div class="weekday-chip" data-day="5">금</div>
-              <div class="weekday-chip" data-day="6">토</div>
-              <div class="weekday-chip" data-day="0">일</div>
+            <div class="weekday-pill-selector">
+              <div class="weekday-pill active" data-day="1">월</div>
+              <div class="weekday-pill" data-day="2">화</div>
+              <div class="weekday-pill" data-day="3">수</div>
+              <div class="weekday-pill" data-day="4">목</div>
+              <div class="weekday-pill" data-day="5">금</div>
+              <div class="weekday-pill" data-day="6">토</div>
+              <div class="weekday-pill" data-day="0">일</div>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="field-block">
             <label>반복 기간</label>
-            <div class="period-preset-group">
-              <button type="button" class="btn-period-preset" data-months="1">1개월</button>
-              <button type="button" class="btn-period-preset" data-months="3">3개월 (기본)</button>
-              <button type="button" class="btn-period-preset" data-months="6">6개월</button>
+            <div class="period-preset-group" style="display:flex; gap:6px; margin-bottom:8px;">
+              <button type="button" class="btn-preset btn-routine-preset" data-months="1">1개월</button>
+              <button type="button" class="btn-preset btn-routine-preset active" data-months="3">3개월 (기본)</button>
+              <button type="button" class="btn-preset btn-routine-preset" data-months="6">6개월</button>
             </div>
-            <div class="range-inputs-row">
-              <input type="date" id="routineStartDate" class="date-range-input" style="flex:1">
-              <span class="range-sep">~</span>
-              <input type="date" id="routineEndDate" class="date-range-input" style="flex:1">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <input type="date" id="routineStartDate" class="glass-input-well" style="flex:1;">
+              <span style="font-weight:700;">~</span>
+              <input type="date" id="routineEndDate" class="glass-input-well" style="flex:1;">
             </div>
           </div>
 
-          <div class="payment-toggle-wrap">
-            <input type="checkbox" id="routineIsPaid">
-            <label for="routineIsPaid">생성될 업무를 '입금 완료'로 등록</label>
-          </div>
+          <label class="liquid-switch-banner">
+            <input type="checkbox" id="routineIsPaid" class="glass-check">
+            <span>생성될 일정을 '입금 완료' 상태로 등록</span>
+          </label>
         </div>
 
-        <div class="form-group">
+        <div class="field-block">
           <label for="routineMemo">공통 메모</label>
-          <input type="text" id="routineMemo" class="form-control" placeholder="루틴 업무 메모">
+          <input type="text" id="routineMemo" class="glass-input-well" placeholder="루틴 특이사항">
         </div>
 
-        <div class="form-actions" style="margin-top: 8px;">
-          <button type="submit" class="btn-submit" id="btnSubmitRoutine" style="padding: 12px;">
-            지정한 기간에 일괄 생성
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button type="submit" class="btn-login-pill" id="btnSubmitRoutine" style="flex:1; padding:12px; justify-content:center;">
+            일정 일괄 생성
           </button>
-          <button type="button" class="btn-cancel" id="btnCancelEditRoutine" style="padding: 12px 16px;">
-            수정 취소
+          <button type="button" class="btn-login-pill" id="btnCancelEditRoutine" style="display:none; padding:12px 18px; background:rgba(0,0,0,0.06); color:var(--text-main);">
+            취소
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <div class="modal-overlay" id="unpaidModalOverlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>미입금 대금 모아보기</h3>
-        <button class="drawer-close-btn" id="closeUnpaidModalBtn">×</button>
+  <!-- Unpaid Claims Modal -->
+  <div class="modal-scrim" id="unpaidModalOverlay">
+    <div class="glass-island liquid-dialog-window">
+      <div class="dialog-header">
+        <h3>미입금 채권 모아보기</h3>
+        <button class="glass-expand-btn" style="padding: 6px 12px;" id="closeUnpaidModalBtn" aria-label="닫기">✕</button>
       </div>
-      <div class="modal-body">
-        <div class="unpaid-summary-banner">
-          <span>총 미수금 (공제 반영)</span>
+      <div class="dialog-body">
+        <div class="glow-alert-card">
+          <span>총 미수 잔액 (세후 공제 반영)</span>
           <span id="unpaidModalTotalSum">₩0 (0건)</span>
         </div>
-        <div class="task-list" id="unpaidTaskList"></div>
+        <div style="display:flex; flex-direction:column; gap:10px;" id="unpaidTaskList"></div>
       </div>
     </div>
   </div>
@@ -1810,50 +1728,27 @@
     let currentPreset = '4weeks';
 
     function initTheme() {
-      const savedHex = localStorage.getItem('freelancemaker_color_theme') || '#2563eb';
-      const isDarkMode = localStorage.getItem('freelancemaker_dark_mode') === 'dark';
-      
-      applyDarkMode(isDarkMode);
-      applyThemeColor(savedHex);
-    }
-
-    function applyThemeColor(hex) {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      
-      document.documentElement.style.setProperty('--primary', hex);
-      document.documentElement.style.setProperty('--primary-hover', `color-mix(in srgb, ${hex} 82%, black)`);
-      document.documentElement.style.setProperty('--primary-light', isDark 
-        ? `color-mix(in srgb, ${hex} 25%, transparent)` 
-        : `color-mix(in srgb, ${hex} 12%, white)`);
-
-      const picker = document.getElementById('customColorPicker');
-      if (picker) picker.value = hex;
-
-      localStorage.setItem('freelancemaker_color_theme', hex);
+      const isDark = localStorage.getItem('freelancemaker_liquid_dark') === 'true';
+      applyDarkMode(isDark);
     }
 
     function applyDarkMode(isDark) {
       const root = document.documentElement;
       const toggleBtn = document.getElementById('btnDarkModeToggle');
+      const iconSpan = toggleBtn.querySelector('.btn-icon');
+      const labelSpan = toggleBtn.querySelector('.btn-label');
 
       if (isDark) {
         root.setAttribute('data-theme', 'dark');
-        toggleBtn.textContent = '☀️';
-        toggleBtn.title = '라이트 모드로 전환';
+        if (iconSpan) iconSpan.textContent = '☀️';
+        if (labelSpan) labelSpan.textContent = '라이트 모드';
       } else {
         root.removeAttribute('data-theme');
-        toggleBtn.textContent = '🌙';
-        toggleBtn.title = '다크 모드로 전환';
+        if (iconSpan) iconSpan.textContent = '🌙';
+        if (labelSpan) labelSpan.textContent = '다크 모드';
       }
-
-      const currentHex = localStorage.getItem('freelancemaker_color_theme') || '#2563eb';
-      applyThemeColor(currentHex);
-      localStorage.setItem('freelancemaker_dark_mode', isDark ? 'dark' : 'light');
+      localStorage.setItem('freelancemaker_liquid_dark', isDark ? 'true' : 'false');
     }
-
-    const customPicker = document.getElementById('customColorPicker');
-    customPicker.addEventListener('input', e => applyThemeColor(e.target.value));
-    customPicker.addEventListener('change', e => applyThemeColor(e.target.value));
 
     document.getElementById('btnDarkModeToggle').addEventListener('click', () => {
       const isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1886,7 +1781,7 @@
             }
           });
         } catch (err) {
-          console.error('Firebase 초기화 실패:', err);
+          console.error('Firebase 초기화 오류:', err);
           loadLocalData();
         }
       } else {
@@ -1923,7 +1818,7 @@
         if (isUnpaidModalOpen()) renderUnpaidModalList();
         if (isRoutineModalOpen()) renderRoutineList();
       }, err => {
-        console.error('Firestore 동기화 오류:', err);
+        console.error('Firestore 실시간 동기화 실패:', err);
       });
     }
 
@@ -1946,7 +1841,7 @@
         tasks: tasksData,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       }).catch(err => {
-        console.error('클라우드 저장 실패:', err);
+        console.error('클라우드 동기화 오류:', err);
       });
     }
 
@@ -1960,7 +1855,7 @@
 
     async function handleGoogleLogin() {
       if (!fbAuth) {
-        alert('Firebase 초기화에 실패했습니다. 콘솔 설정을 확인해주세요.');
+        alert('인증 프로바이더를 사용할 수 없습니다.');
         return;
       }
 
@@ -1971,8 +1866,6 @@
         : firebase.auth.Auth.Persistence.SESSION;
 
       try {
-        // 체크 시 브라우저를 다시 열어도 로그인 상태를 유지하고,
-        // 해제 시 현재 브라우저 세션 동안만 로그인 상태를 유지합니다.
         await fbAuth.setPersistence(persistence);
         await fbAuth.signInWithPopup(provider);
       } catch (error) {
@@ -1995,7 +1888,7 @@
       if (isLoggedIn && currentUser) {
         btnLogin.style.display = 'none';
         profileBar.style.display = 'flex';
-        document.getElementById('userAvatar').src = currentUser.photoURL || 'https://lh3.googleusercontent.com/a/default-user';
+        document.getElementById('userAvatar').src = currentUser.photoURL || '';
         document.getElementById('userName').textContent = currentUser.displayName || '프리랜서';
         document.getElementById('userEmail').textContent = currentUser.email || '';
       } else {
@@ -2140,7 +2033,7 @@
     function updateDashboardStats() {
       const daily = getDailyMetrics(selectedDate);
       document.getElementById('dailyIncomeValue').textContent = formatKRW(daily.total);
-      document.getElementById('dailyDateLabel').textContent = `${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일 기준`;
+      document.getElementById('dailyDateLabel').textContent = `${selectedDate.getFullYear()}.${selectedDate.getMonth() + 1}.${selectedDate.getDate()}`;
       document.getElementById('dailyPaidValue').textContent = formatKRW(daily.paid);
       document.getElementById('dailyUnpaidValue').textContent = formatKRW(daily.unpaid);
 
@@ -2160,7 +2053,7 @@
       document.getElementById('rangeIncomeValue').textContent = formatKRW(range.total);
       document.getElementById('rangePaidValue').textContent = formatKRW(range.paid);
       document.getElementById('rangeUnpaidValue').textContent = formatKRW(range.unpaid);
-      document.getElementById('rangeMetaInfo').textContent = `${range.dayCount}일간 · 업무 ${range.count}건`;
+      document.getElementById('rangeMetaInfo').textContent = `${range.dayCount}일간 · ${range.count}건`;
 
       const chartContainer = document.getElementById('chartContainer');
       chartContainer.innerHTML = '';
@@ -2168,24 +2061,24 @@
 
       range.buckets.forEach(b => {
         const wrap = document.createElement('div');
-        wrap.className = 'chart-bar-wrap';
+        wrap.className = 'chart-pipe-wrap';
 
-        const barBg = document.createElement('div');
-        barBg.className = 'chart-bar-bg';
-        barBg.title = b.fullLabel;
+        const tube = document.createElement('div');
+        tube.className = 'chart-pipe-tube';
+        tube.title = b.fullLabel;
 
-        const barFill = document.createElement('div');
-        barFill.className = 'chart-bar-fill';
+        const fluid = document.createElement('div');
+        fluid.className = 'chart-pipe-fluid';
         const pct = Math.max(6, Math.round((b.sum / maxVal) * 100));
-        barFill.style.height = `${pct}%`;
+        fluid.style.height = `${pct}%`;
 
-        barBg.appendChild(barFill);
+        tube.appendChild(fluid);
 
         const label = document.createElement('span');
-        label.className = 'chart-label';
+        label.className = 'chart-pipe-label';
         label.textContent = b.label;
 
-        wrap.appendChild(barBg);
+        wrap.appendChild(tube);
         wrap.appendChild(label);
         chartContainer.appendChild(wrap);
       });
@@ -2195,7 +2088,7 @@
       const today = new Date();
       currentPreset = presetName;
 
-      document.querySelectorAll('.btn-preset').forEach(btn => {
+      document.querySelectorAll('.range-selector .btn-preset').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.preset === presetName);
       });
 
@@ -2250,7 +2143,7 @@
 
     function createDayCell(date, isOtherMonth) {
       const cell = document.createElement('div');
-      cell.className = 'day-cell' + (isOtherMonth ? ' other-month' : '');
+      cell.className = 'calendar-day-tile' + (isOtherMonth ? ' other-month' : '');
 
       const dateKey = formatDateKey(date);
       const todayKey = formatDateKey(new Date());
@@ -2265,35 +2158,35 @@
       const inProgressCount = items.length - completedCount;
 
       const topDiv = document.createElement('div');
-      topDiv.className = 'day-cell-top';
+      topDiv.className = 'tile-top-row';
       const numSpan = document.createElement('span');
-      numSpan.className = 'day-number';
+      numSpan.className = 'tile-day-pill';
       numSpan.textContent = date.getDate();
       topDiv.appendChild(numSpan);
       cell.appendChild(topDiv);
 
       const badgeContainer = document.createElement('div');
-      badgeContainer.className = 'day-cell-badges';
+      badgeContainer.className = 'tile-badges-stack';
 
       if (metrics.total > 0) {
         const incPill = document.createElement('div');
-        incPill.className = `income-pill ${metrics.unpaid > 0 ? 'has-unpaid' : 'all-paid'}`;
-        incPill.title = `총 실수령액: ${formatKRW(metrics.total)} (미입금: ${formatKRW(metrics.unpaid)})`;
-        incPill.innerHTML = `<span>+${formatKRW(metrics.total)}</span>${metrics.unpaid > 0 ? '<span style="font-size:9px;opacity:0.85">미입금</span>' : ''}`;
+        incPill.className = `tile-revenue-chip ${metrics.unpaid > 0 ? 'has-unpaid' : 'all-paid'}`;
+        incPill.title = `실수령액: ${formatKRW(metrics.total)} (미입금: ${formatKRW(metrics.unpaid)})`;
+        incPill.innerHTML = `<span>+${formatKRW(metrics.total)}</span>${metrics.unpaid > 0 ? '<span style="font-size:9.5px; opacity:0.9">미입금</span>' : ''}`;
         badgeContainer.appendChild(incPill);
       }
 
       if (items.length > 0) {
         if (inProgressCount > 0) {
           const progBadge = document.createElement('div');
-          progBadge.className = 'task-badge in-progress';
-          progBadge.innerHTML = `<span class="task-dot in-progress"></span> 진행중 ${inProgressCount}건`;
+          progBadge.className = 'tile-task-chip';
+          progBadge.innerHTML = `<span class="chip-neon-dot"></span> 진행 ${inProgressCount}건`;
           badgeContainer.appendChild(progBadge);
         }
         if (completedCount > 0) {
           const doneBadge = document.createElement('div');
-          doneBadge.className = 'task-badge completed';
-          doneBadge.innerHTML = `<span class="task-dot completed"></span> 완료 ${completedCount}건`;
+          doneBadge.className = 'tile-task-chip';
+          doneBadge.innerHTML = `<span class="chip-neon-dot done"></span> 완료 ${completedCount}건`;
           badgeContainer.appendChild(doneBadge);
         }
       }
@@ -2400,118 +2293,138 @@
       container.innerHTML = '';
 
       if (list.length === 0) {
-        container.innerHTML = '<div class="empty-state">등록된 업무가 없습니다.<br>새로운 업무를 등록해보세요!</div>';
+        container.innerHTML = '<div style="text-align:center; padding:32px 12px; color:var(--text-light); font-size:13px; font-weight:600;">등록된 업무가 없습니다.</div>';
         return;
       }
 
       list.forEach(task => {
         const item = document.createElement('div');
-        item.className = `task-item ${task.done ? 'completed' : ''}`;
+        item.className = `task-item-tile ${task.done ? 'completed' : ''}`;
 
         const checkWrap = document.createElement('div');
-        checkWrap.className = 'task-checkbox-wrap';
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.className = 'task-checkbox';
+        checkbox.className = 'glass-check';
         checkbox.checked = task.done;
+        checkbox.setAttribute('aria-label', '완료 처리');
         checkbox.addEventListener('change', () => toggleTaskDone(task.id));
         checkWrap.appendChild(checkbox);
 
-        const info = document.createElement('div');
-        info.className = 'task-info';
-        
-        const headerRow = document.createElement('div');
-        headerRow.className = 'task-header-row';
+        const details = document.createElement('div');
+        details.className = 'task-details';
 
-        const title = document.createElement('div');
-        title.className = 'task-item-title';
+        const titleLine = document.createElement('div');
+        titleLine.className = 'task-title-line';
+
+        const title = document.createElement('span');
+        title.className = 'task-name-text';
         title.textContent = task.title;
-        headerRow.appendChild(title);
+        titleLine.appendChild(title);
 
         if (task.isRoutine) {
           const rBadge = document.createElement('span');
-          rBadge.className = 'routine-badge';
+          rBadge.className = 'pill-badge';
+          rBadge.style.fontSize = '10px';
+          rBadge.style.padding = '2px 8px';
           rBadge.textContent = '루틴';
-          headerRow.appendChild(rBadge);
+          titleLine.appendChild(rBadge);
         }
 
         if (task.taxDeduction) {
           const tBadge = document.createElement('span');
-          tBadge.className = 'tax-badge';
-          tBadge.textContent = '3.3%공제';
-          headerRow.appendChild(tBadge);
+          tBadge.className = 'pill-badge';
+          tBadge.style.fontSize = '10px';
+          tBadge.style.padding = '2px 8px';
+          tBadge.textContent = '3.3% 공제';
+          titleLine.appendChild(tBadge);
         }
 
-        info.appendChild(headerRow);
+        details.appendChild(titleLine);
 
         if (task.unitPrice > 0 || task.count > 1) {
           const calcInfo = document.createElement('div');
-          calcInfo.className = 'task-item-calc';
+          calcInfo.className = 'task-calc-info';
           calcInfo.textContent = `단가: ${formatKRW(task.unitPrice || task.amount)} × ${task.count || 1}건`;
-          info.appendChild(calcInfo);
+          details.appendChild(calcInfo);
         }
 
         if (task.memo && task.memo.trim() !== '') {
           const memo = document.createElement('div');
-          memo.className = 'task-item-memo';
+          memo.className = 'task-memo-text';
           memo.textContent = task.memo;
-          info.appendChild(memo);
+          details.appendChild(memo);
         }
 
-        const bottomRow = document.createElement('div');
-        bottomRow.className = 'task-bottom-row';
+        const bottomMeta = document.createElement('div');
+        bottomMeta.className = 'task-bottom-meta';
 
-        const incomeBox = document.createElement('div');
-        incomeBox.className = 'income-display-box';
-
+        const amtBox = document.createElement('div');
         const effectiveAmt = getTaskEffectiveAmount(task);
         const amount = document.createElement('div');
-        amount.className = 'task-item-income';
+        amount.className = 'task-income-amt';
         amount.textContent = `+${formatKRW(effectiveAmt)}`;
-        incomeBox.appendChild(amount);
+        amtBox.appendChild(amount);
 
         if (task.taxDeduction) {
           const net = document.createElement('div');
-          net.className = 'task-item-net';
+          net.style.cssText = 'font-size:11px; color:var(--text-light); font-weight:700; font-family:var(--font-mono);';
           net.textContent = `(원금 ${formatKRW(task.amount)} · 세후)`;
-          incomeBox.appendChild(net);
+          amtBox.appendChild(net);
         }
 
-        bottomRow.appendChild(incomeBox);
+        bottomMeta.appendChild(amtBox);
 
-        const paidBtn = document.createElement('button');
-        paidBtn.type = 'button';
-        paidBtn.className = `btn-payment-badge ${task.isPaid ? 'paid' : 'unpaid'}`;
-        paidBtn.innerHTML = task.isPaid ? '✓ 입금완료' : '⚠ 미입금';
-        paidBtn.title = '클릭하여 입금 상태 전환';
-        paidBtn.addEventListener('click', e => {
+        const payToggle = document.createElement('label');
+        payToggle.className = `payment-check-toggle ${task.isPaid ? 'paid' : 'unpaid'}`;
+        payToggle.title = '클릭하여 입금 상태 변경';
+
+        const payCheck = document.createElement('input');
+        payCheck.type = 'checkbox';
+        payCheck.className = 'payment-check-box';
+        payCheck.checked = !!task.isPaid;
+        payCheck.addEventListener('change', e => {
           e.stopPropagation();
           togglePaymentStatus(task.id, selectedDate);
         });
-        bottomRow.appendChild(paidBtn);
 
-        info.appendChild(bottomRow);
+        const payText = document.createElement('span');
+        payText.className = 'payment-status-text';
+        payText.textContent = task.isPaid ? '입금완료' : '미입금';
+
+        payToggle.appendChild(payCheck);
+        payToggle.appendChild(payText);
+        bottomMeta.appendChild(payToggle);
+
+        details.appendChild(bottomMeta);
 
         const actions = document.createElement('div');
-        actions.className = 'task-actions';
+        actions.style.display = 'flex';
+        actions.style.gap = '4px';
 
         const editBtn = document.createElement('button');
-        editBtn.className = 'btn-action-icon';
-        editBtn.title = '수정';
-        editBtn.innerHTML = '✎';
+        editBtn.className = 'btn-login-pill';
+        editBtn.style.padding = '4px 8px';
+        editBtn.style.fontSize = '11px';
+        editBtn.style.background = 'var(--glass-bg)';
+        editBtn.style.color = 'var(--text-main)';
+        editBtn.textContent = '수정';
         editBtn.addEventListener('click', () => startEditTask(task));
 
         const delBtn = document.createElement('button');
-        delBtn.className = 'btn-action-icon delete';
-        delBtn.title = '삭제';
-        delBtn.innerHTML = '🗑';
+        delBtn.className = 'btn-login-pill';
+        delBtn.style.padding = '4px 8px';
+        delBtn.style.fontSize = '11px';
+        delBtn.style.background = 'rgba(225, 29, 72, 0.14)';
+        delBtn.style.color = 'var(--accent-rose)';
+        delBtn.style.borderColor = 'rgba(225, 29, 72, 0.35)';
+        delBtn.textContent = '삭제';
         delBtn.addEventListener('click', () => deleteTask(task.id));
 
         actions.appendChild(editBtn);
         actions.appendChild(delBtn);
 
         item.appendChild(checkWrap);
-        item.appendChild(info);
+        item.appendChild(details);
         item.appendChild(actions);
 
         container.appendChild(item);
@@ -2548,7 +2461,7 @@
     }
 
     function startEditTask(task) {
-      document.getElementById('formModeTitle').textContent = '업무 내용 수정';
+      document.getElementById('formModeTitle').textContent = '✦ 업무 내용 수정';
       document.getElementById('editingTaskId').value = task.id;
       document.getElementById('taskDate').value = formatDateKey(selectedDate);
       document.getElementById('taskTitle').value = task.title;
@@ -2563,12 +2476,12 @@
       document.getElementById('taskMemo').value = task.memo || '';
       
       updateNetIncomeDisplay();
-      document.getElementById('btnSubmit').textContent = '수정 완료';
-      document.getElementById('btnCancelEdit').style.display = 'block';
+      document.getElementById('btnSubmit').textContent = '수정 내용 저장';
+      document.getElementById('btnCancelEdit').style.display = 'inline-flex';
     }
 
     function resetForm() {
-      document.getElementById('formModeTitle').textContent = '새 업무 등록';
+      document.getElementById('formModeTitle').textContent = '✦ 새 업무 등록';
       document.getElementById('editingTaskId').value = '';
       syncTaskDateInput();
       document.getElementById('taskTitle').value = '';
@@ -2579,7 +2492,7 @@
       document.getElementById('taskNetIncomeDisplay').textContent = '';
       document.getElementById('taskIsPaid').checked = false;
       document.getElementById('taskMemo').value = '';
-      document.getElementById('btnSubmit').textContent = '업무 추가';
+      document.getElementById('btnSubmit').textContent = '업무 등록 확정';
       document.getElementById('btnCancelEdit').style.display = 'none';
     }
 
@@ -2661,12 +2574,6 @@
     }
 
     function openRoutineModal() {
-      const today = new Date();
-      document.getElementById('routineStartDate').value = formatDateKey(today);
-      const threeMonthsLater = new Date(today);
-      threeMonthsLater.setMonth(today.getMonth() + 3);
-      document.getElementById('routineEndDate').value = formatDateKey(threeMonthsLater);
-
       switchRoutineTab('list');
       renderRoutineList();
       routineModal.classList.add('active');
@@ -2681,8 +2588,8 @@
       const isList = tab === 'list';
       document.getElementById('tabBtnRoutineList').classList.toggle('active', isList);
       document.getElementById('tabBtnRoutineCreate').classList.toggle('active', !isList);
-      document.getElementById('paneRoutineList').classList.toggle('active', isList);
-      document.getElementById('routineForm').classList.toggle('active', !isList);
+      document.getElementById('paneRoutineList').style.display = isList ? 'flex' : 'none';
+      document.getElementById('routineForm').style.display = isList ? 'none' : 'flex';
 
       if (isList) {
         resetRoutineForm();
@@ -2702,11 +2609,22 @@
       document.getElementById('routineCount').value = '1';
       document.getElementById('tabBtnRoutineCreate').textContent = '+ 새 루틴 등록';
       document.getElementById('routineRepeatConfigSection').style.display = 'block';
-      document.getElementById('btnSubmitRoutine').textContent = '지정한 기간에 일괄 생성';
+      document.getElementById('btnSubmitRoutine').textContent = '일정 일괄 생성';
       document.getElementById('btnCancelEditRoutine').style.display = 'none';
 
-      document.querySelectorAll('.weekday-chip').forEach((chip, idx) => {
+      // 시작일자(오늘) 및 종료일자(기본 3개월) 자동 초기화
+      const today = new Date();
+      document.getElementById('routineStartDate').value = formatDateKey(today);
+      const threeMonthsLater = new Date(today);
+      threeMonthsLater.setMonth(today.getMonth() + 3);
+      document.getElementById('routineEndDate').value = formatDateKey(threeMonthsLater);
+
+      document.querySelectorAll('.weekday-pill').forEach((chip, idx) => {
         chip.classList.toggle('active', idx === 0);
+      });
+
+      document.querySelectorAll('.btn-routine-preset').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.months === '3');
       });
     }
 
@@ -2744,51 +2662,56 @@
       const groupArray = Object.values(routineGroups);
 
       if (groupArray.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            등록된 루틴 업무가 없습니다.<br>
-            상단의 <strong>'+ 새 루틴 등록'</strong> 탭에서 반복 업무를 일괄 등록해보세요!
-          </div>
-        `;
+        container.innerHTML = '<div style="text-align:center; padding:36px; color:var(--text-light); font-size:13px; font-weight:600;">등록된 루틴 업무가 없습니다.</div>';
         return;
       }
 
       groupArray.forEach(group => {
         const card = document.createElement('div');
-        card.className = 'routine-card';
+        card.className = 'task-item-tile';
 
         const info = document.createElement('div');
-        info.className = 'routine-card-info';
+        info.style.flex = '1';
 
         const titleDiv = document.createElement('div');
-        titleDiv.className = 'routine-card-title';
+        titleDiv.className = 'task-title-line';
         titleDiv.innerHTML = `
-          <span>${group.title}</span>
-          <span class="routine-badge">총 ${group.itemsCount}건</span>
-          ${group.taxDeduction ? '<span class="tax-badge">3.3%공제</span>' : ''}
+          <span class="task-name-text">${group.title}</span>
+          <span class="pill-badge">${group.itemsCount}건</span>
+          ${group.taxDeduction ? '<span class="pill-badge">3.3% 공제</span>' : ''}
         `;
 
         const metaDiv = document.createElement('div');
-        metaDiv.className = 'routine-card-meta';
+        metaDiv.className = 'task-calc-info';
         const displayAmt = group.taxDeduction ? Math.round(group.amount * 0.967) : group.amount;
-        metaDiv.textContent = `1회: ${formatKRW(displayAmt)}${group.taxDeduction ? ' (세후)' : ''} · 등록 기간: ${group.firstDate} ~ ${group.lastDate}`;
+        metaDiv.textContent = `1회: ${formatKRW(displayAmt)} · 등록 기간: ${group.firstDate} ~ ${group.lastDate}`;
 
         info.appendChild(titleDiv);
         info.appendChild(metaDiv);
 
         const actions = document.createElement('div');
-        actions.className = 'routine-card-actions';
+        actions.style.display = 'flex';
+        actions.style.gap = '6px';
 
         const editBtn = document.createElement('button');
         editBtn.type = 'button';
-        editBtn.className = 'btn-edit-routine-group';
+        editBtn.className = 'btn-login-pill';
+        editBtn.style.padding = '5px 10px';
+        editBtn.style.fontSize = '11px';
+        editBtn.style.background = 'var(--glass-bg)';
+        editBtn.style.color = 'var(--text-main)';
         editBtn.textContent = '수정';
         editBtn.addEventListener('click', () => startEditRoutineGroup(group));
 
         const delBtn = document.createElement('button');
         delBtn.type = 'button';
-        delBtn.className = 'btn-del-routine-group';
-        delBtn.textContent = '전체 삭제';
+        delBtn.className = 'btn-login-pill';
+        delBtn.style.padding = '5px 10px';
+        delBtn.style.fontSize = '11px';
+        delBtn.style.background = 'rgba(225, 29, 72, 0.14)';
+        delBtn.style.color = 'var(--accent-rose)';
+        delBtn.style.borderColor = 'rgba(225, 29, 72, 0.35)';
+        delBtn.textContent = '삭제';
         delBtn.addEventListener('click', () => deleteRoutineGroup(group.groupKey, group.title, group.itemsCount));
 
         actions.appendChild(editBtn);
@@ -2802,7 +2725,7 @@
 
     function startEditRoutineGroup(group) {
       switchRoutineTab('create');
-      document.getElementById('tabBtnRoutineCreate').textContent = '✏️ 루틴 일괄 수정';
+      document.getElementById('tabBtnRoutineCreate').textContent = '루틴 수정';
       document.getElementById('editingRoutineGroupId').value = group.groupKey;
       document.getElementById('routineTitle').value = group.title;
 
@@ -2815,8 +2738,8 @@
       document.getElementById('routineMemo').value = group.memo || '';
 
       document.getElementById('routineRepeatConfigSection').style.display = 'none';
-      document.getElementById('btnSubmitRoutine').textContent = `생성된 ${group.itemsCount}건 일괄 수정 완료`;
-      document.getElementById('btnCancelEditRoutine').style.display = 'block';
+      document.getElementById('btnSubmitRoutine').textContent = `일괄 수정 완료 (${group.itemsCount}건)`;
+      document.getElementById('btnCancelEditRoutine').style.display = 'inline-flex';
     }
 
     document.getElementById('btnCancelEditRoutine').addEventListener('click', () => {
@@ -2850,18 +2773,54 @@
       if (e.target.id === 'routineModalOverlay') closeRoutineModal();
     });
 
-    document.querySelectorAll('.weekday-chip').forEach(chip => {
+    document.querySelectorAll('.weekday-pill').forEach(chip => {
       chip.addEventListener('click', () => chip.classList.toggle('active'));
     });
 
-    document.querySelectorAll('.btn-period-preset').forEach(btn => {
+    // 루틴 기간 프리셋 버튼 연동 (시작일 유지 및 종료일 갱신)
+    document.querySelectorAll('.btn-routine-preset').forEach(btn => {
       btn.addEventListener('click', () => {
         const months = parseInt(btn.dataset.months, 10);
-        const startVal = document.getElementById('routineStartDate').value;
-        const s = startVal ? parseDateKey(startVal) : new Date();
-        const e = new Date(s);
+        if (isNaN(months)) return;
+
+        document.querySelectorAll('.btn-routine-preset').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        let startVal = document.getElementById('routineStartDate').value;
+        let s = startVal ? parseDateKey(startVal) : new Date();
+        document.getElementById('routineStartDate').value = formatDateKey(s);
+
+        let e = new Date(s);
         e.setMonth(s.getMonth() + months);
         document.getElementById('routineEndDate').value = formatDateKey(e);
+      });
+    });
+
+    // 시작 날짜 변경 시 종료 날짜 자동 연동
+    const routineStartInput = document.getElementById('routineStartDate');
+    const routineEndInput = document.getElementById('routineEndDate');
+
+    routineStartInput.addEventListener('change', () => {
+      const sVal = routineStartInput.value;
+      if (!sVal) return;
+      const s = parseDateKey(sVal);
+
+      const activePreset = document.querySelector('.btn-routine-preset.active');
+      const months = activePreset ? parseInt(activePreset.dataset.months, 10) : 3;
+
+      const e = new Date(s);
+      e.setMonth(s.getMonth() + months);
+      routineEndInput.value = formatDateKey(e);
+    });
+
+    // 모든 날짜 입력창 클릭 시 캘린더 팝업 호출
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+      input.addEventListener('click', function() {
+        try {
+          if (typeof this.showPicker === 'function') {
+            this.showPicker();
+          }
+        } catch (e) {}
       });
     });
 
@@ -2877,7 +2836,11 @@
       const taxDeduction = document.getElementById('routineTaxDeduction').checked;
       const memo = document.getElementById('routineMemo').value.trim();
 
-      if (!title) return;
+      if (!title) {
+        alert('업무명을 입력해주세요.');
+        document.getElementById('routineTitle').focus();
+        return;
+      }
 
       if (editingGroupId) {
         let updatedCount = 0;
@@ -2898,14 +2861,24 @@
 
         saveData();
         switchRoutineTab('list');
-        alert(`루틴 업무 총 ${updatedCount}건의 내용이 일괄 수정되었습니다.`);
+        alert(`루틴 업무 총 ${updatedCount}건의 내용이 수정되었습니다.`);
         return;
       }
 
       const isPaid = document.getElementById('routineIsPaid').checked;
       const startStr = document.getElementById('routineStartDate').value;
       const endStr = document.getElementById('routineEndDate').value;
-      if (!startStr || !endStr) return;
+
+      if (!startStr) {
+        alert('시작 날짜를 설정해주세요.');
+        document.getElementById('routineStartDate').focus();
+        return;
+      }
+      if (!endStr) {
+        alert('종료 날짜를 설정해주세요.');
+        document.getElementById('routineEndDate').focus();
+        return;
+      }
 
       const startDate = parseDateKey(startStr);
       const endDate = parseDateKey(endStr);
@@ -2915,7 +2888,7 @@
         return;
       }
 
-      const activeDays = Array.from(document.querySelectorAll('.weekday-chip.active'))
+      const activeDays = Array.from(document.querySelectorAll('.weekday-pill.active'))
         .map(chip => parseInt(chip.dataset.day, 10));
 
       if (activeDays.length === 0) {
@@ -2988,64 +2961,75 @@
       document.getElementById('unpaidModalTotalSum').textContent = `${formatKRW(totalUnpaid)} (${unpaidList.length}건)`;
 
       if (unpaidList.length === 0) {
-        container.innerHTML = '<div class="empty-state">미입금된 외주 정산 건이 없습니다! 🎉</div>';
+        container.innerHTML = '<div style="text-align:center; padding:36px; color:var(--text-light); font-size:13px; font-weight:600;">미입금 정산 건이 없습니다.</div>';
         return;
       }
 
       unpaidList.forEach(task => {
         const item = document.createElement('div');
-        item.className = 'task-item';
+        item.className = 'task-item-tile';
 
         const info = document.createElement('div');
-        info.className = 'task-info';
+        info.style.flex = '1';
 
-        const headerRow = document.createElement('div');
-        headerRow.className = 'task-header-row';
+        const titleLine = document.createElement('div');
+        titleLine.className = 'task-title-line';
 
         const dateBadge = document.createElement('span');
-        dateBadge.style.cssText = 'font-size:11px; font-weight:700; background:var(--bg-main); padding:2px 6px; border-radius:4px; border:1px solid var(--border-subtle);';
+        dateBadge.className = 'pill-badge';
         dateBadge.textContent = task.dateKey;
-        headerRow.appendChild(dateBadge);
+        titleLine.appendChild(dateBadge);
 
-        const title = document.createElement('div');
-        title.className = 'task-item-title';
+        const title = document.createElement('span');
+        title.className = 'task-name-text';
         title.textContent = task.title;
-        headerRow.appendChild(title);
+        titleLine.appendChild(title);
 
-        info.appendChild(headerRow);
+        info.appendChild(titleLine);
 
         if (task.memo) {
           const memo = document.createElement('div');
-          memo.className = 'task-item-memo';
+          memo.className = 'task-memo-text';
           memo.textContent = task.memo;
           info.appendChild(memo);
         }
 
-        const bottomRow = document.createElement('div');
-        bottomRow.className = 'task-bottom-row';
+        const bottomMeta = document.createElement('div');
+        bottomMeta.className = 'task-bottom-meta';
 
         const amt = document.createElement('div');
-        amt.className = 'task-item-income';
+        amt.className = 'task-income-amt';
         const effectiveAmt = getTaskEffectiveAmount(task);
         amt.textContent = formatKRW(effectiveAmt);
         if (task.taxDeduction) {
           const taxSub = document.createElement('span');
-          taxSub.style.cssText = 'font-size:11px; opacity:0.8; margin-left:4px; font-weight:500;';
+          taxSub.style.cssText = 'font-size:11px; margin-left:4px; font-weight:700; font-family:var(--font-mono); color:var(--text-light);';
           taxSub.textContent = '(3.3% 세후)';
           amt.appendChild(taxSub);
         }
-        bottomRow.appendChild(amt);
+        bottomMeta.appendChild(amt);
 
-        const payBtn = document.createElement('button');
-        payBtn.type = 'button';
-        payBtn.className = 'btn-payment-badge unpaid';
-        payBtn.innerHTML = '입금 완료로 변경';
-        payBtn.addEventListener('click', () => {
+        const payToggle = document.createElement('label');
+        payToggle.className = `payment-check-toggle unpaid`;
+        payToggle.title = '클릭하여 입금 완료 상태로 변경';
+
+        const payCheck = document.createElement('input');
+        payCheck.type = 'checkbox';
+        payCheck.className = 'payment-check-box';
+        payCheck.checked = false;
+        payCheck.addEventListener('change', () => {
           togglePaymentStatus(task.id, parseDateKey(task.dateKey));
         });
-        bottomRow.appendChild(payBtn);
 
-        info.appendChild(bottomRow);
+        const payText = document.createElement('span');
+        payText.className = 'payment-status-text';
+        payText.textContent = '입금 완료 처리';
+
+        payToggle.appendChild(payCheck);
+        payToggle.appendChild(payText);
+        bottomMeta.appendChild(payToggle);
+
+        info.appendChild(bottomMeta);
         item.appendChild(info);
         container.appendChild(item);
       });
@@ -3059,7 +3043,7 @@
 
     function exportToCSV() {
       const rows = [
-        ['날짜', '업무명', '단가(원)', '건수', '총수입(원)', '3.3%적용여부', '세후실수령액(원)', '입금상태', '루틴업무여부', '메모']
+        ['날짜', '업무명', '단가(원)', '건수', '총청구액(원)', '원천징수3.3%적용', '세후실수령액(원)', '입금상태', '루틴여부', '메모']
       ];
 
       const sortedKeys = Object.keys(tasksData).sort();
@@ -3094,7 +3078,7 @@
       });
 
       if (!hasData) {
-        alert('내보낼 업무 데이터가 없습니다.');
+        alert('내보낼 장부 데이터가 없습니다.');
         return;
       }
 
@@ -3103,7 +3087,7 @@
       const url = URL.createObjectURL(blob);
       const downloadAnchor = document.createElement('a');
       downloadAnchor.href = url;
-      downloadAnchor.download = `프리랜서메이커_업무정산_${formatDateKey(new Date())}.csv`;
+      downloadAnchor.download = `업무정산_${formatDateKey(new Date())}.csv`;
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       document.body.removeChild(downloadAnchor);
@@ -3111,7 +3095,6 @@
     }
 
     document.getElementById('btnExportCSV').addEventListener('click', exportToCSV);
-
     document.getElementById('btnGoogleLogin').addEventListener('click', handleGoogleLogin);
     document.getElementById('btnLogout').addEventListener('click', handleLogout);
 
@@ -3148,7 +3131,7 @@
       renderCalendar();
     });
 
-    document.querySelectorAll('.btn-preset').forEach(btn => {
+    document.querySelectorAll('.range-selector .btn-preset').forEach(btn => {
       btn.addEventListener('click', e => applyPreset(e.target.dataset.preset));
     });
 
@@ -3170,7 +3153,7 @@
 
       customStartDate = s;
       customEndDate = e;
-      document.querySelectorAll('.btn-preset').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.range-selector .btn-preset').forEach(btn => btn.classList.remove('active'));
       updateCustomRangeDisplay();
     }
 
