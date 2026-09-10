@@ -205,6 +205,25 @@
       gap: 8px;
     }
 
+    .keep-login-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .keep-login-wrap input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
     .btn-google-login {
       display: inline-flex;
       align-items: center;
@@ -1445,6 +1464,10 @@
         </div>
 
         <div class="auth-section">
+          <label class="keep-login-wrap" title="브라우저를 닫았다 다시 열어도 로그인 상태를 유지합니다.">
+            <input type="checkbox" id="keepLoginCheckbox" checked>
+            <span>로그인 상태 유지</span>
+          </label>
           <button class="btn-google-login" id="btnGoogleLogin">
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -1832,6 +1855,12 @@
           fbAuth = firebase.auth();
           fbDb = firebase.firestore();
 
+          const keepLoginCheckbox = document.getElementById('keepLoginCheckbox');
+          if (keepLoginCheckbox?.checked) {
+            fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+              .catch(err => console.warn('로그인 유지 설정 실패:', err));
+          }
+
           fbAuth.onAuthStateChanged(user => {
             if (user) {
               currentUser = user;
@@ -1924,7 +1953,15 @@
       }
 
       const provider = new firebase.auth.GoogleAuthProvider();
+      const keepLogin = document.getElementById('keepLoginCheckbox')?.checked ?? true;
+      const persistence = keepLogin
+        ? firebase.auth.Auth.Persistence.LOCAL
+        : firebase.auth.Auth.Persistence.SESSION;
+
       try {
+        // 체크 시 브라우저를 다시 열어도 로그인 상태를 유지하고,
+        // 해제 시 현재 브라우저 세션 동안만 로그인 상태를 유지합니다.
+        await fbAuth.setPersistence(persistence);
         await fbAuth.signInWithPopup(provider);
       } catch (error) {
         if (error.code !== 'auth/popup-closed-by-user') {
@@ -3036,6 +3073,22 @@
 
     document.getElementById('btnGoogleLogin').addEventListener('click', handleGoogleLogin);
     document.getElementById('btnLogout').addEventListener('click', handleLogout);
+
+    document.getElementById('keepLoginCheckbox').addEventListener('change', async e => {
+      if (!fbAuth) return;
+
+      const persistence = e.target.checked
+        ? firebase.auth.Auth.Persistence.LOCAL
+        : firebase.auth.Auth.Persistence.SESSION;
+
+      try {
+        await fbAuth.setPersistence(persistence);
+      } catch (error) {
+        console.error('로그인 유지 설정 변경 실패:', error);
+        e.target.checked = !e.target.checked;
+        alert('로그인 유지 설정을 변경하지 못했습니다.');
+      }
+    });
 
     document.getElementById('prevMonthBtn').addEventListener('click', () => {
       currentDate.setMonth(currentDate.getMonth() - 1);
