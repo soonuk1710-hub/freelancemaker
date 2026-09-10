@@ -879,6 +879,13 @@
       margin-bottom: 4px;
     }
 
+    .form-help {
+      margin-top: 5px;
+      color: var(--text-light);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
     .form-control {
       width: 100%;
       padding: 9px 12px;
@@ -1605,6 +1612,11 @@
           <div class="form-box-title" id="formModeTitle">새 업무 등록</div>
           <form id="taskForm">
             <input type="hidden" id="editingTaskId" value="">
+            <div class="form-group">
+              <label for="taskDate">일정 날짜</label>
+              <input type="date" id="taskDate" class="form-control" required>
+              <div class="form-help">수정할 때 날짜를 바꾸면 해당 업무가 새 날짜로 이동합니다.</div>
+            </div>
             <div class="form-group">
               <label for="taskTitle">업무명</label>
               <input type="text" id="taskTitle" class="form-control" placeholder="예: 상세페이지 제작" required>
@@ -2357,6 +2369,11 @@
       resetForm();
     }
 
+    function syncTaskDateInput() {
+      const input = document.getElementById('taskDate');
+      if (input) input.value = formatDateKey(selectedDate);
+    }
+
     function closeDrawer() {
       document.getElementById('drawerOverlay').classList.remove('active');
       resetForm();
@@ -2533,6 +2550,7 @@
     function startEditTask(task) {
       document.getElementById('formModeTitle').textContent = '업무 내용 수정';
       document.getElementById('editingTaskId').value = task.id;
+      document.getElementById('taskDate').value = formatDateKey(selectedDate);
       document.getElementById('taskTitle').value = task.title;
       
       const unit = task.unitPrice !== undefined ? task.unitPrice : task.amount;
@@ -2552,6 +2570,7 @@
     function resetForm() {
       document.getElementById('formModeTitle').textContent = '새 업무 등록';
       document.getElementById('editingTaskId').value = '';
+      syncTaskDateInput();
       document.getElementById('taskTitle').value = '';
       document.getElementById('taskUnitPrice').value = '';
       document.getElementById('taskCount').value = '1';
@@ -2576,24 +2595,40 @@
       const isPaid = document.getElementById('taskIsPaid').checked;
       const memo = document.getElementById('taskMemo').value.trim();
       const editingId = document.getElementById('editingTaskId').value;
-      const dateKey = formatDateKey(selectedDate);
+      const sourceDateKey = formatDateKey(selectedDate);
+      const targetDateKey = document.getElementById('taskDate').value || sourceDateKey;
 
-      if (!title) return;
-      if (!tasksData[dateKey]) tasksData[dateKey] = [];
+      if (!title || !targetDateKey) return;
 
       if (editingId) {
-        const target = tasksData[dateKey].find(t => t.id === editingId);
-        if (target) {
-          target.title = title;
-          target.unitPrice = unitPrice;
-          target.count = count;
-          target.amount = amount;
-          target.taxDeduction = taxDeduction;
-          target.isPaid = isPaid;
-          target.memo = memo;
+        const sourceList = tasksData[sourceDateKey] || [];
+        const sourceIndex = sourceList.findIndex(t => t.id === editingId);
+
+        if (sourceIndex === -1) return;
+
+        const [target] = sourceList.splice(sourceIndex, 1);
+        const updatedTask = {
+          ...target,
+          title,
+          unitPrice,
+          count,
+          amount,
+          taxDeduction,
+          isPaid,
+          memo
+        };
+
+        if (targetDateKey !== sourceDateKey) {
+          if (sourceList.length === 0) delete tasksData[sourceDateKey];
+          if (!tasksData[targetDateKey]) tasksData[targetDateKey] = [];
+          tasksData[targetDateKey].push(updatedTask);
+          selectedDate = parseDateKey(targetDateKey);
+        } else {
+          sourceList.push(updatedTask);
         }
       } else {
-        tasksData[dateKey].push({
+        if (!tasksData[targetDateKey]) tasksData[targetDateKey] = [];
+        tasksData[targetDateKey].push({
           id: 'task_' + Math.random().toString(36).substring(2, 9),
           title,
           unitPrice,
@@ -2605,10 +2640,16 @@
           done: false,
           isRoutine: false
         });
+
+        if (targetDateKey !== sourceDateKey) {
+          selectedDate = parseDateKey(targetDateKey);
+        }
       }
 
       saveData();
       resetForm();
+      renderCalendar();
+      if (isDrawerOpen()) renderDrawerTasks();
     });
 
     document.getElementById('btnCancelEdit').addEventListener('click', resetForm);
