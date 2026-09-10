@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>프리랜서메이커 — Liquid Glass Edition</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,13 +78,17 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
     body {
       background-color: var(--bg-base);
       color: var(--text-main);
       min-height: 100vh;
       padding: 36px 24px 80px 24px;
       position: relative;
-      overflow-x: hidden;
       transition: background-color 0.4s ease, color 0.4s ease;
     }
 
@@ -182,6 +186,7 @@
     }
 
     .app-viewport {
+      width: 100%;
       max-width: 1260px;
       margin: 0 auto;
       display: flex;
@@ -189,6 +194,7 @@
       gap: 28px;
       position: relative;
       z-index: 1;
+      min-width: 0;
     }
 
     .glass-island {
@@ -200,6 +206,7 @@
       box-shadow: var(--glass-outer-shadow), var(--glass-inner-shadow);
       position: relative;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      min-width: 0;
     }
 
     .floating-header {
@@ -485,6 +492,8 @@
       display: grid;
       grid-template-columns: 1fr 1fr 1.35fr;
       gap: 20px;
+      width: 100%;
+      min-width: 0;
     }
 
     .stat-glass-slab {
@@ -494,6 +503,8 @@
       justify-content: space-between;
       gap: 18px;
       border-radius: var(--radius-card);
+      min-width: 0;
+      max-width: 100%;
     }
 
     .slab-header {
@@ -501,12 +512,16 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 12px;
+      min-width: 0;
+      width: 100%;
     }
 
     .slab-title-group {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      min-width: 0;
+      flex: 1;
     }
 
     .slab-category {
@@ -525,16 +540,17 @@
 
     .slab-value {
       font-family: var(--font-mono);
-      font-size: clamp(28px, 2.6vw, 38px);
+      font-size: clamp(26px, 2.6vw, 38px);
       font-weight: 800;
       letter-spacing: -0.04em;
       line-height: 1.1;
       color: var(--text-main);
+      word-break: break-all;
     }
 
     .slab-breakdown {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       padding-top: 14px;
       border-top: 1px solid var(--glass-border-subtle);
@@ -585,6 +601,7 @@
       padding: 3px;
       border-radius: var(--radius-pill);
       border: 1px solid var(--glass-border-subtle);
+      flex-shrink: 0;
     }
 
     [data-theme="dark"] .range-selector {
@@ -601,6 +618,7 @@
       border-radius: var(--radius-pill);
       cursor: pointer;
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
     .btn-preset.active {
@@ -617,24 +635,28 @@
     .range-date-inputs {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       margin-top: 6px;
+      min-width: 0;
+      width: 100%;
     }
 
     .glass-input-compact {
       border: 1.5px solid var(--glass-border);
       background: rgba(255, 255, 255, 0.45);
       backdrop-filter: blur(12px);
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: var(--radius-pill);
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: var(--text-main);
       outline: none;
       cursor: pointer;
       box-shadow: var(--glass-inner-shadow);
       transition: border-color 0.2s, background 0.2s;
+      min-width: 0;
+      flex: 1;
     }
 
     [data-theme="dark"] .glass-input-compact {
@@ -1030,33 +1052,43 @@
       cursor: pointer;
     }
 
+    /* 폼 내 작업여부 & 입금여부 스위치 대칭 배치 */
+    .status-switches-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
     .liquid-switch-banner {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
+      gap: 8px;
+      padding: 10px 14px;
       border-radius: var(--radius-control);
       background: rgba(0, 0, 0, 0.04);
       border: 1.5px solid var(--glass-border-subtle);
-      margin: 10px 0;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--text-main);
       cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
     }
 
     [data-theme="dark"] .liquid-switch-banner {
       background: rgba(255, 255, 255, 0.06);
     }
 
+    /* 태스크 아이템 타일 */
     .task-item-tile {
       background: var(--glass-bg);
       border: 1.5px solid var(--glass-border);
       border-radius: var(--radius-card);
       padding: 16px 18px;
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
+      flex-direction: column;
+      gap: 8px;
       box-shadow: var(--glass-inner-shadow);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -1067,12 +1099,14 @@
     }
 
     .task-item-tile.completed {
-      opacity: 0.72;
+      opacity: 0.78;
     }
 
-    .task-details {
-      flex: 1;
-      min-width: 0;
+    .task-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .task-title-line {
@@ -1080,12 +1114,14 @@
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
+      flex: 1;
     }
 
     .task-name-text {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 800;
       color: var(--text-main);
+      line-height: 1.3;
     }
 
     .task-item-tile.completed .task-name-text {
@@ -1098,13 +1134,13 @@
       font-size: 11.5px;
       font-weight: 700;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .task-memo-text {
       font-size: 12px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 2px;
       font-weight: 500;
     }
 
@@ -1112,50 +1148,50 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 10px;
+      margin-top: 6px;
       padding-top: 10px;
       border-top: 1px solid var(--glass-border-subtle);
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .task-income-amt {
       font-family: var(--font-mono);
-      font-size: 15.5px;
+      font-size: 16px;
       font-weight: 800;
       color: var(--text-main);
     }
 
-    .payment-check-toggle {
+    /* 같은 위계의 트윈 캡슐 상태 토글 */
+    .task-status-cluster {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 10px 5px 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px 5px 8px;
       border-radius: var(--radius-pill);
       border: 1.5px solid var(--glass-border);
       background: rgba(0, 0, 0, 0.03);
       cursor: pointer;
       user-select: none;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    [data-theme="dark"] .payment-check-toggle {
+    [data-theme="dark"] .status-pill-toggle {
       background: rgba(255, 255, 255, 0.05);
     }
 
-    .payment-check-toggle.paid {
-      background: rgba(16, 185, 129, 0.18);
-      border-color: rgba(16, 185, 129, 0.45);
-    }
-
-    .payment-check-toggle.unpaid {
-      background: rgba(245, 158, 11, 0.18);
-      border-color: rgba(245, 158, 11, 0.45);
-    }
-
-    .payment-check-toggle .payment-check-box {
+    .status-pill-toggle .status-check-box {
       appearance: none;
       -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       border-radius: 4px;
       border: 1.5px solid currentColor;
       display: inline-grid;
@@ -1164,37 +1200,79 @@
       margin: 0;
       background: transparent;
       transition: all 0.15s ease;
+      flex-shrink: 0;
     }
 
-    .payment-check-toggle.paid .payment-check-box {
-      color: var(--accent-emerald);
-      background: var(--accent-emerald);
-      border-color: var(--accent-emerald);
+    .status-pill-toggle .status-text {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
     }
 
-    .payment-check-toggle.paid .payment-check-box::before {
+    /* 1. 작업여부 (작업완료 vs 진행중) */
+    .status-pill-toggle.work-toggle.done {
+      background: rgba(var(--accent-blue-rgb), 0.16);
+      border-color: rgba(var(--accent-blue-rgb), 0.45);
+      color: var(--accent-blue);
+    }
+
+    .status-pill-toggle.work-toggle.done .status-check-box {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
+    }
+
+    .status-pill-toggle.work-toggle.done .status-check-box::before {
       content: "✓";
       color: #ffffff;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 900;
       line-height: 1;
     }
 
-    .payment-check-toggle.unpaid .payment-check-box {
-      color: var(--accent-amber);
+    .status-pill-toggle.work-toggle.pending {
+      background: rgba(0, 0, 0, 0.04);
+      border-color: var(--glass-border-subtle);
+      color: var(--text-muted);
     }
 
-    .payment-check-toggle .payment-status-text {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
+    [data-theme="dark"] .status-pill-toggle.work-toggle.pending {
+      background: rgba(255, 255, 255, 0.06);
     }
 
-    .payment-check-toggle.paid .payment-status-text {
+    .status-pill-toggle.work-toggle.pending .status-check-box {
+      color: var(--text-muted);
+    }
+
+    /* 2. 입금여부 (입금완료 vs 미입금) */
+    .status-pill-toggle.pay-toggle.paid {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.45);
       color: var(--accent-emerald);
     }
 
-    .payment-check-toggle.unpaid .payment-status-text {
+    .status-pill-toggle.pay-toggle.paid .status-check-box {
+      background: var(--accent-emerald);
+      border-color: var(--accent-emerald);
+      color: #ffffff;
+    }
+
+    .status-pill-toggle.pay-toggle.paid .status-check-box::before {
+      content: "✓";
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .status-pill-toggle.pay-toggle.unpaid {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: var(--accent-amber);
+    }
+
+    .status-pill-toggle.pay-toggle.unpaid .status-check-box {
       color: var(--accent-amber);
     }
 
@@ -1327,25 +1405,161 @@
       box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15);
     }
 
+    /* 반응형 최적화 */
     @media (max-width: 960px) {
       body {
-        padding: 18px 12px 64px 12px;
+        padding: 16px 14px 64px 14px;
       }
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
+      
       .floating-header {
         border-radius: var(--radius-card);
+        padding: 16px 18px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
       }
+
+      .header-brand {
+        justify-content: flex-start;
+      }
+
+      .header-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .auth-glass-pill {
+        margin-left: auto;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .stat-glass-slab {
+        padding: 20px 18px;
+        border-radius: var(--radius-card);
+      }
+
+      .slab-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .slab-title-group {
+        width: 100%;
+      }
+
+      .range-selector {
+        width: 100%;
+        display: flex;
+      }
+
+      .range-selector .btn-preset {
+        flex: 1;
+        text-align: center;
+        padding: 6px 4px;
+        font-size: 11px;
+      }
+
+      .range-date-inputs {
+        width: 100%;
+      }
+
+      .glass-input-compact {
+        width: 100%;
+        font-size: 11px;
+        padding: 6px 6px;
+        text-align: center;
+      }
+
       .calendar-navbar {
-        padding: 18px;
+        padding: 16px 18px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
       }
+
+      .nav-ctrl-group {
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .nav-ctrl-group .btn-login-pill {
+        flex: 1;
+        justify-content: center;
+        padding: 8px 4px;
+        font-size: 11px;
+      }
+
       .calendar-day-tile {
-        min-height: 84px;
-        padding: 6px;
+        min-height: 80px;
+        padding: 4px;
       }
+
+      .tile-day-pill {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+      }
+
+      .tile-revenue-chip {
+        font-size: 9px;
+        padding: 2px 4px;
+      }
+
+      .tile-task-chip {
+        font-size: 9px;
+        padding: 1px 4px;
+      }
+
+      .liquid-drawer-sheet {
+        top: 8px;
+        bottom: 8px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+        max-width: calc(100vw - 16px);
+        border-radius: var(--radius-card);
+      }
+
+      .drawer-banner {
+        padding: 18px 20px;
+      }
+
+      .drawer-content-scroll {
+        padding: 18px;
+        gap: 20px;
+      }
+
+      .status-switches-grid {
+        grid-template-columns: 1fr;
+      }
+
       .calc-matrix {
         grid-template-columns: 1fr;
+      }
+
+      .modal-scrim {
+        padding: 8px;
+      }
+
+      .liquid-dialog-window {
+        border-radius: var(--radius-card);
+      }
+
+      .dialog-header {
+        padding: 16px 20px;
+      }
+
+      .dialog-body {
+        padding: 18px;
       }
     }
   </style>
@@ -1556,10 +1770,18 @@
               <span class="net-income-preview" id="taskNetIncomeDisplay" style="color:var(--accent-blue); font-weight:800;"></span>
             </div>
 
-            <label class="liquid-switch-banner">
-              <input type="checkbox" id="taskIsPaid" class="glass-check">
-              <span>입금 완료 처리 (체크 해제 시 '미입금')</span>
-            </label>
+            <!-- 작업여부 & 입금여부 같은 위계의 트윈 스위치 -->
+            <div class="status-switches-grid">
+              <label class="liquid-switch-banner">
+                <input type="checkbox" id="taskIsDone" class="glass-check">
+                <span>작업 완료 처리</span>
+              </label>
+
+              <label class="liquid-switch-banner">
+                <input type="checkbox" id="taskIsPaid" class="glass-check">
+                <span>입금 완료 처리</span>
+              </label>
+            </div>
 
             <div class="field-block">
               <label for="taskMemo">클라이언트 / 특이사항 메모</label>
@@ -2301,17 +2523,9 @@
         const item = document.createElement('div');
         item.className = `task-item-tile ${task.done ? 'completed' : ''}`;
 
-        const checkWrap = document.createElement('div');
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.className = 'glass-check';
-        checkbox.checked = task.done;
-        checkbox.setAttribute('aria-label', '완료 처리');
-        checkbox.addEventListener('change', () => toggleTaskDone(task.id));
-        checkWrap.appendChild(checkbox);
-
-        const details = document.createElement('div');
-        details.className = 'task-details';
+        // 상단 헤더 (제목 + 루틴/공제 뱃지 + 수정/삭제 액션 버튼)
+        const headerRow = document.createElement('div');
+        headerRow.className = 'task-header-row';
 
         const titleLine = document.createElement('div');
         titleLine.className = 'task-title-line';
@@ -2339,63 +2553,7 @@
           titleLine.appendChild(tBadge);
         }
 
-        details.appendChild(titleLine);
-
-        if (task.unitPrice > 0 || task.count > 1) {
-          const calcInfo = document.createElement('div');
-          calcInfo.className = 'task-calc-info';
-          calcInfo.textContent = `단가: ${formatKRW(task.unitPrice || task.amount)} × ${task.count || 1}건`;
-          details.appendChild(calcInfo);
-        }
-
-        if (task.memo && task.memo.trim() !== '') {
-          const memo = document.createElement('div');
-          memo.className = 'task-memo-text';
-          memo.textContent = task.memo;
-          details.appendChild(memo);
-        }
-
-        const bottomMeta = document.createElement('div');
-        bottomMeta.className = 'task-bottom-meta';
-
-        const amtBox = document.createElement('div');
-        const effectiveAmt = getTaskEffectiveAmount(task);
-        const amount = document.createElement('div');
-        amount.className = 'task-income-amt';
-        amount.textContent = `+${formatKRW(effectiveAmt)}`;
-        amtBox.appendChild(amount);
-
-        if (task.taxDeduction) {
-          const net = document.createElement('div');
-          net.style.cssText = 'font-size:11px; color:var(--text-light); font-weight:700; font-family:var(--font-mono);';
-          net.textContent = `(원금 ${formatKRW(task.amount)} · 세후)`;
-          amtBox.appendChild(net);
-        }
-
-        bottomMeta.appendChild(amtBox);
-
-        const payToggle = document.createElement('label');
-        payToggle.className = `payment-check-toggle ${task.isPaid ? 'paid' : 'unpaid'}`;
-        payToggle.title = '클릭하여 입금 상태 변경';
-
-        const payCheck = document.createElement('input');
-        payCheck.type = 'checkbox';
-        payCheck.className = 'payment-check-box';
-        payCheck.checked = !!task.isPaid;
-        payCheck.addEventListener('change', e => {
-          e.stopPropagation();
-          togglePaymentStatus(task.id, selectedDate);
-        });
-
-        const payText = document.createElement('span');
-        payText.className = 'payment-status-text';
-        payText.textContent = task.isPaid ? '입금완료' : '미입금';
-
-        payToggle.appendChild(payCheck);
-        payToggle.appendChild(payText);
-        bottomMeta.appendChild(payToggle);
-
-        details.appendChild(bottomMeta);
+        headerRow.appendChild(titleLine);
 
         const actions = document.createElement('div');
         actions.style.display = 'flex';
@@ -2422,10 +2580,95 @@
 
         actions.appendChild(editBtn);
         actions.appendChild(delBtn);
+        headerRow.appendChild(actions);
 
-        item.appendChild(checkWrap);
-        item.appendChild(details);
-        item.appendChild(actions);
+        item.appendChild(headerRow);
+
+        // 상세 단가/메모 영역
+        if (task.unitPrice > 0 || task.count > 1) {
+          const calcInfo = document.createElement('div');
+          calcInfo.className = 'task-calc-info';
+          calcInfo.textContent = `단가: ${formatKRW(task.unitPrice || task.amount)} × ${task.count || 1}건`;
+          item.appendChild(calcInfo);
+        }
+
+        if (task.memo && task.memo.trim() !== '') {
+          const memo = document.createElement('div');
+          memo.className = 'task-memo-text';
+          memo.textContent = task.memo;
+          item.appendChild(memo);
+        }
+
+        // 하단 영역: 실수령액(좌측) + 같은 위계의 트윈 캡슐 토글 클러스터(우측)
+        const bottomMeta = document.createElement('div');
+        bottomMeta.className = 'task-bottom-meta';
+
+        const amtBox = document.createElement('div');
+        const effectiveAmt = getTaskEffectiveAmount(task);
+        const amount = document.createElement('div');
+        amount.className = 'task-income-amt';
+        amount.textContent = `+${formatKRW(effectiveAmt)}`;
+        amtBox.appendChild(amount);
+
+        if (task.taxDeduction) {
+          const net = document.createElement('div');
+          net.style.cssText = 'font-size:11px; color:var(--text-light); font-weight:700; font-family:var(--font-mono);';
+          net.textContent = `(원금 ${formatKRW(task.amount)} · 세후)`;
+          amtBox.appendChild(net);
+        }
+        bottomMeta.appendChild(amtBox);
+
+        // 상태 클러스터 (작업여부 & 입금여부)
+        const statusCluster = document.createElement('div');
+        statusCluster.className = 'task-status-cluster';
+
+        // 1. 작업 상태 토글 (진행중 ↔ 작업완료)
+        const workToggle = document.createElement('label');
+        workToggle.className = `status-pill-toggle work-toggle ${task.done ? 'done' : 'pending'}`;
+        workToggle.title = '클릭하여 작업 완료 상태를 변경합니다';
+
+        const workCheck = document.createElement('input');
+        workCheck.type = 'checkbox';
+        workCheck.className = 'status-check-box';
+        workCheck.checked = !!task.done;
+        workCheck.addEventListener('change', e => {
+          e.stopPropagation();
+          toggleTaskDone(task.id);
+        });
+
+        const workText = document.createElement('span');
+        workText.className = 'status-text';
+        workText.textContent = task.done ? '작업완료' : '진행중';
+
+        workToggle.appendChild(workCheck);
+        workToggle.appendChild(workText);
+
+        // 2. 입금 상태 토글 (미입금 ↔ 입금완료)
+        const payToggle = document.createElement('label');
+        payToggle.className = `status-pill-toggle pay-toggle ${task.isPaid ? 'paid' : 'unpaid'}`;
+        payToggle.title = '클릭하여 입금 상태를 변경합니다';
+
+        const payCheck = document.createElement('input');
+        payCheck.type = 'checkbox';
+        payCheck.className = 'status-check-box';
+        payCheck.checked = !!task.isPaid;
+        payCheck.addEventListener('change', e => {
+          e.stopPropagation();
+          togglePaymentStatus(task.id, selectedDate);
+        });
+
+        const payText = document.createElement('span');
+        payText.className = 'status-text';
+        payText.textContent = task.isPaid ? '입금완료' : '미입금';
+
+        payToggle.appendChild(payCheck);
+        payToggle.appendChild(payText);
+
+        statusCluster.appendChild(workToggle);
+        statusCluster.appendChild(payToggle);
+
+        bottomMeta.appendChild(statusCluster);
+        item.appendChild(bottomMeta);
 
         container.appendChild(item);
       });
@@ -2472,6 +2715,7 @@
       document.getElementById('taskCount').value = count;
       document.getElementById('taskAmount').value = task.amount ? Number(task.amount).toLocaleString('ko-KR') : '';
       document.getElementById('taskTaxDeduction').checked = Boolean(task.taxDeduction);
+      document.getElementById('taskIsDone').checked = Boolean(task.done);
       document.getElementById('taskIsPaid').checked = Boolean(task.isPaid);
       document.getElementById('taskMemo').value = task.memo || '';
       
@@ -2490,6 +2734,7 @@
       document.getElementById('taskAmount').value = '';
       document.getElementById('taskTaxDeduction').checked = false;
       document.getElementById('taskNetIncomeDisplay').textContent = '';
+      document.getElementById('taskIsDone').checked = false;
       document.getElementById('taskIsPaid').checked = false;
       document.getElementById('taskMemo').value = '';
       document.getElementById('btnSubmit').textContent = '업무 등록 확정';
@@ -2505,6 +2750,7 @@
       if (!amount && unitPrice) amount = unitPrice * count;
 
       const taxDeduction = document.getElementById('taskTaxDeduction').checked;
+      const done = document.getElementById('taskIsDone').checked;
       const isPaid = document.getElementById('taskIsPaid').checked;
       const memo = document.getElementById('taskMemo').value.trim();
       const editingId = document.getElementById('editingTaskId').value;
@@ -2527,6 +2773,7 @@
           count,
           amount,
           taxDeduction,
+          done,
           isPaid,
           memo
         };
@@ -2550,7 +2797,7 @@
           taxDeduction,
           isPaid,
           memo,
-          done: false,
+          done,
           isRoutine: false
         });
 
@@ -2612,7 +2859,6 @@
       document.getElementById('btnSubmitRoutine').textContent = '일정 일괄 생성';
       document.getElementById('btnCancelEditRoutine').style.display = 'none';
 
-      // 시작일자(오늘) 및 종료일자(기본 3개월) 자동 초기화
       const today = new Date();
       document.getElementById('routineStartDate').value = formatDateKey(today);
       const threeMonthsLater = new Date(today);
@@ -2777,7 +3023,6 @@
       chip.addEventListener('click', () => chip.classList.toggle('active'));
     });
 
-    // 루틴 기간 프리셋 버튼 연동 (시작일 유지 및 종료일 갱신)
     document.querySelectorAll('.btn-routine-preset').forEach(btn => {
       btn.addEventListener('click', () => {
         const months = parseInt(btn.dataset.months, 10);
@@ -2796,7 +3041,6 @@
       });
     });
 
-    // 시작 날짜 변경 시 종료 날짜 자동 연동
     const routineStartInput = document.getElementById('routineStartDate');
     const routineEndInput = document.getElementById('routineEndDate');
 
@@ -2813,7 +3057,6 @@
       routineEndInput.value = formatDateKey(e);
     });
 
-    // 모든 날짜 입력창 클릭 시 캘린더 팝업 호출
     document.querySelectorAll('input[type="date"]').forEach(input => {
       input.addEventListener('click', function() {
         try {
@@ -2969,8 +3212,8 @@
         const item = document.createElement('div');
         item.className = 'task-item-tile';
 
-        const info = document.createElement('div');
-        info.style.flex = '1';
+        const headerRow = document.createElement('div');
+        headerRow.className = 'task-header-row';
 
         const titleLine = document.createElement('div');
         titleLine.className = 'task-title-line';
@@ -2985,13 +3228,14 @@
         title.textContent = task.title;
         titleLine.appendChild(title);
 
-        info.appendChild(titleLine);
+        headerRow.appendChild(titleLine);
+        item.appendChild(headerRow);
 
         if (task.memo) {
           const memo = document.createElement('div');
           memo.className = 'task-memo-text';
           memo.textContent = task.memo;
-          info.appendChild(memo);
+          item.appendChild(memo);
         }
 
         const bottomMeta = document.createElement('div');
@@ -3009,28 +3253,32 @@
         }
         bottomMeta.appendChild(amt);
 
+        const statusCluster = document.createElement('div');
+        statusCluster.className = 'task-status-cluster';
+
+        // 미입금 목록 내에서도 동일 위계 토글 제공
         const payToggle = document.createElement('label');
-        payToggle.className = `payment-check-toggle unpaid`;
+        payToggle.className = `status-pill-toggle pay-toggle unpaid`;
         payToggle.title = '클릭하여 입금 완료 상태로 변경';
 
         const payCheck = document.createElement('input');
         payCheck.type = 'checkbox';
-        payCheck.className = 'payment-check-box';
+        payCheck.className = 'status-check-box';
         payCheck.checked = false;
         payCheck.addEventListener('change', () => {
           togglePaymentStatus(task.id, parseDateKey(task.dateKey));
         });
 
         const payText = document.createElement('span');
-        payText.className = 'payment-status-text';
-        payText.textContent = '입금 완료 처리';
+        payText.className = 'status-text';
+        payText.textContent = '입금 처리';
 
         payToggle.appendChild(payCheck);
         payToggle.appendChild(payText);
-        bottomMeta.appendChild(payToggle);
+        statusCluster.appendChild(payToggle);
 
-        info.appendChild(bottomMeta);
-        item.appendChild(info);
+        bottomMeta.appendChild(statusCluster);
+        item.appendChild(bottomMeta);
         container.appendChild(item);
       });
     }
