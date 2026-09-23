@@ -863,21 +863,44 @@
       border: 1px solid rgba(245, 158, 11, 0.4);
     }
 
+    /* ─── 칸 자체의 색상 차이를 둔 작업 진행/완료 뱃지 ─── */
     .tile-task-chip {
       font-size: 10px;
       font-weight: 700;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: var(--radius-pill);
       display: flex;
       align-items: center;
       gap: 5px;
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--glass-border-subtle);
-      color: var(--text-main);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--glass-inner-shadow);
+      transition: all 0.2s ease;
     }
 
-    [data-theme="dark"] .tile-task-chip {
-      background: rgba(255, 255, 255, 0.08);
+    /* 진행 중: 블루 계열 배경 & 테두리 & 텍스트 */
+    .tile-task-chip.pending {
+      color: var(--accent-blue);
+      background: rgba(var(--accent-blue-rgb), 0.16);
+      border: 1px solid rgba(var(--accent-blue-rgb), 0.35);
+    }
+
+    [data-theme="dark"] .tile-task-chip.pending {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #7dd3fc;
+    }
+
+    /* 완료: 에메랄드/그린 계열 배경 & 테두리 & 텍스트 */
+    .tile-task-chip.completed {
+      color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    [data-theme="dark"] .tile-task-chip.completed {
+      background: rgba(52, 211, 153, 0.18);
+      border-color: rgba(52, 211, 153, 0.45);
+      color: #6ee7b7;
     }
 
     .chip-neon-dot {
@@ -886,6 +909,7 @@
       border-radius: 50%;
       background: var(--accent-blue);
       box-shadow: 0 0 6px var(--accent-blue);
+      flex-shrink: 0;
     }
 
     .chip-neon-dot.done {
@@ -1052,7 +1076,6 @@
       cursor: pointer;
     }
 
-    /* 폼 내 작업여부 & 입금여부 스위치 대칭 배치 */
     .status-switches-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1080,7 +1103,6 @@
       background: rgba(255, 255, 255, 0.06);
     }
 
-    /* 태스크 아이템 타일 */
     .task-item-tile {
       background: var(--glass-bg);
       border: 1.5px solid var(--glass-border);
@@ -1162,7 +1184,6 @@
       color: var(--text-main);
     }
 
-    /* 같은 위계의 트윈 캡슐 상태 토글 */
     .task-status-cluster {
       display: inline-flex;
       align-items: center;
@@ -1210,7 +1231,6 @@
       white-space: nowrap;
     }
 
-    /* 1. 작업여부 (작업완료 vs 진행중) */
     .status-pill-toggle.work-toggle.done {
       background: rgba(var(--accent-blue-rgb), 0.16);
       border-color: rgba(var(--accent-blue-rgb), 0.45);
@@ -1245,7 +1265,6 @@
       color: var(--text-muted);
     }
 
-    /* 2. 입금여부 (입금완료 vs 미입금) */
     .status-pill-toggle.pay-toggle.paid {
       background: rgba(16, 185, 129, 0.18);
       border-color: rgba(16, 185, 129, 0.45);
@@ -1405,7 +1424,6 @@
       box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15);
     }
 
-    /* 반응형 최적화 */
     @media (max-width: 960px) {
       body {
         padding: 16px 14px 64px 14px;
@@ -1516,7 +1534,7 @@
 
       .tile-task-chip {
         font-size: 9px;
-        padding: 1px 4px;
+        padding: 2px 5px;
       }
 
       .liquid-drawer-sheet {
@@ -1770,7 +1788,6 @@
               <span class="net-income-preview" id="taskNetIncomeDisplay" style="color:var(--accent-blue); font-weight:800;"></span>
             </div>
 
-            <!-- 작업여부 & 입금여부 같은 위계의 트윈 스위치 -->
             <div class="status-switches-grid">
               <label class="liquid-switch-banner">
                 <input type="checkbox" id="taskIsDone" class="glass-check">
@@ -2401,13 +2418,13 @@
       if (items.length > 0) {
         if (inProgressCount > 0) {
           const progBadge = document.createElement('div');
-          progBadge.className = 'tile-task-chip';
+          progBadge.className = 'tile-task-chip pending';
           progBadge.innerHTML = `<span class="chip-neon-dot"></span> 진행 ${inProgressCount}건`;
           badgeContainer.appendChild(progBadge);
         }
         if (completedCount > 0) {
           const doneBadge = document.createElement('div');
-          doneBadge.className = 'tile-task-chip';
+          doneBadge.className = 'tile-task-chip completed';
           doneBadge.innerHTML = `<span class="chip-neon-dot done"></span> 완료 ${completedCount}건`;
           badgeContainer.appendChild(doneBadge);
         }
@@ -2523,7 +2540,6 @@
         const item = document.createElement('div');
         item.className = `task-item-tile ${task.done ? 'completed' : ''}`;
 
-        // 상단 헤더 (제목 + 루틴/공제 뱃지 + 수정/삭제 액션 버튼)
         const headerRow = document.createElement('div');
         headerRow.className = 'task-header-row';
 
@@ -2584,7 +2600,6 @@
 
         item.appendChild(headerRow);
 
-        // 상세 단가/메모 영역
         if (task.unitPrice > 0 || task.count > 1) {
           const calcInfo = document.createElement('div');
           calcInfo.className = 'task-calc-info';
@@ -2599,7 +2614,6 @@
           item.appendChild(memo);
         }
 
-        // 하단 영역: 실수령액(좌측) + 같은 위계의 트윈 캡슐 토글 클러스터(우측)
         const bottomMeta = document.createElement('div');
         bottomMeta.className = 'task-bottom-meta';
 
@@ -2618,11 +2632,9 @@
         }
         bottomMeta.appendChild(amtBox);
 
-        // 상태 클러스터 (작업여부 & 입금여부)
         const statusCluster = document.createElement('div');
         statusCluster.className = 'task-status-cluster';
 
-        // 1. 작업 상태 토글 (진행중 ↔ 작업완료)
         const workToggle = document.createElement('label');
         workToggle.className = `status-pill-toggle work-toggle ${task.done ? 'done' : 'pending'}`;
         workToggle.title = '클릭하여 작업 완료 상태를 변경합니다';
@@ -2643,7 +2655,6 @@
         workToggle.appendChild(workCheck);
         workToggle.appendChild(workText);
 
-        // 2. 입금 상태 토글 (미입금 ↔ 입금완료)
         const payToggle = document.createElement('label');
         payToggle.className = `status-pill-toggle pay-toggle ${task.isPaid ? 'paid' : 'unpaid'}`;
         payToggle.title = '클릭하여 입금 상태를 변경합니다';
@@ -3256,7 +3267,6 @@
         const statusCluster = document.createElement('div');
         statusCluster.className = 'task-status-cluster';
 
-        // 미입금 목록 내에서도 동일 위계 토글 제공
         const payToggle = document.createElement('label');
         payToggle.className = `status-pill-toggle pay-toggle unpaid`;
         payToggle.title = '클릭하여 입금 완료 상태로 변경';
