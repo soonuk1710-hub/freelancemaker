@@ -1424,6 +1424,42 @@
       box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15);
     }
 
+    .liquid-toast-Viewport {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+      max-width: calc(100vw - 32px);
+    }
+
+    .liquid-toast-pill {
+      pointer-events: auto;
+      background: var(--glass-card-deep);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border: 1.5px solid var(--glass-border);
+      border-radius: var(--radius-pill);
+      padding: 12px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+      box-shadow: var(--glass-outer-shadow), var(--glass-inner-shadow);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      animation: toastSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes toastSlideUp {
+      from { opacity: 0; transform: translateY(14px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     @media (max-width: 960px) {
       body {
         padding: 16px 14px 64px 14px;
@@ -1939,6 +1975,25 @@
     </div>
   </div>
 
+  <!-- Confirm Dialog Modal -->
+  <div class="modal-scrim" id="confirmModalOverlay" style="z-index: 450;">
+    <div class="glass-island liquid-dialog-window" style="max-width: 420px;">
+      <div class="dialog-header">
+        <h3 id="confirmModalTitle">확인</h3>
+      </div>
+      <div class="dialog-body">
+        <p id="confirmModalMessage" style="font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--text-main);"></p>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+          <button type="button" class="btn-login-pill" id="btnConfirmCancel" style="background: var(--glass-bg); color: var(--text-main); padding: 9px 18px;">취소</button>
+          <button type="button" class="btn-login-pill" id="btnConfirmOk" style="background: var(--accent-rose); border-color: rgba(255,255,255,0.4); padding: 9px 18px;">확인</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="liquid-toast-Viewport" id="toastViewport" aria-live="polite"></div>
+
   <script>
     const DEFAULT_FIREBASE_CONFIG = {
       apiKey: "AIzaSyBtdMrIlpv2Yy6vBYHGGbd2UsU1mprDgkw",
@@ -1951,6 +2006,11 @@
     };
 
     const LOCAL_CACHE_KEY = 'freelancemaker_tasks_cache_v1';
+    const KEEP_LOGIN_STORAGE_KEY = 'freelancemaker_keep_login_v1';
+    const AUTH_USER_CACHE_KEY = 'freelancemaker_auth_user_v1';
+    const DEFAULT_AVATAR_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00c7be"/><stop offset="100%" stop-color="#0071e3"/></linearGradient></defs><rect width="64" height="64" rx="32" fill="url(#g)"/><circle cx="32" cy="24" r="11" fill="#fff"/><path d="M14 54c3-10 11-15 18-15s15 5 18 15" fill="#fff"/></svg>'
+    );
 
     let fbApp = null;
     let fbAuth = null;
@@ -1966,8 +2026,78 @@
     let customEndDate = new Date();
     let currentPreset = '4weeks';
 
+    function safeGetStorage(key, fallback = null) {
+      try {
+        const val = localStorage.getItem(key);
+        return val !== null ? val : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    function safeSetStorage(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch (e) {
+        console.warn('localStorage 저장 실패:', e);
+      }
+    }
+
+    function safeRemoveStorage(key) {
+      try {
+        localStorage.removeItem(key);
+      } catch (e) {}
+    }
+
+    function showToast(message) {
+      const viewport = document.getElementById('toastViewport');
+      if (!viewport) return;
+      const pill = document.createElement('div');
+      pill.className = 'liquid-toast-pill';
+      pill.textContent = message;
+      viewport.appendChild(pill);
+      setTimeout(() => {
+        pill.style.opacity = '0';
+        pill.style.transform = 'translateY(8px)';
+        pill.style.transition = 'all 0.25s ease';
+        setTimeout(() => pill.remove(), 260);
+      }, 2800);
+    }
+
+    let confirmResolver = null;
+    function showConfirmModal(message, title = '확인') {
+      return new Promise(resolve => {
+        confirmResolver = resolve;
+        document.getElementById('confirmModalTitle').textContent = title;
+        document.getElementById('confirmModalMessage').textContent = message;
+        document.getElementById('confirmModalOverlay').classList.add('active');
+      });
+    }
+
+    function closeConfirmModal(result) {
+      document.getElementById('confirmModalOverlay').classList.remove('active');
+      if (confirmResolver) {
+        const res = confirmResolver;
+        confirmResolver = null;
+        res(result);
+      }
+    }
+
+    document.getElementById('btnConfirmOk').addEventListener('click', () => closeConfirmModal(true));
+    document.getElementById('btnConfirmCancel').addEventListener('click', () => closeConfirmModal(false));
+    document.getElementById('confirmModalOverlay').addEventListener('click', e => {
+      if (e.target.id === 'confirmModalOverlay') closeConfirmModal(false);
+    });
+
+    function generateId(prefix) {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return `${prefix}_${window.crypto.randomUUID().slice(0, 8)}`;
+      }
+      return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 7)}`;
+    }
+
     function initTheme() {
-      const isDark = localStorage.getItem('freelancemaker_liquid_dark') === 'true';
+      const isDark = safeGetStorage('freelancemaker_liquid_dark') === 'true';
       applyDarkMode(isDark);
     }
 
@@ -1986,7 +2116,7 @@
         if (iconSpan) iconSpan.textContent = '🌙';
         if (labelSpan) labelSpan.textContent = '다크 모드';
       }
-      localStorage.setItem('freelancemaker_liquid_dark', isDark ? 'true' : 'false');
+      safeSetStorage('freelancemaker_liquid_dark', isDark ? 'true' : 'false');
     }
 
     document.getElementById('btnDarkModeToggle').addEventListener('click', () => {
@@ -1994,28 +2124,92 @@
       applyDarkMode(!isCurrentlyDark);
     });
 
-    function initFirebase() {
-      if (DEFAULT_FIREBASE_CONFIG && !firebase.apps.length) {
+    function cacheUserProfile(user) {
+      if (!user) return;
+      const snapshot = {
+        uid: user.uid,
+        displayName: user.displayName || '프리랜서',
+        email: user.email || '',
+        photoURL: user.photoURL || ''
+      };
+      safeSetStorage(AUTH_USER_CACHE_KEY, JSON.stringify(snapshot));
+    }
+
+    function getCachedUserProfile() {
+      const raw = safeGetStorage(AUTH_USER_CACHE_KEY);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function initFirebase() {
+      const keepLoginCheckbox = document.getElementById('keepLoginCheckbox');
+      const savedKeepPref = safeGetStorage(KEEP_LOGIN_STORAGE_KEY, 'true');
+      const shouldKeepLogin = savedKeepPref !== 'false';
+      if (keepLoginCheckbox) {
+        keepLoginCheckbox.checked = shouldKeepLogin;
+      }
+
+      // PC 재부팅 직후 네트워크/SDK 초기화 전에도 캐시된 로그인 프로필과 데이터를 즉시 복원
+      loadLocalData();
+      const cachedUser = getCachedUserProfile();
+      if (shouldKeepLogin && cachedUser) {
+        currentUser = cachedUser;
+        updateAuthUI(true);
+      }
+
+      if (DEFAULT_FIREBASE_CONFIG && typeof firebase !== 'undefined') {
         try {
-          fbApp = firebase.initializeApp(DEFAULT_FIREBASE_CONFIG);
+          fbApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(DEFAULT_FIREBASE_CONFIG);
           fbAuth = firebase.auth();
           fbDb = firebase.firestore();
 
-          const keepLoginCheckbox = document.getElementById('keepLoginCheckbox');
-          if (keepLoginCheckbox?.checked) {
-            fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-              .catch(err => console.warn('로그인 유지 설정 실패:', err));
+          // 오프라인/재부팅 환경에서도 Firestore 로컬 캐시 유지 시도
+          if (fbDb && typeof fbDb.enablePersistence === 'function') {
+            fbDb.enablePersistence({ synchronizeTabs: true }).catch(() => {});
           }
+
+          // 저장된 로그인 유지 옵션에 맞춰 영속성 설정 완료 후 리스너 연결
+          const targetPersistence = shouldKeepLogin
+            ? firebase.auth.Auth.Persistence.LOCAL
+            : firebase.auth.Auth.Persistence.SESSION;
+
+          try {
+            await fbAuth.setPersistence(targetPersistence);
+          } catch (persistErr) {
+            console.warn('로그인 유지 설정 경고:', persistErr);
+          }
+
+          // 리다이렉트 로그인 폴백 결과 처리
+          fbAuth.getRedirectResult().catch(err => {
+            console.warn('리다이렉트 인증 확인 실패:', err);
+          });
 
           fbAuth.onAuthStateChanged(user => {
             if (user) {
               currentUser = user;
+              if (keepLoginCheckbox?.checked) {
+                cacheUserProfile(user);
+              }
               updateAuthUI(true);
               bindFirestoreSync(user.uid);
             } else {
+              // 오프라인 상태에서 부팅된 경우 캐시된 프로필 유지
+              if (!navigator.onLine && shouldKeepLogin && cachedUser) {
+                currentUser = cachedUser;
+                updateAuthUI(true);
+                return;
+              }
               currentUser = null;
+              safeRemoveStorage(AUTH_USER_CACHE_KEY);
               updateAuthUI(false);
-              if (firestoreUnsubscribe) firestoreUnsubscribe();
+              if (firestoreUnsubscribe) {
+                firestoreUnsubscribe();
+                firestoreUnsubscribe = null;
+              }
               loadLocalData();
             }
           });
@@ -2023,14 +2217,15 @@
           console.error('Firebase 초기화 오류:', err);
           loadLocalData();
         }
-      } else {
-        loadLocalData();
       }
     }
 
     function bindFirestoreSync(uid) {
-      if (!fbDb) return;
-      if (firestoreUnsubscribe) firestoreUnsubscribe();
+      if (!fbDb || !uid) return;
+      if (firestoreUnsubscribe) {
+        firestoreUnsubscribe();
+        firestoreUnsubscribe = null;
+      }
 
       const userDocRef = fbDb.collection('freelancers').doc(uid);
 
@@ -2038,10 +2233,10 @@
         if (doc.exists) {
           tasksData = doc.data().tasks || {};
         } else {
-          const localCache = localStorage.getItem(LOCAL_CACHE_KEY);
+          const localCache = safeGetStorage(LOCAL_CACHE_KEY);
           if (localCache) {
             try {
-              tasksData = JSON.parse(localCache);
+              tasksData = JSON.parse(localCache) || {};
               saveDataToCloud();
             } catch (e) {
               tasksData = {};
@@ -2050,7 +2245,7 @@
             tasksData = {};
           }
         }
-        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
+        safeSetStorage(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
         updateDashboardStats();
         renderCalendar();
         if (isDrawerOpen()) renderDrawerTasks();
@@ -2062,31 +2257,39 @@
     }
 
     function saveData() {
-      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
+      safeSetStorage(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
       updateDashboardStats();
       renderCalendar();
       if (isDrawerOpen()) renderDrawerTasks();
       if (isUnpaidModalOpen()) renderUnpaidModalList();
       if (isRoutineModalOpen()) renderRoutineList();
 
-      if (currentUser && fbDb) {
+      if (currentUser && currentUser.uid && fbDb) {
         saveDataToCloud();
       }
     }
 
     function saveDataToCloud() {
-      if (!currentUser || !fbDb) return;
+      if (!currentUser || !currentUser.uid || !fbDb) return;
       fbDb.collection('freelancers').doc(currentUser.uid).set({
         tasks: tasksData,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).catch(err => {
+      }, { merge: true }).catch(err => {
         console.error('클라우드 동기화 오류:', err);
       });
     }
 
     function loadLocalData() {
-      const stored = localStorage.getItem(LOCAL_CACHE_KEY);
-      tasksData = stored ? JSON.parse(stored) : {};
+      const stored = safeGetStorage(LOCAL_CACHE_KEY);
+      if (stored) {
+        try {
+          tasksData = JSON.parse(stored) || {};
+        } catch (e) {
+          tasksData = {};
+        }
+      } else {
+        tasksData = {};
+      }
       updateDashboardStats();
       renderCalendar();
       if (isDrawerOpen()) renderDrawerTasks();
@@ -2094,40 +2297,64 @@
 
     async function handleGoogleLogin() {
       if (!fbAuth) {
-        alert('인증 프로바이더를 사용할 수 없습니다.');
+        showToast('인증 서비스를 초기화할 수 없습니다.');
         return;
       }
 
       const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+
       const keepLogin = document.getElementById('keepLoginCheckbox')?.checked ?? true;
+      safeSetStorage(KEEP_LOGIN_STORAGE_KEY, keepLogin ? 'true' : 'false');
+
       const persistence = keepLogin
         ? firebase.auth.Auth.Persistence.LOCAL
         : firebase.auth.Auth.Persistence.SESSION;
 
       try {
         await fbAuth.setPersistence(persistence);
-        await fbAuth.signInWithPopup(provider);
+        const result = await fbAuth.signInWithPopup(provider);
+        if (result?.user && keepLogin) {
+          cacheUserProfile(result.user);
+        }
+        showToast('구글 계정으로 로그인되었습니다.');
       } catch (error) {
-        if (error.code !== 'auth/popup-closed-by-user') {
-          alert('구글 로그인 오류: ' + error.message);
+        if (error.code === 'auth/popup-blocked') {
+          await fbAuth.signInWithRedirect(provider);
+        } else if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+          showToast('구글 로그인 오류: ' + error.message);
         }
       }
     }
 
     async function handleLogout() {
-      if (fbAuth) {
-        await fbAuth.signOut();
+      safeRemoveStorage(AUTH_USER_CACHE_KEY);
+      if (firestoreUnsubscribe) {
+        firestoreUnsubscribe();
+        firestoreUnsubscribe = null;
       }
+      if (fbAuth) {
+        try {
+          await fbAuth.signOut();
+          showToast('로그아웃되었습니다.');
+        } catch (e) {
+          console.error('로그아웃 오류:', e);
+        }
+      }
+      currentUser = null;
+      updateAuthUI(false);
     }
 
     function updateAuthUI(isLoggedIn) {
       const btnLogin = document.getElementById('btnGoogleLogin');
       const profileBar = document.getElementById('userProfileBar');
+      const avatarEl = document.getElementById('userAvatar');
 
       if (isLoggedIn && currentUser) {
         btnLogin.style.display = 'none';
         profileBar.style.display = 'flex';
-        document.getElementById('userAvatar').src = currentUser.photoURL || '';
+        avatarEl.onerror = () => { avatarEl.src = DEFAULT_AVATAR_SVG; };
+        avatarEl.src = currentUser.photoURL || DEFAULT_AVATAR_SVG;
         document.getElementById('userName').textContent = currentUser.displayName || '프리랜서';
         document.getElementById('userEmail').textContent = currentUser.email || '';
       } else {
@@ -2216,10 +2443,11 @@
 
     function getCustomRangeMetrics(start, end) {
       const s = new Date(start); s.setHours(0, 0, 0, 0);
+      const sMidnight = new Date(end); sMidnight.setHours(0, 0, 0, 0);
       const e = new Date(end); e.setHours(23, 59, 59, 999);
 
-      const diffTime = Math.abs(e - s);
-      const dayCount = Math.max(1, Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1);
+      const diffDays = Math.round(Math.abs(sMidnight - s) / (1000 * 60 * 60 * 24));
+      const dayCount = Math.max(1, diffDays + 1);
 
       let allTasks = [];
       const dailyMap = {};
@@ -2705,13 +2933,15 @@
       }
     }
 
-    function deleteTask(taskId) {
-      if (!confirm('이 업무를 삭제하시겠습니까?')) return;
+    async function deleteTask(taskId) {
+      const ok = await showConfirmModal('이 업무를 삭제하시겠습니까?', '업무 삭제');
+      if (!ok) return;
       const key = formatDateKey(selectedDate);
       if (!tasksData[key]) return;
       tasksData[key] = tasksData[key].filter(t => t.id !== taskId);
       if (tasksData[key].length === 0) delete tasksData[key];
       saveData();
+      showToast('업무가 삭제되었습니다.');
     }
 
     function startEditTask(task) {
@@ -2800,7 +3030,7 @@
       } else {
         if (!tasksData[targetDateKey]) tasksData[targetDateKey] = [];
         tasksData[targetDateKey].push({
-          id: 'task_' + Math.random().toString(36).substring(2, 9),
+          id: 'task_' + generateId('t'),
           title,
           unitPrice,
           count,
@@ -2932,11 +3162,22 @@
 
         const titleDiv = document.createElement('div');
         titleDiv.className = 'task-title-line';
-        titleDiv.innerHTML = `
-          <span class="task-name-text">${group.title}</span>
-          <span class="pill-badge">${group.itemsCount}건</span>
-          ${group.taxDeduction ? '<span class="pill-badge">3.3% 공제</span>' : ''}
-        `;
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'task-name-text';
+        nameSpan.textContent = group.title;
+        titleDiv.appendChild(nameSpan);
+
+        const countBadge = document.createElement('span');
+        countBadge.className = 'pill-badge';
+        countBadge.textContent = `${group.itemsCount}건`;
+        titleDiv.appendChild(countBadge);
+
+        if (group.taxDeduction) {
+          const taxBadge = document.createElement('span');
+          taxBadge.className = 'pill-badge';
+          taxBadge.textContent = '3.3% 공제';
+          titleDiv.appendChild(taxBadge);
+        }
 
         const metaDiv = document.createElement('div');
         metaDiv.className = 'task-calc-info';
@@ -3003,8 +3244,9 @@
       switchRoutineTab('list');
     });
 
-    function deleteRoutineGroup(groupKey, title, count) {
-      if (!confirm(`'${title}' 루틴으로 생성된 모든 일정(총 ${count}건)을 캘린더에서 전부 삭제하시겠습니까?`)) {
+    async function deleteRoutineGroup(groupKey, title, count) {
+      const ok = await showConfirmModal(`'${title}' 루틴으로 생성된 모든 일정(총 ${count}건)을 캘린더에서 전부 삭제하시겠습니까?`, '루틴 일괄 삭제');
+      if (!ok) {
         return;
       }
 
@@ -3022,6 +3264,7 @@
 
       saveData();
       renderRoutineList();
+      showToast(`'${title}' 루틴 ${count}건이 삭제되었습니다.`);
     }
 
     document.getElementById('openRoutineModalBtn').addEventListener('click', openRoutineModal);
@@ -3091,7 +3334,7 @@
       const memo = document.getElementById('routineMemo').value.trim();
 
       if (!title) {
-        alert('업무명을 입력해주세요.');
+        showToast('업무명을 입력해주세요.');
         document.getElementById('routineTitle').focus();
         return;
       }
@@ -3115,7 +3358,7 @@
 
         saveData();
         switchRoutineTab('list');
-        alert(`루틴 업무 총 ${updatedCount}건의 내용이 수정되었습니다.`);
+        showToast(`루틴 업무 총 ${updatedCount}건의 내용이 수정되었습니다.`);
         return;
       }
 
@@ -3124,12 +3367,12 @@
       const endStr = document.getElementById('routineEndDate').value;
 
       if (!startStr) {
-        alert('시작 날짜를 설정해주세요.');
+        showToast('시작 날짜를 설정해주세요.');
         document.getElementById('routineStartDate').focus();
         return;
       }
       if (!endStr) {
-        alert('종료 날짜를 설정해주세요.');
+        showToast('종료 날짜를 설정해주세요.');
         document.getElementById('routineEndDate').focus();
         return;
       }
@@ -3138,7 +3381,7 @@
       const endDate = parseDateKey(endStr);
 
       if (startDate > endDate) {
-        alert('시작일이 종료일보다 늦을 수 없습니다.');
+        showToast('시작일이 종료일보다 늦을 수 없습니다.');
         return;
       }
 
@@ -3146,11 +3389,11 @@
         .map(chip => parseInt(chip.dataset.day, 10));
 
       if (activeDays.length === 0) {
-        alert('최소 1개 이상의 반복 요일을 선택해주세요.');
+        showToast('최소 1개 이상의 반복 요일을 선택해주세요.');
         return;
       }
 
-      const routineGroupId = 'rg_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+      const routineGroupId = generateId('rg');
       let createdCount = 0;
       let walk = new Date(startDate);
 
@@ -3159,7 +3402,7 @@
           const key = formatDateKey(walk);
           if (!tasksData[key]) tasksData[key] = [];
           tasksData[key].push({
-            id: 'routine_' + Math.random().toString(36).substring(2, 9),
+            id: 'routine_' + generateId('r'),
             routineGroupId: routineGroupId,
             title,
             unitPrice,
@@ -3178,7 +3421,7 @@
 
       saveData();
       switchRoutineTab('list');
-      alert(`지정한 기간 동안 총 ${createdCount}건의 루틴 업무가 등록되었습니다.`);
+      showToast(`지정한 기간 동안 총 ${createdCount}건의 루틴 업무가 등록되었습니다.`);
     });
 
     const unpaidModal = document.getElementById('unpaidModalOverlay');
@@ -3336,7 +3579,7 @@
       });
 
       if (!hasData) {
-        alert('내보낼 장부 데이터가 없습니다.');
+        showToast('내보낼 장부 데이터가 없습니다.');
         return;
       }
 
@@ -3357,28 +3600,38 @@
     document.getElementById('btnLogout').addEventListener('click', handleLogout);
 
     document.getElementById('keepLoginCheckbox').addEventListener('change', async e => {
+      const checked = e.target.checked;
+      safeSetStorage(KEEP_LOGIN_STORAGE_KEY, checked ? 'true' : 'false');
+      if (checked && currentUser) {
+        cacheUserProfile(currentUser);
+      } else if (!checked) {
+        safeRemoveStorage(AUTH_USER_CACHE_KEY);
+      }
+
       if (!fbAuth) return;
 
-      const persistence = e.target.checked
+      const persistence = checked
         ? firebase.auth.Auth.Persistence.LOCAL
         : firebase.auth.Auth.Persistence.SESSION;
 
       try {
         await fbAuth.setPersistence(persistence);
+        showToast(checked ? 'PC 재부팅 시에도 로그인이 유지됩니다.' : '현재 브라우저 세션 동안만 로그인이 유지됩니다.');
       } catch (error) {
         console.error('로그인 유지 설정 변경 실패:', error);
-        e.target.checked = !e.target.checked;
-        alert('로그인 유지 설정을 변경하지 못했습니다.');
+        e.target.checked = !checked;
+        safeSetStorage(KEEP_LOGIN_STORAGE_KEY, !checked ? 'true' : 'false');
+        showToast('로그인 유지 설정을 변경하지 못했습니다.');
       }
     });
 
     document.getElementById('prevMonthBtn').addEventListener('click', () => {
-      currentDate.setMonth(currentDate.getMonth() - 1);
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
       renderCalendar();
     });
 
     document.getElementById('nextMonthBtn').addEventListener('click', () => {
-      currentDate.setMonth(currentDate.getMonth() + 1);
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
       renderCalendar();
     });
 
@@ -3425,7 +3678,8 @@
 
     window.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        if (unpaidModal.classList.contains('active')) closeUnpaidModal();
+        if (document.getElementById('confirmModalOverlay').classList.contains('active')) closeConfirmModal(false);
+        else if (unpaidModal.classList.contains('active')) closeUnpaidModal();
         else if (routineModal.classList.contains('active')) closeRoutineModal();
         else if (isDrawerOpen()) closeDrawer();
       }
