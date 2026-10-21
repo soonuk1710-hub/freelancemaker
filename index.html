@@ -1460,6 +1460,146 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    .calendar-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass-bg);
+      border: 1.5px solid var(--glass-border);
+      border-radius: var(--radius-pill);
+      padding: 5px 14px;
+      box-shadow: var(--glass-inner-shadow);
+      min-width: 240px;
+      transition: all 0.2s ease;
+    }
+
+    .calendar-search-bar:focus-within {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(var(--accent-blue-rgb), 0.22);
+    }
+
+    .calendar-search-input {
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 12.5px;
+      font-weight: 700;
+      outline: none;
+      width: 100%;
+    }
+
+    .calendar-search-input::placeholder {
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    .calendar-search-clear {
+      border: none;
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    [data-theme="dark"] .calendar-search-clear {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .calendar-day-tile.search-dimmed {
+      opacity: 0.25;
+      filter: grayscale(0.4);
+    }
+
+    .calendar-day-tile.search-match {
+      background: rgba(var(--accent-blue-rgb), 0.14) !important;
+      box-shadow: inset 0 0 0 2px var(--accent-blue), 0 8px 20px rgba(var(--accent-blue-rgb), 0.18);
+      z-index: 2;
+    }
+
+    .tile-match-chip {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(var(--accent-blue-rgb), 0.4);
+      white-space: nowrap;
+    }
+
+    .quick-template-box {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--glass-border-subtle);
+    }
+
+    .quick-template-header {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .quick-template-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .template-chip-btn {
+      border: 1px solid var(--glass-border);
+      background: rgba(var(--accent-blue-rgb), 0.1);
+      color: var(--text-main);
+      padding: 5px 11px;
+      border-radius: var(--radius-pill);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.18s ease;
+    }
+
+    .template-chip-btn:hover {
+      background: rgba(var(--accent-blue-rgb), 0.22);
+      border-color: var(--accent-blue);
+      transform: translateY(-1px);
+    }
+
+    .template-chip-price {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--accent-blue);
+      font-weight: 800;
+    }
+
+    .search-filter-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .search-result-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 48vh;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
     @media (max-width: 960px) {
       body {
         padding: 16px 14px 64px 14px;
@@ -1655,6 +1795,11 @@
           <span class="btn-label">CSV 내보내기</span>
         </button>
 
+        <button type="button" class="glass-expand-btn primary" id="openSearchModalBtn" title="업무 검색 및 빠른 복제 (Ctrl+K)">
+          <span class="btn-icon">🔍</span>
+          <span class="btn-label">업무 검색·복제</span>
+        </button>
+
         <button type="button" class="glass-expand-btn primary" id="openRoutineModalBtn" title="반복 루틴 관리">
           <span class="btn-icon">⟳</span>
           <span class="btn-label">루틴 관리</span>
@@ -1748,7 +1893,14 @@
     <!-- Calendar Canvas -->
     <main class="glass-island calendar-island">
       <div class="calendar-navbar">
-        <h2 class="current-month-display" id="currentMonthLabel">2026년 9월</h2>
+        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h2 class="current-month-display" id="currentMonthLabel">2026년 9월</h2>
+          <div class="calendar-search-bar" title="캘린더 내 업무명·메모 실시간 하이라이트 검색">
+            <span style="font-size:13px; opacity:0.7;">🔍</span>
+            <input type="text" id="calendarQuickSearch" class="calendar-search-input" placeholder="캘린더 내 키워드 필터..." aria-label="캘린더 내 키워드 필터">
+            <button type="button" id="calendarQuickSearchClear" class="calendar-search-clear" title="검색어 지우기">✕</button>
+          </div>
+        </div>
         <div class="nav-ctrl-group">
           <button class="btn-login-pill" style="background:var(--glass-bg); color:var(--text-main);" id="prevMonthBtn" title="이전 달">&larr; 이전 달</button>
           <button class="btn-login-pill" id="todayBtn">오늘</button>
@@ -1788,6 +1940,13 @@
       <div class="drawer-content-scroll">
         <div class="glass-form-slab">
           <div class="form-slab-title" id="formModeTitle">✦ 새 업무 등록</div>
+          <div class="quick-template-box" id="quickTemplateSection" style="display:none;">
+            <div class="quick-template-header">
+              <span>⚡ 최근 업무 원클릭 복제 입력</span>
+              <span style="font-weight:600; opacity:0.75;">클릭 시 단가·설정 자동 채움</span>
+            </div>
+            <div class="quick-template-chips" id="quickTemplateList"></div>
+          </div>
           <form id="taskForm">
             <input type="hidden" id="editingTaskId" value="">
             
@@ -1975,6 +2134,38 @@
     </div>
   </div>
 
+  <!-- Search & Quick Duplicate Modal -->
+  <div class="modal-scrim" id="searchModalOverlay">
+    <div class="glass-island liquid-dialog-window" style="max-width: 660px;">
+      <div class="dialog-header">
+        <h3>🔍 업무 키워드 검색 & 빠른 복제</h3>
+        <button class="glass-expand-btn" style="padding: 6px 12px;" id="closeSearchModalBtn" aria-label="닫기">✕</button>
+      </div>
+      <div class="dialog-body">
+        <div class="field-block" style="margin-bottom: 4px;">
+          <input type="text" id="searchModalInput" class="glass-input-well" placeholder="업무명, 클라이언트/메모, 금액(예: 150000)으로 검색..." autocomplete="off">
+        </div>
+
+        <div class="search-filter-bar" id="searchFilterBar">
+          <button type="button" class="btn-preset active" data-sfilter="all">전체</button>
+          <button type="button" class="btn-preset" data-sfilter="unpaid">미입금만</button>
+          <button type="button" class="btn-preset" data-sfilter="paid">입금완료만</button>
+          <button type="button" class="btn-preset" data-sfilter="pending">작업 진행중</button>
+          <button type="button" class="btn-preset" data-sfilter="done">작업 완료</button>
+          <button type="button" class="btn-preset" data-sfilter="single">일반 업무만 (루틴 제외)</button>
+        </div>
+
+        <div class="slab-breakdown" style="padding-top: 8px; border-top: none;">
+          <span class="pill-badge total" id="searchSumCount">검색 결과 0건</span>
+          <span class="pill-badge paid" id="searchSumTotal">합계 ₩0</span>
+          <span class="pill-badge unpaid" id="searchSumUnpaid">미입금 ₩0</span>
+        </div>
+
+        <div class="search-result-list" id="searchResultList"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Confirm Dialog Modal -->
   <div class="modal-scrim" id="confirmModalOverlay" style="z-index: 450;">
     <div class="glass-island liquid-dialog-window" style="max-width: 420px;">
@@ -2025,6 +2216,8 @@
     let customStartDate = new Date();
     let customEndDate = new Date();
     let currentPreset = '4weeks';
+    let calendarQuickQuery = '';
+    let currentSearchFilter = 'all';
 
     function safeGetStorage(key, fallback = null) {
       try {
@@ -2248,9 +2441,13 @@
         safeSetStorage(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
         updateDashboardStats();
         renderCalendar();
-        if (isDrawerOpen()) renderDrawerTasks();
+        if (isDrawerOpen()) {
+          renderDrawerTasks();
+          renderQuickTemplates();
+        }
         if (isUnpaidModalOpen()) renderUnpaidModalList();
         if (isRoutineModalOpen()) renderRoutineList();
+        if (isSearchModalOpen()) renderSearchModalResults();
       }, err => {
         console.error('Firestore 실시간 동기화 실패:', err);
       });
@@ -2260,9 +2457,13 @@
       safeSetStorage(LOCAL_CACHE_KEY, JSON.stringify(tasksData));
       updateDashboardStats();
       renderCalendar();
-      if (isDrawerOpen()) renderDrawerTasks();
+      if (isDrawerOpen()) {
+        renderDrawerTasks();
+        renderQuickTemplates();
+      }
       if (isUnpaidModalOpen()) renderUnpaidModalList();
       if (isRoutineModalOpen()) renderRoutineList();
+      if (isSearchModalOpen()) renderSearchModalResults();
 
       if (currentUser && currentUser.uid && fbDb) {
         saveDataToCloud();
@@ -2624,12 +2825,35 @@
       const completedCount = items.filter(t => t.done).length;
       const inProgressCount = items.length - completedCount;
 
+      const q = calendarQuickQuery.trim().toLowerCase();
+      let matchedCount = 0;
+      if (q) {
+        matchedCount = items.filter(t =>
+          String(t.title || '').toLowerCase().includes(q) ||
+          String(t.memo || '').toLowerCase().includes(q) ||
+          String(t.amount || '').includes(q)
+        ).length;
+        if (matchedCount > 0) {
+          cell.classList.add('search-match');
+        } else {
+          cell.classList.add('search-dimmed');
+        }
+      }
+
       const topDiv = document.createElement('div');
       topDiv.className = 'tile-top-row';
       const numSpan = document.createElement('span');
       numSpan.className = 'tile-day-pill';
       numSpan.textContent = date.getDate();
       topDiv.appendChild(numSpan);
+
+      if (matchedCount > 0) {
+        const matchChip = document.createElement('span');
+        matchChip.className = 'tile-match-chip';
+        matchChip.textContent = `검색 ${matchedCount}건`;
+        topDiv.appendChild(matchChip);
+      }
+
       cell.appendChild(topDiv);
 
       const badgeContainer = document.createElement('div');
@@ -2726,6 +2950,7 @@
     function openDrawer() {
       document.getElementById('drawerOverlay').classList.add('active');
       renderDrawerTasks();
+      renderQuickTemplates();
       resetForm();
     }
 
@@ -2802,8 +3027,45 @@
         const actions = document.createElement('div');
         actions.style.display = 'flex';
         actions.style.gap = '4px';
+        actions.style.flexWrap = 'wrap';
+
+        const dupHereBtn = document.createElement('button');
+        dupHereBtn.type = 'button';
+        dupHereBtn.className = 'btn-login-pill';
+        dupHereBtn.style.padding = '4px 8px';
+        dupHereBtn.style.fontSize = '11px';
+        dupHereBtn.style.background = 'rgba(var(--accent-blue-rgb), 0.14)';
+        dupHereBtn.style.color = 'var(--accent-blue)';
+        dupHereBtn.style.borderColor = 'rgba(var(--accent-blue-rgb), 0.35)';
+        dupHereBtn.title = '현재 날짜에 동일한 업무 1건 즉시 복제';
+        dupHereBtn.textContent = '+1 복제';
+        dupHereBtn.addEventListener('click', () => duplicateTaskToDate(task, formatDateKey(selectedDate)));
+
+        const todayKeyStr = formatDateKey(new Date());
+        const isSelectedToday = formatDateKey(selectedDate) === todayKeyStr;
+        const dupTargetBtn = document.createElement('button');
+        dupTargetBtn.type = 'button';
+        dupTargetBtn.className = 'btn-login-pill';
+        dupTargetBtn.style.padding = '4px 8px';
+        dupTargetBtn.style.fontSize = '11px';
+        dupTargetBtn.style.background = 'rgba(16, 185, 129, 0.14)';
+        dupTargetBtn.style.color = 'var(--accent-emerald)';
+        dupTargetBtn.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+        if (isSelectedToday) {
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          const tomorrowKey = formatDateKey(tomorrow);
+          dupTargetBtn.title = '내일 날짜로 이 업무를 즉시 복제';
+          dupTargetBtn.textContent = '내일로 복제';
+          dupTargetBtn.addEventListener('click', () => duplicateTaskToDate(task, tomorrowKey));
+        } else {
+          dupTargetBtn.title = '오늘 날짜로 이 업무를 즉시 복제';
+          dupTargetBtn.textContent = '오늘로 복제';
+          dupTargetBtn.addEventListener('click', () => duplicateTaskToDate(task, todayKeyStr));
+        }
 
         const editBtn = document.createElement('button');
+        editBtn.type = 'button';
         editBtn.className = 'btn-login-pill';
         editBtn.style.padding = '4px 8px';
         editBtn.style.fontSize = '11px';
@@ -2813,6 +3075,7 @@
         editBtn.addEventListener('click', () => startEditTask(task));
 
         const delBtn = document.createElement('button');
+        delBtn.type = 'button';
         delBtn.className = 'btn-login-pill';
         delBtn.style.padding = '4px 8px';
         delBtn.style.fontSize = '11px';
@@ -2822,6 +3085,8 @@
         delBtn.textContent = '삭제';
         delBtn.addEventListener('click', () => deleteTask(task.id));
 
+        actions.appendChild(dupHereBtn);
+        actions.appendChild(dupTargetBtn);
         actions.appendChild(editBtn);
         actions.appendChild(delBtn);
         headerRow.appendChild(actions);
@@ -3542,6 +3807,330 @@
       if (e.target.id === 'unpaidModalOverlay') closeUnpaidModal();
     });
 
+    function duplicateTaskToDate(task, targetDateKey) {
+      if (!task || !targetDateKey) return;
+      if (!tasksData[targetDateKey]) tasksData[targetDateKey] = [];
+
+      const cloned = {
+        id: 'task_' + generateId('t'),
+        title: task.title,
+        unitPrice: task.unitPrice !== undefined ? task.unitPrice : task.amount,
+        count: task.count || 1,
+        amount: task.amount || 0,
+        taxDeduction: Boolean(task.taxDeduction),
+        isPaid: false,
+        memo: task.memo || '',
+        done: false,
+        isRoutine: false
+      };
+
+      tasksData[targetDateKey].push(cloned);
+      saveData();
+      showToast(`'${task.title}' 업무가 ${targetDateKey}에 복제되었습니다.`);
+    }
+
+    function fillFormWithTemplate(tpl) {
+      document.getElementById('formModeTitle').textContent = '✦ 새 업무 등록 (프리셋 복제됨)';
+      document.getElementById('editingTaskId').value = '';
+      syncTaskDateInput();
+      document.getElementById('taskTitle').value = tpl.title;
+      const unit = tpl.unitPrice !== undefined ? tpl.unitPrice : tpl.amount;
+      const count = tpl.count || 1;
+      document.getElementById('taskUnitPrice').value = unit ? Number(unit).toLocaleString('ko-KR') : '';
+      document.getElementById('taskCount').value = count;
+      document.getElementById('taskAmount').value = tpl.amount ? Number(tpl.amount).toLocaleString('ko-KR') : '';
+      document.getElementById('taskTaxDeduction').checked = Boolean(tpl.taxDeduction);
+      document.getElementById('taskMemo').value = tpl.memo || '';
+      updateNetIncomeDisplay();
+      showToast(`'${tpl.title}' 단가 및 설정이 입력폼에 채워졌습니다.`);
+    }
+
+    function renderQuickTemplates() {
+      const section = document.getElementById('quickTemplateSection');
+      const listEl = document.getElementById('quickTemplateList');
+      if (!section || !listEl) return;
+
+      const map = new Map();
+      const sortedDates = Object.keys(tasksData).sort().reverse();
+
+      for (const dateKey of sortedDates) {
+        const items = tasksData[dateKey] || [];
+        for (let i = items.length - 1; i >= 0; i--) {
+          const t = items[i];
+          if (!t.title) continue;
+          const sig = `${t.title.trim()}_${t.unitPrice || t.amount || 0}_${Boolean(t.taxDeduction)}`;
+          if (!map.has(sig)) {
+            map.set(sig, {
+              title: t.title.trim(),
+              unitPrice: t.unitPrice !== undefined ? t.unitPrice : t.amount,
+              count: t.count || 1,
+              amount: t.amount || 0,
+              taxDeduction: Boolean(t.taxDeduction),
+              memo: t.memo || ''
+            });
+          }
+          if (map.size >= 6) break;
+        }
+        if (map.size >= 6) break;
+      }
+
+      listEl.innerHTML = '';
+      if (map.size === 0) {
+        section.style.display = 'none';
+        return;
+      }
+
+      section.style.display = 'block';
+      map.forEach(tpl => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'template-chip-btn';
+        chip.title = '클릭하여 이 업무의 단가·설정을 위 입력폼에 그대로 불러오기';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = tpl.title;
+        chip.appendChild(nameSpan);
+
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'template-chip-price';
+        priceSpan.textContent = formatKRW(tpl.unitPrice || tpl.amount);
+        chip.appendChild(priceSpan);
+
+        chip.addEventListener('click', () => fillFormWithTemplate(tpl));
+        listEl.appendChild(chip);
+      });
+    }
+
+    const searchModal = document.getElementById('searchModalOverlay');
+    const searchModalInput = document.getElementById('searchModalInput');
+
+    function isSearchModalOpen() {
+      return searchModal.classList.contains('active');
+    }
+
+    function openSearchModal() {
+      searchModal.classList.add('active');
+      if (calendarQuickQuery && !searchModalInput.value) {
+        searchModalInput.value = calendarQuickQuery;
+      }
+      renderSearchModalResults();
+      setTimeout(() => searchModalInput.focus(), 60);
+    }
+
+    function closeSearchModal() {
+      searchModal.classList.remove('active');
+    }
+
+    function renderSearchModalResults() {
+      const container = document.getElementById('searchResultList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const query = (searchModalInput.value || '').trim().toLowerCase();
+      const matched = [];
+
+      Object.keys(tasksData).sort().reverse().forEach(dateKey => {
+        (tasksData[dateKey] || []).forEach(task => {
+          if (currentSearchFilter === 'unpaid' && task.isPaid) return;
+          if (currentSearchFilter === 'paid' && !task.isPaid) return;
+          if (currentSearchFilter === 'pending' && task.done) return;
+          if (currentSearchFilter === 'done' && !task.done) return;
+          if (currentSearchFilter === 'single' && task.isRoutine) return;
+
+          if (query) {
+            const hayTitle = String(task.title || '').toLowerCase();
+            const hayMemo = String(task.memo || '').toLowerCase();
+            const hayAmt = String(task.amount || '');
+            const hayNet = String(getTaskEffectiveAmount(task));
+            const hayDate = dateKey.toLowerCase();
+            if (
+              !hayTitle.includes(query) &&
+              !hayMemo.includes(query) &&
+              !hayAmt.includes(query) &&
+              !hayNet.includes(query) &&
+              !hayDate.includes(query)
+            ) {
+              return;
+            }
+          }
+
+          matched.push({ ...task, dateKey });
+        });
+      });
+
+      const metrics = calculateIncomeMetrics(matched);
+      document.getElementById('searchSumCount').textContent = `검색 결과 ${matched.length}건`;
+      document.getElementById('searchSumTotal').textContent = `세후 합계 ${formatKRW(metrics.total)}`;
+      document.getElementById('searchSumUnpaid').textContent = `미입금 ${formatKRW(metrics.unpaid)}`;
+
+      if (matched.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:36px 12px; color:var(--text-light); font-size:13px; font-weight:600;">조건에 일치하는 업무 내역이 없습니다.</div>';
+        return;
+      }
+
+      const todayKeyStr = formatDateKey(new Date());
+      const selectedKeyStr = formatDateKey(selectedDate);
+
+      matched.forEach(task => {
+        const item = document.createElement('div');
+        item.className = `task-item-tile ${task.done ? 'completed' : ''}`;
+
+        const headerRow = document.createElement('div');
+        headerRow.className = 'task-header-row';
+
+        const titleLine = document.createElement('div');
+        titleLine.className = 'task-title-line';
+
+        const dateBadge = document.createElement('span');
+        dateBadge.className = 'pill-badge';
+        dateBadge.style.fontSize = '11px';
+        dateBadge.style.padding = '3px 9px';
+        dateBadge.textContent = task.dateKey;
+        titleLine.appendChild(dateBadge);
+
+        const title = document.createElement('span');
+        title.className = 'task-name-text';
+        title.textContent = task.title;
+        titleLine.appendChild(title);
+
+        if (task.isRoutine) {
+          const rBadge = document.createElement('span');
+          rBadge.className = 'pill-badge';
+          rBadge.style.fontSize = '10px';
+          rBadge.style.padding = '2px 8px';
+          rBadge.textContent = '루틴';
+          titleLine.appendChild(rBadge);
+        }
+
+        headerRow.appendChild(titleLine);
+
+        const actionGroup = document.createElement('div');
+        actionGroup.style.display = 'flex';
+        actionGroup.style.gap = '5px';
+        actionGroup.style.flexWrap = 'wrap';
+
+        const jumpBtn = document.createElement('button');
+        jumpBtn.type = 'button';
+        jumpBtn.className = 'btn-login-pill';
+        jumpBtn.style.padding = '4px 9px';
+        jumpBtn.style.fontSize = '11px';
+        jumpBtn.style.background = 'var(--glass-bg)';
+        jumpBtn.style.color = 'var(--text-main)';
+        jumpBtn.textContent = '날짜 이동';
+        jumpBtn.addEventListener('click', () => {
+          const targetDate = parseDateKey(task.dateKey);
+          selectedDate = cloneDate(targetDate);
+          currentDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
+          updateDashboardStats();
+          renderCalendar();
+          closeSearchModal();
+          openDrawer();
+        });
+
+        const dupTodayBtn = document.createElement('button');
+        dupTodayBtn.type = 'button';
+        dupTodayBtn.className = 'btn-login-pill';
+        dupTodayBtn.style.padding = '4px 9px';
+        dupTodayBtn.style.fontSize = '11px';
+        dupTodayBtn.style.background = 'rgba(16, 185, 129, 0.15)';
+        dupTodayBtn.style.color = 'var(--accent-emerald)';
+        dupTodayBtn.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+        dupTodayBtn.textContent = '⚡ 오늘로 복제';
+        dupTodayBtn.addEventListener('click', () => {
+          duplicateTaskToDate(task, todayKeyStr);
+        });
+
+        actionGroup.appendChild(jumpBtn);
+        actionGroup.appendChild(dupTodayBtn);
+
+        if (selectedKeyStr !== todayKeyStr) {
+          const dupSelBtn = document.createElement('button');
+          dupSelBtn.type = 'button';
+          dupSelBtn.className = 'btn-login-pill';
+          dupSelBtn.style.padding = '4px 9px';
+          dupSelBtn.style.fontSize = '11px';
+          dupSelBtn.style.background = 'rgba(var(--accent-blue-rgb), 0.14)';
+          dupSelBtn.style.color = 'var(--accent-blue)';
+          dupSelBtn.style.borderColor = 'rgba(var(--accent-blue-rgb), 0.35)';
+          dupSelBtn.textContent = `선택일(${selectedDate.getMonth() + 1}.${selectedDate.getDate()}) 복제`;
+          dupSelBtn.addEventListener('click', () => {
+            duplicateTaskToDate(task, selectedKeyStr);
+          });
+          actionGroup.appendChild(dupSelBtn);
+        }
+
+        headerRow.appendChild(actionGroup);
+        item.appendChild(headerRow);
+
+        if (task.memo) {
+          const memo = document.createElement('div');
+          memo.className = 'task-memo-text';
+          memo.textContent = task.memo;
+          item.appendChild(memo);
+        }
+
+        const bottomMeta = document.createElement('div');
+        bottomMeta.className = 'task-bottom-meta';
+
+        const amt = document.createElement('div');
+        amt.className = 'task-income-amt';
+        amt.textContent = formatKRW(getTaskEffectiveAmount(task));
+        bottomMeta.appendChild(amt);
+
+        const statusCluster = document.createElement('div');
+        statusCluster.className = 'task-status-cluster';
+
+        const workBadge = document.createElement('span');
+        workBadge.className = `pill-badge ${task.done ? 'total' : ''}`;
+        workBadge.style.fontSize = '11px';
+        workBadge.textContent = task.done ? '작업완료' : '진행중';
+
+        const payBadge = document.createElement('span');
+        payBadge.className = `pill-badge ${task.isPaid ? 'paid' : 'unpaid'}`;
+        payBadge.style.fontSize = '11px';
+        payBadge.textContent = task.isPaid ? '입금완료' : '미입금';
+
+        statusCluster.appendChild(workBadge);
+        statusCluster.appendChild(payBadge);
+        bottomMeta.appendChild(statusCluster);
+
+        item.appendChild(bottomMeta);
+        container.appendChild(item);
+      });
+    }
+
+    document.getElementById('openSearchModalBtn').addEventListener('click', openSearchModal);
+    document.getElementById('closeSearchModalBtn').addEventListener('click', closeSearchModal);
+    searchModal.addEventListener('click', e => {
+      if (e.target.id === 'searchModalOverlay') closeSearchModal();
+    });
+    searchModalInput.addEventListener('input', renderSearchModalResults);
+
+    document.querySelectorAll('#searchFilterBar .btn-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentSearchFilter = btn.dataset.sfilter || 'all';
+        document.querySelectorAll('#searchFilterBar .btn-preset').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderSearchModalResults();
+      });
+    });
+
+    const calendarQuickSearchInput = document.getElementById('calendarQuickSearch');
+    const calendarQuickSearchClear = document.getElementById('calendarQuickSearchClear');
+
+    calendarQuickSearchInput.addEventListener('input', e => {
+      calendarQuickQuery = e.target.value || '';
+      calendarQuickSearchClear.style.display = calendarQuickQuery.trim() ? 'inline-flex' : 'none';
+      renderCalendar();
+    });
+
+    calendarQuickSearchClear.addEventListener('click', () => {
+      calendarQuickQuery = '';
+      calendarQuickSearchInput.value = '';
+      calendarQuickSearchClear.style.display = 'none';
+      renderCalendar();
+    });
+
     function exportToCSV() {
       const rows = [
         ['날짜', '업무명', '단가(원)', '건수', '총청구액(원)', '원천징수3.3%적용', '세후실수령액(원)', '입금상태', '루틴여부', '메모']
@@ -3677,8 +4266,14 @@
     });
 
     window.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openSearchModal();
+        return;
+      }
       if (e.key === 'Escape') {
         if (document.getElementById('confirmModalOverlay').classList.contains('active')) closeConfirmModal(false);
+        else if (isSearchModalOpen()) closeSearchModal();
         else if (unpaidModal.classList.contains('active')) closeUnpaidModal();
         else if (routineModal.classList.contains('active')) closeRoutineModal();
         else if (isDrawerOpen()) closeDrawer();
