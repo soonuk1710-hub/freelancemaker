@@ -2475,7 +2475,7 @@
       fbDb.collection('freelancers').doc(currentUser.uid).set({
         tasks: tasksData,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true }).catch(err => {
+      }).catch(err => {
         console.error('클라우드 동기화 오류:', err);
       });
     }
@@ -3202,9 +3202,20 @@
       const ok = await showConfirmModal('이 업무를 삭제하시겠습니까?', '업무 삭제');
       if (!ok) return;
       const key = formatDateKey(selectedDate);
-      if (!tasksData[key]) return;
-      tasksData[key] = tasksData[key].filter(t => t.id !== taskId);
-      if (tasksData[key].length === 0) delete tasksData[key];
+      if (tasksData[key] && tasksData[key].some(t => t.id === taskId)) {
+        tasksData[key] = tasksData[key].filter(t => t.id !== taskId);
+        if (tasksData[key].length === 0) delete tasksData[key];
+      } else {
+        Object.keys(tasksData).forEach(dateKey => {
+          if (Array.isArray(tasksData[dateKey])) {
+            tasksData[dateKey] = tasksData[dateKey].filter(t => t.id !== taskId);
+            if (tasksData[dateKey].length === 0) delete tasksData[dateKey];
+          }
+        });
+      }
+      if (document.getElementById('editingTaskId').value === String(taskId)) {
+        resetForm();
+      }
       saveData();
       showToast('업무가 삭제되었습니다.');
     }
